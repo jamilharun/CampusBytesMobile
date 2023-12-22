@@ -14,6 +14,14 @@
     "assetBundlePatterns": [
       "**/*"
     ],
+    "plugins": [
+      [
+        "react-native-auth0",
+        {
+          "domain": "dev-0xchvbbl50virhed.jp.auth0.com"
+        }
+      ]
+    ],
     "ios": {
       "supportsTablet": true
     },
@@ -26,6 +34,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "c5ede8a6-141d-4d02-9be4-416548e1805d"
+      }
+    },
+    "owner": "jamilharun"
   }
 }

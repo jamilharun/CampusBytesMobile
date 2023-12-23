@@ -1,18 +1,19 @@
+/** @type {import('tailwindcss').Config} */
 
-
+const colors = require('tailwindcss/colors')
 module.exports = {
     content: [
         "./App.{js,jsx,ts,tsx}", 
-        // "./Screens/**/*.{js,jsx,ts,tsx}",
-        // "./Slices/**/*.{js,jsx,ts,tsx}",
-        // "./Components/**/*.{js,jsx,ts,tsx}",
+        "./screens/**/*.{js,jsx,ts,tsx}",
+        "./slices/**/*.{js,jsx,ts,tsx}",
+        "./components/**/*.{js,jsx,ts,tsx}",
     ],
     theme: {
         extend: {},
         colors: {
           transparent: 'transparent',
           current: 'currentColor',
-        //   gray: colors.gray,
+          gray: colors.gray,
           'white': '#ffffff',
           'EacColor': {
             'BlackPearl': '#03071E',

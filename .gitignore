@@ -34,4 +34,7 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
+#custom gitignore
 .env
+android/
+ios/

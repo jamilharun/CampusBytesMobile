@@ -83,6 +83,9 @@ android {
 
     namespace 'com.jamilharun.CampusBytes'
     defaultConfig {
+// @generated begin react-native-auth0-manifest-placeholder - expo prebuild (DO NOT MODIFY) sync-de794fa82a4c0b96ebb2c9562b9a4a8b4d837737
+manifestPlaceholders = [auth0Domain: "dev-0xchvbbl50virhed.jp.auth0.com", auth0Scheme: "com.jamilharun.CampusBytes.auth0"]
+// @generated end react-native-auth0-manifest-placeholder
         applicationId 'com.jamilharun.CampusBytes'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion

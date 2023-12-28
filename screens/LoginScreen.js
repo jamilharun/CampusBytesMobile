@@ -10,7 +10,7 @@ export default function LoginScreen() {
   const [event, setEvent] = useState("login screen");
 
   const navigation = useNavigation();
-  const { onLogin } = useContext(AuthContext);
+  const { onLogin, isLoading } = useContext(AuthContext);
 
   // const [email, setEmail] = useState(null)
   // const [password, setPassword] = useState(null)
@@ -38,6 +38,11 @@ export default function LoginScreen() {
 
   return (
     <View className="flex-1 bg-EacColor-SelectiveYellow">
+      {isLoading && (
+        <View className=" flex justify-center items-center">
+          <ActivityIndicator size={"large"} />
+        </View>
+      )}
       <SafeAreaView className="flex">
         <View className="flex-row justify-start">
           <TouchableOpacity
@@ -61,33 +66,6 @@ export default function LoginScreen() {
         style={{ borderTopLeftRadius: 50, borderTopRightRadius: 50 }}
       >
         <Text className="text-2xl pb-4 pt-60 ">Login</Text>
-        {/* <View className='form space-y-2'>
-              <Text className='text-EacColor-BlackPearl ml-4'>User Name</Text>
-              <TextInput
-                className='p-4 bg-gray-100 text-gray-700 rounded-2xl mb-3'
-                placeholder='Example123@example.com'
-                keyboardType='email-address'
-                value={email}
-                onChangeText={text => setEmail(text)}/>
-
-              <Text className='text-EacColor-BlackPearl ml-4'>Password</Text>
-              <TextInput
-                className='p-4 bg-gray-100 text-gray-700 rounded-2xl mb-3'
-                secureTextEntry
-                placeholder='Enter Password'
-                value={password}
-                onChangeText={text => setPassword(text)}/>
-              
-              <TouchableOpacity className='flex items-end mb-5'>
-                <Text className='text-EacColor-BlackPearl'>Forgot Password?</Text>
-              </TouchableOpacity>
-              <TouchableOpacity 
-                
-                onPress={()=>{login(email, password)}}
-                className='py-3 bg-EacColor-SelectiveYellow rounded-xl'>
-                <Text className='font-xl font-bold text-center text-EacColor-BlackPearl'>Login</Text>
-              </TouchableOpacity>
-            </View> */}
 
         {/* auth0 login */}
 

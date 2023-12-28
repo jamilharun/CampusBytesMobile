@@ -55,6 +55,7 @@ export default function HomeScreen() {
         <Text>name:{user?.name}</Text>
         <Text>nickname:{user?.nickname}</Text>
         <Text>email:{user?.email}</Text>
+        <Text>pic:{user?.picture}</Text>
         <Image source={user?.picture} className="w-20 h-20 rounded-full" />
 
         {/* {

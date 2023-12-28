@@ -18,17 +18,17 @@ export default function LoginScreen() {
     setEvent("going back");
     try {
       navigation.goBack();
-    } catch (error) {
-      setEvent(error);
+    } catch (err) {
+      setEvent(err);
     }
   };
 
   const toLogin = () => {
     setEvent("logging in");
     try {
-      onLogin;
-    } catch (error) {
-      setEvent(error);
+      onLogin();
+    } catch (err) {
+      setEvent(err);
     }
   };
 

@@ -7,11 +7,11 @@ import AuthStack from "./AuthStack";
 import AppStack from "./AppStack";
 
 export default function AppNavigation() {
-  const { loggedIn, isLoading } = useContext(AuthContext);
+  // const { loggedIn, isLoading } = useContext(AuthContext);
 
-  // test
-  // const loggedIn = true;
-  // const isLoading = false;
+  // test for debugging
+  const loggedIn = true;
+  const isLoading = false;
 
   // if (isLoading) {
   //   return (

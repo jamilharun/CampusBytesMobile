@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, Image } from "react-native";
+import { View, Text, TouchableOpacity, Image, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import { ChevronLeft } from "react-native-feather";
@@ -38,11 +38,6 @@ export default function LoginScreen() {
 
   return (
     <View className="flex-1 bg-EacColor-SelectiveYellow">
-      {isLoading && (
-        <View className=" flex justify-center items-center">
-          <ActivityIndicator size={"large"} />
-        </View>
-      )}
       <SafeAreaView className="flex">
         <View className="flex-row justify-start">
           <TouchableOpacity
@@ -65,27 +60,33 @@ export default function LoginScreen() {
         className="flex-1 bg-white px-8 pt-8 "
         style={{ borderTopLeftRadius: 50, borderTopRightRadius: 50 }}
       >
-        <Text className="text-2xl pb-4 pt-60 ">Login</Text>
+        {isLoading ? (
+          <View className=" flex justify-center items-center">
+            <ActivityIndicator size={"large"} />
+          </View>
+        ) : (
+          <View>
+            <Text className="text-2xl pb-4 pt-60 ">Login</Text>
 
-        {/* auth0 login */}
-
-        <View></View>
-
-        <TouchableOpacity
-          onPress={() => {
-            toLogin();
-          }}
-          className=" py-3 bg-EacColor-BlackPearl rounded-xl flex-row justify-self-center justify-center items-center "
-        >
-          <Text className=" px-3 text-xl font-bold text-center text-white font-Poppins">
-            Login with Auth0
-          </Text>
-          <Image
-            source={require("../assets/images/auth0-logo.png")}
-            className="  "
-            style={{ width: 35, height: 35 }}
-          />
-        </TouchableOpacity>
+            {/* auth0 login */}
+            <TouchableOpacity
+              onPress={() => {
+                toLogin();
+              }}
+              className=" py-3 bg-EacColor-BlackPearl rounded-xl flex-row justify-self-center justify-center items-center "
+            >
+              <Text className=" px-3 text-xl font-bold text-center text-white font-Poppins">
+                Login with Auth0
+              </Text>
+              <Image
+                source={require("../assets/images/auth0-logo.png")}
+                className="  "
+                style={{ width: 35, height: 35 }}
+              />
+            </TouchableOpacity>
+          </View>
+          )
+        }
       </View>
     </View>
   );

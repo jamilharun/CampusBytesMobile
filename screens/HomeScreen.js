@@ -1,32 +1,62 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useContext, useState } from "react";
-import { View, Text, TextInput, ScrollView, Image } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import { View, Text, TextInput, ScrollView, Image, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import Categories from "../components/categories";
 import FeaturedRow from "../components/featuredRow";
 import { Map, Search, Sliders } from "react-native-feather";
 import { AuthContext } from "../context/AuthContext";
+import client from "../apis/sanity";
+import { fetchingProdDish } from "../utils/query";
+import ShopCard from "../components/ShopCard";
 
 // sample user data | remove this after testing
 // import { user } from '../constants/sampleuser';
 export default function HomeScreen() {
+  const [loading, setLoading] = useState(false)
   const [event, setEvent] = useState("Welcome Home");
+  const [shopShowCase, getShopShowCase] = useState(null)
   // auth0 line of code!!!
   const { user } = useContext(AuthContext);
 
-  useState(() => {
-    console.log(event);
-  }, [event]);
-
-  if (!user) {
-    console.log("no data found");
-    alert("no data found");
+  const fetchData = () => {
+    try {
+      client
+        .fetch(fetchingProdDish)
+        .then((data)=>{
+          console.log(data)
+          getShopShowCase(data)
+          setEvent('fetching shop successful')
+        })
+    } catch (err) {
+      console.log(err);
+      setEvent(err)
+    }
   }
+
+  const initialFetch = () => {
+    useState(() => {
+      fetchData()
+    });
+  }
+  initialFetch()
+  
+  useEffect(()=>{
+    console.log(event);
+  },[event])
+
+  
+  //filler Code for debugging
+  if (!user) {
+    // console.log("no data found");
+    // alert("no data found");
+  }
+
   return (
     <SafeAreaView className="bg-white">
       <StatusBar barStyle="dark-Content" />
-      <View className="flex-row items-center space-x-2 px-4 pb-2">
+      <View className="flex-row items-center space-x-2 px-4 ">
         <View className="flex-row flex-1 items-center p-3 rounded-full border border-gray-300">
           <Search height="25" width="25" className=" text-gray-600" />
           <TextInput placeholder="Restaurants" className="ml-2 flex-1" />
@@ -51,22 +81,40 @@ export default function HomeScreen() {
 
       {/* featured */}
       <View className=" mt-5">
-        <Text>user_id:{user?.user_id}</Text>
+        {/* <Text>user_id:{user?.user_id}</Text>
         <Text>name:{user?.name}</Text>
         <Text>nickname:{user?.nickname}</Text>
         <Text>email:{user?.email}</Text>
         <Text>pic:{user?.picture}</Text>
-        <Image source={user?.picture} className="w-20 h-20 rounded-full" />
+        <Image source={user?.picture} className="w-20 h-20 rounded-full" /> */}
 
-        {/* {
-            [ featured, featured, featured].map((item, index)=>{
-              <FeaturedRow
-                key={index}
-                title={item.title}
-                restaurant={item.restaurant}
-                description={item.description}/>
-            })
-          } */}
+          {
+            shopShowCase ? (
+              // console.log(shopShowCase)
+              shopShowCase?.map((shop)=>{
+                return(
+                  <ShopCard
+                    id={shop._id}
+                    shopName={shop.shopName}
+                    logo={shop.logo}
+                    cover={shop.cover}
+                    address={shop.address}
+                    latitude={shop.latitude}
+                    longitude={shop.longitude}
+                    description={shop.description}
+                    products={shop.products}
+                    dishes={shop.dishes}
+                    isisActive={shop.isActive}
+                    isVerified={shop.isVerified}
+                  />
+                )
+              })
+            ) : (
+              <View className=" flex justify-center items-center">
+                <ActivityIndicator size={"large"} />
+              </View>
+            )
+          }
       </View>
     </SafeAreaView>
   );

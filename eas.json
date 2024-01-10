@@ -1,0 +1,36 @@
+{
+    "cli": {
+      "version": ">= 5.9.3"
+    },
+    "build": {
+      "development": {
+        "distribution": "internal",
+        "android": {
+          "gradleCommand": ":app:assembleDebug"
+        },
+        "ios": {
+          "buildConfiguration": "Debug"
+        }
+      },
+      "preview": {
+        "distribution": "internal",
+        "env": {
+          "EXPO_PUBLIC_AUTH0_DOMAIN": "dev-0xchvbbl50virhed.jp.auth0.com",
+          "EXPO_PUBLIC_AUTH0_CLIENTID": "dSU1klAdTFvJtAJOyLv7zrAhkSrR2ZX4",
+          "EXPO_PUBLIC_SANITY_DATABASE_ID": "pytip2j0",
+          "EXPO_PUBLIC_SANITY_DATABASE_TOKEN": "sk3bXUyeWSzSp2bH4jjaaBx7O9u9PXDEcq0jXsITW8qkEtdMKEPNCDt5FOqGlnUtWFjVUmy7B5DUr8aNvYDF8WgGIieG5Oac4Btk8K6G3vyGNZlAXvOjabVvj0mtsvHgekx6TdVrDjXsK5me6rN7WB75CuYqzEApuN9887W16LJct7MrAstE"
+        }
+      },
+      "production": {
+        "env": {
+          "EXPO_PUBLIC_AUTH0_DOMAIN": "dev-0xchvbbl50virhed.jp.auth0.com",
+          "EXPO_PUBLIC_AUTH0_CLIENTID": "dSU1klAdTFvJtAJOyLv7zrAhkSrR2ZX4",
+          "EXPO_PUBLIC_SANITY_DATABASE_ID": "pytip2j0",
+          "EXPO_PUBLIC_SANITY_DATABASE_TOKEN": "sk3bXUyeWSzSp2bH4jjaaBx7O9u9PXDEcq0jXsITW8qkEtdMKEPNCDt5FOqGlnUtWFjVUmy7B5DUr8aNvYDF8WgGIieG5Oac4Btk8K6G3vyGNZlAXvOjabVvj0mtsvHgekx6TdVrDjXsK5me6rN7WB75CuYqzEApuN9887W16LJct7MrAstE"
+        }
+      }
+    },
+    "submit": {
+      "production": {}
+    }
+  }

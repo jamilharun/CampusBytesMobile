@@ -2,8 +2,8 @@ import React from "react";
 // import { createStackNavigator } from '@react-navigation/stack'
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import WelcomeScreen from "../screens/WelcomeScreen";
-import LoginScreen from "../screens/LoginScreen";
+import WelcomeScreen from "../screens/auth/WelcomeScreen";
+import LoginScreen from "../screens/auth/LoginScreen";
 
 export default function AuthStack() {
   const Stack = createNativeStackNavigator();

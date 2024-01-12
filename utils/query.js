@@ -39,7 +39,10 @@ export const fetchingProductQuery = `*[_type == 'product'] {
 //inverse fetch 
 // yeahh boiiii
 export const fetchingProdDish = `*[_type == 'shop'] {
-  _id, shopName, description, address,
+  _id,
+  shopName,
+  description,
+  address,
   logo{
     asset{
       _ref
@@ -50,31 +53,51 @@ export const fetchingProdDish = `*[_type == 'shop'] {
       _ref
     }
   },
-  longitude, latitude, isVerified, isActive,
+  longitude,
+  latitude,
+  isVerified,
+  isActive,
   "products": *[_type == 'product' && shopName._ref == ^._id] {
-    _id, productName,
+    _id,
+    productName,
     category->{
-      _id, categoryName, description
+      _id,
+      categoryName,
+      description
     },
-    image, Price, description, isAvailable, _createdAt
+    tags[]->{
+    _id,
+    tagName,
+    description
+    },
+    image,
+    Price,
+    description,
+    isAvailable,
+    _createdAt
   },
   "dishes": *[ _type == 'dish' && shopName._ref == ^._id ] {
-  _id, dishName,
+  _id,
+  dishName,
   shopName{
     _ref
   },
   preparationMethod,
-  origin->{
+  category->{
+      _id,
+      categoryName,
+      description
+  },
+  tags[]->{
     _id,
-    originName,
+    tagName,
     description
   },
-  type->{
-    _id,
-    mealTypeName,
-    description
-  },
-  image, Price, description, isAvailable, _createdAt,
+  image,
+  Price,
+  description,
+  isAvailable,
+  _createdAt,
 }
 }`
 

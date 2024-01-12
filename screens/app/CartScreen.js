@@ -4,8 +4,8 @@ import { useNavigation } from '@react-navigation/native'
 import { ScrollView, TouchableOpacity, View } from 'react-native';
 import { AiOutlineArrowLeft, AiOutlineMinus } from "react-icons/ai";
 import { useDispatch, useSelector } from 'react-redux';
-import { selectShop } from '../slices/ShopSlice';
-import { removeFromCart, selectCartItems, selectCarttotal } from '../slices/CartSlice';
+import { selectShop } from '../../slices/ShopSlice';
+import { removeFromCart, selectCartItems, selectCarttotal } from '../../slices/CartSlice';
 export default function CartScreen() {
     const shop = useSelector(selectShop)
     const navigation = useNavigation();

@@ -9,11 +9,13 @@ export default function ShopCard({id, shopName, logo, cover, address, latitude, 
 
   const [activeCategory, setActiveCategory] = useState(null);
   return (
-    <TouchableWithoutFeedback key={id} 
-    // onPress={()=> navigation.navigate('Shop', {id, shopName, logo, cover, address, latitude, longitude, description, products, dishes, isisActiv, isVerified})}
+    <TouchableWithoutFeedback
+      className='py-4 first:pt-0 last:pb-0'
+      key={id} 
+      onPress={()=> navigation.navigate('Shop', {id, shopName, logo, cover, address, latitude, longitude, description, products, dishes, isisActiv, isVerified})}
     >
         <View 
-        style={{
+          style={{
           // shadowColor: themeColor.bgColor(0.2),
           shadowRadius: 7
         }}
@@ -25,17 +27,21 @@ export default function ShopCard({id, shopName, logo, cover, address, latitude, 
               </View>
             </View>  
             <View className='px-3 pb-4 space-y-2'>
-              <Text className='flex'>
+              
+              <View className=' flex flex-row justify-between'>
                 <Text className=' text-lg font-bold pt-2 '>{shopName}</Text>
-              </Text>
-              <View className=' flex flex-row items-center space-x-1'>
-                <Star className=' text-EacColor-SelectiveYellow'/>
-                <Text className=' text-xs'>
-                  <Text className=' text-EacColor-BlackPearl'>
-                    ratings . <Text className=' font-semibold'>{}</Text>
+                
+                <View className=' flex flex-row items-center space-x-1'>
+                  <Star className=' text-EacColor-SelectiveYellow'/>
+                  <Text className=' text-xs'>
+                    <Text className=' text-EacColor-BlackPearl'>
+                      ratings . <Text className=' font-semibold'>{}</Text>
+                    </Text>
                   </Text>
-                </Text>
+                </View>
+
               </View>
+              
               <View>
                 <ScrollView 
                   horizontal

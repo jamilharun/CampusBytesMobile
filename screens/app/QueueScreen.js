@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import MapView, {Marker} from 'react-native-maps';
 import { Image, Text, View } from 'react-native';
 import { useSelection } from 'react-redux';
-import { selectShop } from '../slices/ShopSlice';
+import { selectShop } from '../../slices/ShopSlice';
 
 
 export default function QueueScreen() {

@@ -5,11 +5,11 @@ import config from "./apis/auth0_config";
 
 export default function App() {
   return (
-    <Auth0Provider domain={config.domain} clientId={config.clientId}>
-     <AuthProvider>
+    // <Auth0Provider domain={config.domain} clientId={config.clientId}>
+    //  <AuthProvider>
         <AppNavigation />
-     </AuthProvider>
-    </Auth0Provider>
+    //  </AuthProvider>
+    // </Auth0Provider>
   );
 }
 

@@ -60,13 +60,14 @@ export default function LoginScreen() {
         className="flex-1 bg-white px-8 pt-8 "
         style={{ borderTopLeftRadius: 50, borderTopRightRadius: 50 }}
       >
+        <Image className="fit  text-EacColor-BlackPearl" source={require('../../assets/favicon.png')}/>
         {isLoading ? (
           <View className=" flex justify-center items-center">
             <ActivityIndicator size={"large"} />
           </View>
         ) : (
-          <View>
-            <Text className="text-2xl pb-4 pt-60 ">Login</Text>
+          <View>  
+            <Text className="text-2xl pb-4 pt-36 ">Login</Text>
 
             {/* auth0 login */}
             <TouchableOpacity

@@ -28,11 +28,12 @@ export default function WelcomeScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-EacColor-SelectiveYellow">
-      <View className="flex-1 flex justify-around my-4">
+      <View className=" flex-1 flex justify-around my-4">
+        <Image className="w-10 h-10 " source={{ uri: "../../assets/favicon.png"}}/>
         <Text className="text-white font-bold text-4xl text-center font-Poppins">
           Welcome to CanteenBytes!
         </Text>
-        <View className="flex-row justify-center">
+        <View className=" flex-row justify-center">
           {/* <Image 
              
             style={{width: 350, height: 350}}/>   */}

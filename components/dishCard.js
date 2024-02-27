@@ -2,6 +2,7 @@ import { useNavigation } from "@react-navigation/native";
 import { Image, Text, TouchableWithoutFeedback, View } from "react-native"
 import ShopScreen from "../screens/app/ShopScreen";
 import { urlFor } from "../apis/sanity";
+import ShopStack from "../navigation/shopStack";
 
 const DishCard = ({
     isPromoted, 
@@ -19,11 +20,10 @@ const DishCard = ({
     const navigation = useNavigation();
     
     return (
-        <>
             <TouchableWithoutFeedback
             className= 'py-4 first:pt-0 last:pb-0'
             key={_id}
-            onPress={()=>{ /* upon click will move to shop schreen*/}}>
+            onPress={()=>{ /*return (<ShopStack _id={shop._id} _type={shop._type} />) */}}>
                 <View 
                     style={{
                         // shadowColor: themeColor.bgColor(0.2),
@@ -34,8 +34,7 @@ const DishCard = ({
                             <View className='flex flex-row'>
                                 <Image 
                                     className=' h-10 w-10 rounded-full'
-                                    source={{ uri: urlFor(shop?.logo).url()}}
-                                />
+                                    source={{ uri: urlFor(shop?.logo).url()}}/>
                                 <Text className="font-medium text-xl ">{shop?.shopName}</Text>
                             </View>
                             <View>{/* more option icon */}</View>
@@ -48,8 +47,8 @@ const DishCard = ({
                                     <Text className="font-medium text-lg">{dishName}</Text>
                                     <Text className="font-medium text-lg">{price}₱</Text>
                                 </View>
-                                <Text>
-                                    <Text className="font-medium text-lg">{preparationTime}</Text>
+                                <Text className='flex flex-col'>
+                                    <Text className="font-medium text-lg">{preparationTime}mins</Text>
                                     <Text className="font-medium text-lg">rating</Text>
                                 </Text>
                             </View>
@@ -67,7 +66,6 @@ const DishCard = ({
                         </View>
                 </View>
             </TouchableWithoutFeedback>
-        </>
     )
 }
 export default DishCard

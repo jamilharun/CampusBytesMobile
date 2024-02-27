@@ -8,16 +8,33 @@ import {View,
 import { useNavigation } from '@react-navigation/native';
 import { Map, Star } from 'react-native-feather';
 import { urlFor } from '../apis/sanity';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import ShopStack from '../navigation/shopStack';
 
-export default function ShopCard({id, shopName, logo, cover, address, latitude, longitude, description, products, dishes, isisActiv, isVerified}) {
+export default function ShopCard({
+    _id,
+    _type,
+    shopName, 
+    logo,
+    slug,
+    cover, 
+    address, 
+    latitude, 
+    longitude, 
+    description,
+    isFeatured,
+    isPromoted,
+    isActive,
+    tags}) {
   const navigation = useNavigation();
 
   const [activeCategory, setActiveCategory] = useState(null);
   return (
+    <SafeAreaView key={_id}>
+
     <TouchableWithoutFeedback
       className='py-4 first:pt-0 last:pb-0'
-      key={id} 
-      onPress={()=> navigation.navigate('Shop', {id, shopName, logo, cover, address, latitude, longitude, description, products, dishes, isisActiv, isVerified})}
+      onPress={()=> { /*return (<ShopStack _id={_id} _type={_type} />) */}}
     >
         <View 
           style={{
@@ -36,73 +53,16 @@ export default function ShopCard({id, shopName, logo, cover, address, latitude, 
               
               <View className=' flex flex-row justify-between'>
                 <Text className=' text-lg font-bold pt-2 '>{shopName}</Text>
-                
                 <View className=' flex flex-row items-center space-x-1'>
                   <Star className=' text-EacColor-SelectiveYellow'/>
-                  <Text className=' text-xs'>
-                    <Text className=' text-EacColor-BlackPearl'>
-                      ratings . <Text className=' font-semibold'>{}</Text>
-                    </Text>
+                  <Text className=' text-xs text-EacColor-BlackPearl'>
+                    ratings . <Text className=' font-semibold'>{}</Text>
                   </Text>
                 </View>
-
               </View>
-              
-              <View>
-                <ScrollView 
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  className=" overflow-visible"
-                  contentContainerStyle={{
-                  paddingHorizontal:15
-              }}>
-                {
-                  // console.log(dishes)
-                  dishes ? (
-                    dishes?.map((dish)=>{
-                      // let isActive = dish._id==activeCategory;
-                      // let btnClass = isActive? ' bg-gray-600' : 'bg-gray-200';
-                      // let textClass = isActive? ' font-semibold text-gray-600' : 'text-gray-200';
-                      return(
-                        <View key={dish?._id} className=' flex justify-center items-center mr-4'>
-                          {/* <Text>sdfsdfdsf</Text> */}
-                          <Image 
-                            className=' rounded-xl' style={{width:95, height: 95}}
-                            source={{
-                                uri: urlFor(dish?.image).url(),
-                            }}/>
-                        </View>
-                      )
-                    })
-
-                  ) : (
-                    <View className=" flex justify-center items-center">
-                      <ActivityIndicator size={"large"} />
-                    </View>
-                  )
-                }
-
-                {
-                  products.map((product)=>{
-                    return(
-                      <View key={product?._id} className=' flex justify-center items-center mr-4'>
-                        <Image 
-                          className=' rounded-xl' style={{width:95, height: 95}}
-                          source={{
-                              uri: urlFor(product?.image).url(),
-                          }}/>
-                      </View>
-                    )
-                  })
-                }
-                </ScrollView>
-              </View>
-              {/* <View className=' flex-row items-center space-x-1'>
-                <Map color='gray' width='15'/>
-                <Text className=' text-gray-700 text-xs'>Nearby . {address}</Text>
-              </View> */}
             </View>
         </View>
     </TouchableWithoutFeedback>
+    </SafeAreaView>
   )
 }

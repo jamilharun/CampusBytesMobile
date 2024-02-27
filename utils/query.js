@@ -1,3 +1,25 @@
+export const fetchAllDishes = `*[_type == "dish" && isAvailable&& !(_id in path("drafts.**"))]{
+    isPromoted,
+    dishName,
+    isFeatured,
+    isAvailable,
+    preparationTime,
+    _id,
+    description,
+    price,
+    image,
+    shop->{
+      _id,
+      logo,
+      shopName
+    },
+    tags[]->{
+      _id,
+      tagName,
+      color
+    }
+  }`;
+
 // export const fetchingCategoryQuery = `*[_type == 'category'] {
 //     _id,
 //     categoryName,
@@ -10,124 +32,124 @@
 //     description
 //   }`;
 
-// export const fetchingProductQuery = `*[_type == 'product'] {
-//   image{
-//     asset{
-//       _ref
-//     }
-//   },
+export const fetchingProductQuery = `*[_type == 'product'] {
+  image{
+    asset{
+      _ref
+    }
+  },
+  isAvailable,
+  productName,
+  category->{
+    _id,
+    categoryName,
+  },
+  _updatedAt,
+  Price,
+  description,
+  shopName->{
+    _id,
+    shopName,
+    shopOwner->{
+      _id,
+      name
+    }
+  },
+  _id,
+}`;
+
+//inverse fetch 
+// yeahh boiiii
+export const fetchingProdDish = `*[_type == 'shop'] {
+  _id,
+  shopName,
+  description,
+  address,
+  logo{
+    asset{
+      _ref
+    }
+  },
+  cover{
+    asset{
+      _ref
+    }
+  },
+  longitude,
+  latitude,
+  isVerified,
+  isActive,
+  "products": *[_type == 'product' && shopName._ref == ^._id] {
+    _id,
+    productName,
+    category->{
+      _id,
+      categoryName,
+      description
+    },
+    tags[]->{
+    _id,
+    tagName,
+    description
+    },
+    image,
+    Price,
+    description,
+    isAvailable,
+    _createdAt
+  },
+  "dishes": *[ _type == 'dish' && shopName._ref == ^._id ] {
+  _id,
+  dishName,
+  shopName{
+    _ref
+  },
+  preparationMethod,
+  category->{
+      _id,
+      categoryName,
+      description
+  },
+  tags[]->{
+    _id,
+    tagName,
+    description
+  },
+  image,
+  Price,
+  description,
+  isAvailable,
+  _createdAt,
+}
+}`
+
+
+// reusable code
+
+// fetching sorted data
+// `*[_type == 'product'] | order(shopName->shopName asc) {
 //   isAvailable,
-//   productName,
-//   category->{
-//     _id,
-//     categoryName,
-//   },
-//   _updatedAt,
-//   Price,
 //   description,
 //   shopName->{
 //     _id,
 //     shopName,
-//     shopOwner->{
-//       _id,
-//       name
-//     }
 //   },
-//   _id,
-// }`;
+//   productName,
+//   image,
+//   category,
+//   Price
+//}`;
 
-// //inverse fetch 
-// // yeahh boiiii
-// export const fetchingProdDish = `*[_type == 'shop'] {
+
+// *[_type == 'shop'] {
 //   _id,
 //   shopName,
-//   description,
-//   address,
-//   logo{
-//     asset{
-//       _ref
-//     }
-//   },
-//   cover{
-//     asset{
-//       _ref
-//     }
-//   },
-//   longitude,
-//   latitude,
-//   isVerified,
-//   isActive,
-//   "products": *[_type == 'product' && shopName._ref == ^._id] {
-//     _id,
-//     productName,
-//     category->{
-//       _id,
-//       categoryName,
-//       description
-//     },
-//     tags[]->{
-//     _id,
-//     tagName,
-//     description
-//     },
-//     image,
-//     Price,
-//     description,
+//   "products": *[_type == 'product' && shopName._ref == ^.id] {
 //     isAvailable,
-//     _createdAt
-//   },
-//   "dishes": *[ _type == 'dish' && shopName._ref == ^._id ] {
-//   _id,
-//   dishName,
-//   shopName{
-//     _ref
-//   },
-//   preparationMethod,
-//   category->{
-//       _id,
-//       categoryName,
-//       description
-//   },
-//   tags[]->{
-//     _id,
-//     tagName,
-//     description
-//   },
-//   image,
-//   Price,
-//   description,
-//   isAvailable,
-//   _createdAt,
+//     description,
+//     productName,
+//     image,
+//     category,
+//     Price
+//   }
 // }
-// }`
-
-
-// // reusable code
-
-// // fetching sorted data
-// // `*[_type == 'product'] | order(shopName->shopName asc) {
-// //   isAvailable,
-// //   description,
-// //   shopName->{
-// //     _id,
-// //     shopName,
-// //   },
-// //   productName,
-// //   image,
-// //   category,
-// //   Price
-// //}`;
-
-
-// // *[_type == 'shop'] {
-// //   _id,
-// //   shopName,
-// //   "products": *[_type == 'product' && shopName._ref == ^.id] {
-// //     isAvailable,
-// //     description,
-// //     productName,
-// //     image,
-// //     category,
-// //     Price
-// //   }
-// // }

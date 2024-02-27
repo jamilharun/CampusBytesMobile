@@ -1,5 +1,10 @@
 import React, { useState } from 'react'
-import {View,Text, TouchableWithoutFeedback, Image, ScrollView, ActivityIndicator } from 'react-native'
+import {View,
+  Text, 
+  TouchableWithoutFeedback, 
+  Image, 
+  ScrollView, 
+  ActivityIndicator } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import { Map, Star } from 'react-native-feather';
 import { urlFor } from '../apis/sanity';
@@ -21,7 +26,8 @@ export default function ShopCard({id, shopName, logo, cover, address, latitude, 
         }}
         className=' bg-white rounded-3xl shadow-lg'>
             <View>
-              <Image className=' h-36 w-full object-cover rounded-tl-3xl rounded-bl-3xl ' source={{ uri: urlFor(cover).url()}}/>
+              <Image className=' h-36 w-full object-cover rounded-tl-3xl rounded-bl-3xl ' 
+              source={{ uri: urlFor(cover).url()}}/>
               <View className='absolute flex justify-start items-end'>
                 <Image className=' h-24 w-24 my-14  rounded-tr-3xl rounded-b-2xl' source={{ uri: urlFor(logo).url()}}/>
               </View>

@@ -29,6 +29,15 @@ export default function DishRow({id, name, category, tags, description, price, i
                 <View className=' pl-3'>
                     <Text className='text-xl'>{name}</Text>
                     <Text numberOfLines={3} className=' text-gray-700'>{description}</Text>
+                    {
+                        tags?.map((tag) => {
+                            return (
+                                <View key={tag._id} className=' flex-row items-center space-x-1'>
+                                    <Text className=' text-gray-500 text-xs'>{tag.tagName}</Text>
+                                </View>
+                            )
+                        })
+                    }
                 </View>
                 <View className=' flex-row justify-between pl-3 items-center'>
                     <Text className=' text-gray-700 text-lg font-bold'>

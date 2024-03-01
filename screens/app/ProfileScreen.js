@@ -1,11 +1,14 @@
-import { View, Text, TouchableOpacity } from 'react-native'
-import React from 'react'
+import { View, Text, TouchableOpacity, Image } from 'react-native'
+import React, { useContext } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { DrawerActions, useNavigation } from '@react-navigation/native';
 import { Menu} from "react-native-feather";
+import { AuthContext } from '../../context/AuthContext';
 
 export default function ProfileScreen() {
   const navigation = useNavigation();
+
+  const { user } = useContext(AuthContext);
   return (
     <SafeAreaView>
       <View>
@@ -20,6 +23,12 @@ export default function ProfileScreen() {
                     strokeWidth={2.5} 
                     className="text-EacColor-TahitiGold"/>
         </TouchableOpacity>
+      </View>
+      <View>
+        <Image />
+        {/* <Text>{user.sub}</Text>
+        <Text>{user.name}</Text>
+        <Text>{user.email}</Text> */}
       </View>
     </SafeAreaView>
   )

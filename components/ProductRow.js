@@ -6,10 +6,10 @@ import { Minus, Plus } from 'react-native-feather'
 export default function ProductRow({id, name, category, tags, price, image, description, createdAt, isAvailable}) {
   return (
     <View className='px-4 pt-3 bg-white flex flex-col justify-center items-center'>
-        <Image className='w-14 h-14 object-cover' source={{uri: urlFor(image).url(),}}/>
+        <Image className='w-20 h-20 object-cover' source={{uri: urlFor(image).url(),}}/>
         <Text>{name}</Text>
         <Text>₱{price}.00</Text>
-        <View className='flex-row items-center'>
+        <View className='flex-row items-center pt-3'>
             <TouchableOpacity 
                 // onPress={handleDecrease}
                 // disabled={!totalItems.length}

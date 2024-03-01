@@ -1,4 +1,4 @@
-import { useNavigation, useRoute } from '@react-navigation/native'
+import { DrawerActions, useNavigation, useRoute } from '@react-navigation/native'
 import React, { useEffect, useReducer, useState } from 'react'
 import { View, ScrollView, Image, TouchableOpacity, StatusBar, Text} from 'react-native';
 import DishRow from '../../components/DishRow';
@@ -8,15 +8,17 @@ import { ChevronLeft, MapPin } from 'react-native-feather';
 import ProductRow from '../../components/ProductRow';
 import { qfsdf } from '../../utils/query';
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-
+import { Menu} from "react-native-feather";
 
 // import { useDispatch } from 'react-redux'; 
 
-export default function ShopScreen({_id, _type}) {
+export default function ShopScreen({}) {
     const [cartHasItems, getCartHasItems] = useState(null)
     // const {params: {id, shopName, logo, cover, address, latitude, longitude, description, products, dishes, isisActiv, isVerified}} = useRoute();
     // let item = params;
     const navigation = useNavigation();
+
+    const [err, setErr] = useState(null);
 
     let automaticPading = cartHasItems && 'p-10';
 
@@ -27,85 +29,92 @@ export default function ShopScreen({_id, _type}) {
     //         dispatch(setShop({...item}))
     //     }
     // },[])
-
-    const fetchAllShopData = async () => {
-        try {
-          const sanRes = await sanityFetch(qfsdf(_id));
-          if (!sanRes) {
-            console.log('Error in fetching data from sanity', sanRes);
-            return null
-          } else {
-            console.log(`fetching successful`);
-            return sanRes;
-          }
-        } catch (error) {
-          const fE = `Error in fetching data from sanity: ${error}`;
-          console.log(fE);
-          return null;    
-        }
-    };
+    const fetchingData = async () => {
+        const data = await sanityFetch(qfsdf)
+        return data;
+      };
 
     const { data: sdp, isLoading, error, isFetching} = useQuery({ 
-        queryKey: [`${_type}:${shop._id}`], 
-        queryFn: fetchAllShopData,
+        queryKey: [`shopDisplay`], 
+        queryFn: fetchingData,
         gcTime: 10000,
     });
       
-    console.log({isLoading, isFetching, error, dishes});
+    console.log({isLoading, isFetching, error, sdp});
     
     if (isLoading) {
-      return <Text>Loading....</Text>
+        return (
+            <View className='w-full h-64 flex justify-center items-center'>
+              <Text className='text-2xl'>Loading...</Text>
+            </View>
+          )
     }
 
     if (error) {
       setErr(error);
     }
 
+
     return (
-    <View >
+        <View >
         {
             cartHasItems && (
                 <CartIcon/>
             )
         }
+                <TouchableOpacity 
+                onPress={()=>{
+                  navigation.dispatch(DrawerActions.openDrawer())
+                }}
+                className="TahitiGold p-3 rounded-full">
+                  <Menu 
+                    height="20" 
+                    width="20" 
+                    strokeWidth={2.5} 
+                    className="text-EacColor-TahitiGold"/>
+        </TouchableOpacity>
         <StatusBar style='light'/>
         <ScrollView>
             <View className=' relative'>
-                <Image className=' w-full h-72' source={{uri: urlFor(sdp?.cover).url()}} />
-                <TouchableOpacity
-                    //not sure if this is will work
-                    onPress={()=> navigation.goBack()} 
-                    className=' absolute top-14 left-4 bg-gray-50 rounded-full shadow'>
-                    <ChevronLeft 
-                        strokeWidth={3} className="text-EacColor-BlackPearl" 
-                        style={{ width: 28, height: 28 }}/>
-                </TouchableOpacity>
+                {/* <Image className=' w-full h-72' source={{uri: urlFor(sdp?.cover).url()}} /> */}
             </View>
-
-            <View style={{borderTopLeftRadius:40, borderTopRightRadius: 40}}
+            {
+                sdp?.map(data => {
+                    return (
+                        <View key={data._id}>
+                            <View style={{borderTopLeftRadius:40, borderTopRightRadius: 40}}
                 className=' bg-white '>
                 <View className='flex flex-row mx-3 '>
                     <Image 
                         className='h-32 w-24 object-cover rounded-xl mt-1' 
-                        source={{ uri: urlFor(sdp?.logo).url()}}/>
+                        source={{ uri: urlFor(data?.logo).url()}}/>
                     <View className=' px-5'>
-                        <Text className=' text-3xl font-bold'>{sdp?.shopName}</Text>
+                        <Text className=' text-3xl font-bold'>{data?.shopName}</Text>
                         <View className=' flex-row space-x-2 my-1'>
                         <View className=' flex-row items-center space-x-1'>
                             {/* <Image source={require()} className=' h-4 w-4'/> */}
                             <Text className=' text-xs'>
                             <Text className=' text-EacColor-SelectiveYellow'>rating</Text>
                             {/* <Text className=' text-EacColor-BlackPearl'>
-                                ({item.reviews} reviews) . <Text className=' font-semibold'>{item.category}</Text>
+                                ({data.reviews} reviews) . <Text className=' font-semibold'>{item.category}</Text>
                             </Text> */}
                             </Text>
                         </View>
                         <View className=' flex-row items-center space-x-1'>
                             <MapPin color='gray' width='15'/>
-                            <Text numberOfLines={3} className=' text-gray-700 text-xs'>Nearby.{sdp?.address}</Text>
+                            <Text numberOfLines={3} className=' text-gray-700 text-xs'>Nearby.{data?.address}</Text>
                         </View>
                         </View>
-                        <Text numberOfLines={3} className=' text-gray-500 mt-2'>{sdp?.description}</Text>
+                        <Text numberOfLines={3} className=' text-gray-500 mt-2'>{data?.description}</Text>
+                        {
+                            data?.tags?.map((tag) => {
+                                return (
+                                    <View key={tag._id} className=' flex-row items-center space-x-1'>
+                                        <Text className=' text-gray-500 text-xs'>{tag.tagName}</Text>
+                                    </View>
+                                )
+                            })
+                        }
                     </View>
                 </View>
             </View>
@@ -113,12 +122,12 @@ export default function ShopScreen({_id, _type}) {
                 <Text className=' px-4 py-4 text-2xl font-bold'>Menu</Text>
                 {/* dishes */}
                 {
-                    sdp?.dishes.map((dish)=> <DishRow 
+                    data?.dishes?.map((dish)=> <DishRow 
                         key={dish._id}
                         id={dish._id}
                         name={dish.dishName}
-                        category={product.category}
-                        tags={product.tags}
+                        category={dish.category}
+                        tags={dish.tags}
                         description={dish.description}
                         price={dish.Price}
                         image={dish.image}
@@ -136,7 +145,7 @@ export default function ShopScreen({_id, _type}) {
                         paddingHorizontal:15
                     }}>
                         {
-                            sdp?.products.map((product)=> <ProductRow
+                            data?.products?.map((product)=> <ProductRow
                                 key={product._id}
                                 id={product._id}
                                 name={product.productName}
@@ -152,6 +161,13 @@ export default function ShopScreen({_id, _type}) {
                     </ScrollView>
                 </View>
             </View>
+                        </View>
+                    )
+                }) 
+                
+
+            }
+            
             {/* <View className={automaticPading}></View> */}
         </ScrollView>
     </View>

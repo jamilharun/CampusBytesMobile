@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, TouchableOpacity, TextInput, Image,  Modal, FlatList  } from 'react-native'
+import { View, Text, ScrollView, TouchableOpacity, TextInput, Image,  Modal, FlatList, Switch   } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { sanityUpdate, uploadImage, urlFor } from '../../apis/sanity';
 import { FontAwesome5, AntDesign, FontAwesome   } from '@expo/vector-icons';
@@ -17,11 +17,12 @@ export default function EditDish({route, navigation}) {
     
     const [tags, setTags] = useState(dish.tags || []);
     const [isPromoted, setIsPromoted] = useState(dish.isPromoted);
-    const [isFeatured, setFeatured] = useState(dish.isFeatured);
-    const [isAvailable, setAvailable] = useState(dish.isAvailable);
+    const [isFeatured, setIsFeatured] = useState(dish.isFeatured);
+    const [isAvailable, setIsAvailable] = useState(dish.isAvailable);
 
     const [onUpdate, setOnUpdate] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
+    const [alertModal, setAlertModal] = useState(false);
 
     useEffect(() => {
       if (
@@ -29,14 +30,18 @@ export default function EditDish({route, navigation}) {
         dish.description !== description ||
         dish.image !== image ||
         dish.price !== price ||
-        dish.preparationTime !== preparationTime
+        dish.preparationTime !== preparationTime ||
+        dish.isAvailable !== isAvailable ||
+        dish.isFeatured !== isFeatured ||
+        dish.isPromoted !== isPromoted ||
+        dish.tags.length !== tags.length
       ) {
         setOnUpdate(true);
       } else {
         setOnUpdate(false);
       }
-    }, [dish.dishName, dish.description, dish.image, dish.price, dish.preparationTime, 
-      dishName, description, image, price, preparationTime]);
+    }, [dish.dishName, dish.description, dish.image, dish.price, dish.preparationTime, dish.isFeatured, dish.isAvailable, dish.isPromoted, dish.tags.length,
+      dishName, description, image, price, preparationTime, isAvailable, isFeatured, isPromoted, tags.length]);
 
     const handleTagChange = (tagIndex, text) => {
       const updatedTags = [...tags];
@@ -64,6 +69,7 @@ export default function EditDish({route, navigation}) {
           image: image,
           price: price,
           preparationTime: preparationTime,
+          tags: tags,
           isPromoted: isPromoted,
           isFeatured: isFeatured,
           isAvailable: isAvailable,
@@ -87,7 +93,13 @@ export default function EditDish({route, navigation}) {
 
         <View className="w-full flex flex-row justify-between items-center bg-white pr-4  shadow-sm">
             <TouchableOpacity 
-            onPress={()=>{navigation.goBack()}}
+            onPress={()=>{
+              if (onUpdate) {
+                setAlertModal(true);
+              } else {
+                navigation.goBack()
+              }
+            }}
             className="TahitiGold p-3 rounded-full">
                 <ChevronLeft
                 className="text-EacColor-BlackPearl"
@@ -133,35 +145,34 @@ export default function EditDish({route, navigation}) {
                   className="placeholder:text-lg w-full "
                   placeholder="Dish Name"
                   value={dishName}
-                  onChangeText={text => setDishName(text)}
-                />
+                  onChangeText={text => setDishName(text)}/>
               </View>
               <View className="flex flex-row items-center w-full mb-4">
                 <Text className="text-lg font-medium">Description: </Text>
                 <TextInput
-                  className="placeholder:text-lg w-full "
+                  className="placeholder:text-lg"
                   placeholder="Description"
                   value={description}
-                  onChangeText={text => setDescription(text)}
-                />
+                  onChangeText={text => setDescription(text)}/>
               </View>
               <View className="flex flex-row items-center w-full mb-4">
                 <Text className="text-lg font-medium">Price: </Text>
                 <TextInput
                   className="placeholder:text-lg w-full "
                   placeholder="Price"
-                  value={price}
+                  value={price.toString()}
                   onChangeText={text => setPrice(text)}
-                />
+                  keyboardType="numeric"/>
               </View>
               <View className="flex flex-row items-center w-full mb-4">
                 <Text className="text-lg font-medium">Preparation Time: </Text>
                 <TextInput
-                  className="placeholder:text-lg w-full "
+                  className="placeholder:text-lg "
                   placeholder="Preparation Time"
-                  value={preparationTime}
+                  value={preparationTime.toString()}
                   onChangeText={text => setPreparationTime(text)}
-                />
+                  keyboardType="numeric"/>
+                <Text>mins</Text>
               </View>
               <View className="border-l-2 px-3 border-EacColor-BlackPearl">
                 <Text className="text-lg font-medium">Tags: </Text>
@@ -180,21 +191,44 @@ export default function EditDish({route, navigation}) {
                     </TouchableOpacity>
                   </View>
                 ))}
-                <TouchableOpacity 
-                  className="flex flex-row items-center w-full px-5 pt-4"
-                  onPress={() => setModalVisible(true)}>
-                  {/* Plus button to add tags */}
-                  <FontAwesome5 name="plus" size={20} color="black" />
-                </TouchableOpacity>
-                <Modal
-                  animationType="slide"
-                  transparent={false}
-                  visible={modalVisible}
-                  onRequestClose={(e) => {
-                    setModalVisible(false);
-                    console.log(e);
-                  }}
-                >
+                  <TouchableOpacity 
+                    className="flex flex-row items-center w-full px-5 pt-4"
+                    onPress={() => setModalVisible(true)}>
+                    {/* Plus button to add tags */}
+                    <FontAwesome5 name="plus" size={20} color="black" />
+                  </TouchableOpacity>
+
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Text>isAvailable:</Text>
+                    <Switch
+                      value={isAvailable}
+                      onValueChange={(bool) => setIsAvailable(bool)}/>
+                  </View>
+
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Text>isFeatured:</Text>
+                    <Switch
+                      value={isFeatured}
+                      onValueChange={(bool) => setIsFeatured(bool)}/>
+                  </View>
+
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Text>isPromoted:</Text>
+                    <Switch
+                      value={isPromoted}
+                      onValueChange={(bool) => setIsPromoted(bool)}
+                    />
+                  </View>
+
+                  <Modal
+                    animationType="slide"
+                    transparent={false}
+                    visible={modalVisible}
+                    onRequestClose={(e) => {
+                      setModalVisible(false);
+                      console.log(e);
+                    }}
+                  >
                   <View>
                     <FlatList
                       data={['Tag3', 'Tag4', 'Tag5']} // Replace with your available tags data
@@ -210,9 +244,30 @@ export default function EditDish({route, navigation}) {
                     </TouchableOpacity>
                   </View>
                 </Modal>
+                <Modal
+                    animationType="slide"
+                    transparent={false}
+                    visible={alertModal}
+                    onRequestClose={(e) => {
+                      setAlertModal(false);
+                      console.log(e);
+                    }}
+                  >
+                  <View>
+                    <Text className="text-2xl">Alert! theres onGoing changes in your Dish. do you want to discard all of it?</Text>
+                    <View className="flex flex-row justify-between items-center w-full mt-5">
+                    <TouchableOpacity onPress={() => navigation.goBack()}>
+                      <Text className="text-2xl">Yes</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => setAlertModal(false)}>
+                      <Text className="text-2xl">No</Text>
+                    </TouchableOpacity>
+                    </View>
+                  </View>
+                </Modal>
               </View>
             </View>
-            <View className="flex flex-row justify-center items-center w-full mt-5">
+            <View className="flex flex-row justify-between items-center w-full p-5">
               {
                 onUpdate ? (
                   <TouchableOpacity 
@@ -228,6 +283,11 @@ export default function EditDish({route, navigation}) {
                   </View>
                 )
               }
+            <TouchableOpacity 
+              onclick={()=>{()=>{}}}
+              className="bg-EacColor-DeepFir w1/4 flex flex-row justify-center items-center px-5 py-3 rounded-full">
+              <Text className='font-medium text-white'>Delete</Text>
+            </TouchableOpacity>
             </View>
         </ScrollView>
       </ScrollView>

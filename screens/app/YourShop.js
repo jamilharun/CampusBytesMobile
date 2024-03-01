@@ -8,6 +8,7 @@ import { sanityFetch, urlFor } from '../../apis/sanity';
 import { DrawerActions, useNavigation } from "@react-navigation/native";
 import { Menu} from "react-native-feather";
 import { Feather, AntDesign, FontAwesome, Entypo   } from '@expo/vector-icons';
+import { predefineshopData } from '../../constants/predefineData';
 
 export default function YourShop() {
     const navigation = useNavigation();
@@ -15,42 +16,49 @@ export default function YourShop() {
     const [data, setData] = useState(null)
     const [err, setErr] = useState(null);
 
-    const fetchingData = async () => {
-      try {
-        const data = await sanityFetch(qfs1df('Michael Rodriguez'))
-        console.log('Success feyching');
-        return data;      
+    // const fetchingData = async () => {
+    //   try {
+    //     const data = await sanityFetch(qfs1df('Michael Rodriguez'))
+    //     console.log('Success feyching');
+    //     return data;      
         
-      } catch (error) {
-        console.log('Error feyching', error);
-      }
-    };
+    //   } catch (error) {
+    //     console.log('Error feyching', error);
+    //   }
+    // };
 
-    const { data: sdp, isLoading, error, isFetching} = useQuery({ 
-        queryKey: [`shopData`], 
-        queryFn: fetchingData,
-        gcTime: 10000,
-    });
+    // const { data: sdp, isLoading, error, isFetching} = useQuery({ 
+    //     queryKey: [`shopData`], 
+    //     queryFn: fetchingData,
+    //     gcTime: 10000,
+    // });
       
-    console.log({isLoading, isFetching, error, sdp});
+    // console.log({isLoading, isFetching, error, sdp});
     
-    if (isLoading) {
-      return (
-        <View className='w-full h-64 flex justify-center items-center'>
-          <Text className='text-2xl'>Loading...</Text>
-        </View>
-      )
-    }
+    // if (isLoading) {
+    //   return (
+    //     <View className='w-full h-64 flex justify-center items-center'>
+    //       <Text className='text-2xl'>Loading...</Text>
+    //     </View>
+    //   )
+    // }
 
-    if (error) {
-      setErr(`YourShop page: ${error}`)
-    }
+    // if (error) {
+    //   setErr(`YourShop page: ${error}`)
+    // }
 
-    if (sdp) {
-      //single data
-      setData(sdp[0])
-      console.log('Success');
-    }
+    // if (sdp) {
+    //   //single data
+    //   setData(sdp[0])
+    //   console.log('Success');
+    // }
+
+    useEffect(()=>{
+      const qwe = predefineshopData[0];
+      console.log('testing predata yourshop ===============');
+      console.log(qwe);
+      setData(qwe)
+    })
 
   return (
     <SafeAreaView>
@@ -68,15 +76,13 @@ export default function YourShop() {
         <ScrollView>
 
           {
-            data.cover && (
+            data?.cover && (
               <Image 
                   className='h-32 w-full object-cover rounded-xl mt-1' 
                   source={{ uri: urlFor(data?.cover).url()}}/>
             )
           }
-        <View className='bg-gray-300 w-full h-56'>
-        </View>
-        <View className='flex flex-col justify-center items-center'>
+        <View className='flex mt-3 flex-col justify-center items-center'>
           <View className='flex flex-row justify-between w-full'>
             <View className='flex flex-col justify-center items-center w-1/3'>
               <Feather name="info" size={44} color="green" />

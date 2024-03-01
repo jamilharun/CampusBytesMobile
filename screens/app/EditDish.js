@@ -1,9 +1,8 @@
-import { View, Text, ScrollView, TouchableOpacity, TextInput, Image } from 'react-native'
+import { View, Text, ScrollView, TouchableOpacity, TextInput, Image,  Modal, FlatList  } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { sanityUpdate, uploadImage, urlFor } from '../../apis/sanity';
 import { FontAwesome5, AntDesign, FontAwesome   } from '@expo/vector-icons';
-
-import * as ImagePicker from 'react-native-image-picker';
+import { ChevronLeft, MapPin } from 'react-native-feather';
 
 export default function EditDish({route, navigation}) {
     const {dish} = route.params;
@@ -22,20 +21,22 @@ export default function EditDish({route, navigation}) {
     const [isAvailable, setAvailable] = useState(dish.isAvailable);
 
     const [onUpdate, setOnUpdate] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
       if (
-        dish.dishName === dishName ||
-        dish.description === description ||
-        dish.image === image ||
-        dish.price === price ||
-        dish.preparationTime === preparationTime
+        dish.dishName !== dishName ||
+        dish.description !== description ||
+        dish.image !== image ||
+        dish.price !== price ||
+        dish.preparationTime !== preparationTime
       ) {
-        setOnUpdate(false);
-      } else {
         setOnUpdate(true);
+      } else {
+        setOnUpdate(false);
       }
-    }, [dishName, description, image, price, preparationTime]);
+    }, [dish.dishName, dish.description, dish.image, dish.price, dish.preparationTime, 
+      dishName, description, image, price, preparationTime]);
 
     const handleTagChange = (tagIndex, text) => {
       const updatedTags = [...tags];
@@ -43,8 +44,14 @@ export default function EditDish({route, navigation}) {
       setTags(updatedTags);
     };
 
-    const addTag = () => {
-      setTags([...tags, { _id: Math.random().toString(), tagName: '' }]);
+    const addTag = (item) => {
+      setTags([...tags, { _id: Math.random().toString(), tagName: item }]);
+      setModalVisible(false);
+    };
+
+    const removeTag = (tagIndex) => {
+      const updatedTags = tags.filter((tag, index) => index !== tagIndex);
+      setTags(updatedTags);
     };
 
     const saveChanges = async () => {
@@ -76,95 +83,154 @@ export default function EditDish({route, navigation}) {
       
   return (
     <View>
-        <TouchableOpacity 
+      <ScrollView>
+
+        <View className="w-full flex flex-row justify-between items-center bg-white pr-4  shadow-sm">
+            <TouchableOpacity 
             onPress={()=>{navigation.goBack()}}
             className="TahitiGold p-3 rounded-full">
-              <ChevronLeft
-              className="text-EacColor-RedOxide"
-              style={{ width: 40, height: 40 }}
-            />
-      </TouchableOpacity>
+                <ChevronLeft
+                className="text-EacColor-BlackPearl"
+                style={{ width: 28, height: 28 }}
+                />
+            </TouchableOpacity>
+            <Text className="text-xl font-bold text-EacColor-TahitiGold">
+                Edit Dish mode
+            </Text>
+        </View>
         <ScrollView>
             <View>
-                //input new image
-                //edit image
                 {dish?.image ? 
                     (
-                      <View>
+                      <View className=' w-full h-72 flex justify-center items-center'>
                         <Image source={{uri: urlFor(dish?.image).url()}} className=' w-full h-72' />
-                        <TouchableOpacity onclick={async ()=>{
+                        <TouchableOpacity 
+                          className='absolute flex justify-center items-center'
+                          onclick={async ()=>{
                             const imageUri = await uploadImage()
                             setImage(imageUri)
                             }}>
-                          <FontAwesome  name="edit" size={24} color="black" />
+                          <FontAwesome  name="edit" size={64} color="lightblue" />
                         </TouchableOpacity>
                       </View>
                     ) 
                     :
                     (<View className=' w-full h-72 flex justify-center items-center' >
-                      <TouchableOpacity onclick={async ()=>{
-                        const imageUri = await uploadImage()
-                        setImage(imageUri)}}>
+                      <TouchableOpacity 
+                        className='absolute flex justify-center items-center'
+                        onclick={async ()=>{
+                          const imageUri = await uploadImage()
+                          setImage(imageUri)}}>
                           <FontAwesome5 name="plus" size={24} color="black" />
                       </TouchableOpacity>
                     </View>)
                 }
             </View>
-            <View>
-            <TextInput
-              placeholder="Dish Name"
-              value={dishName}
-              onChangeText={text => setDishName(text)}
-            />
-            <TextInput
-              placeholder="Description"
-              value={description}
-              onChangeText={text => setDescription(text)}
-            />
-            <TextInput
-              placeholder="Price"
-              value={price}
-              onChangeText={text => setPrice(text)}
-            />
-            <TextInput
-              placeholder="Preparation Time"
-              value={preparationTime}
-              onChangeText={text => setPreparationTime(text)}
-            />
-                <View>
-                  {tags.map((tag, index) => (
-                    <View key={tag._id} style={{ backgroundColor: 'EacColor-TahitiGold', padding: 1, borderRadius: 10 }}>
-                      <TextInput
-                        placeholder="Tag"
-                        value={tag.tagName}
-                        onChangeText={(text) => handleTagChange(index, text)}
-                      />
-                      <TouchableOpacity onPress={() => removeTag(index)}>
-                        {/* Minus button to remove tags */}
-                        <FontAwesome5 name="minus" size={20} color="black" />
-                      </TouchableOpacity>
-                    </View>
-                  ))}
-                  <TouchableOpacity onPress={addTag}>
-                    {/* Plus button to add tags */}
-                    <FontAwesome5 name="plus" size={20} color="black" />
-                  </TouchableOpacity>
-                </View>
-            </View>
-            {
-              onUpdate ? (
-                <TouchableOpacity onclick={()=>{saveChanges()}} className="bg-EacColor-TahitiGold">
-                    <AntDesign name="save" size={24} color="white" />
-                    <Text className="text-white">Save Changes</Text>
+            <View className='mx-3 my-2'>
+              <View className="flex flex-row items-center w-full mb-4">
+                <Text className="text-lg font-medium">Dish Name: </Text>
+                <TextInput
+                  className="placeholder:text-lg w-full "
+                  placeholder="Dish Name"
+                  value={dishName}
+                  onChangeText={text => setDishName(text)}
+                />
+              </View>
+              <View className="flex flex-row items-center w-full mb-4">
+                <Text className="text-lg font-medium">Description: </Text>
+                <TextInput
+                  className="placeholder:text-lg w-full "
+                  placeholder="Description"
+                  value={description}
+                  onChangeText={text => setDescription(text)}
+                />
+              </View>
+              <View className="flex flex-row items-center w-full mb-4">
+                <Text className="text-lg font-medium">Price: </Text>
+                <TextInput
+                  className="placeholder:text-lg w-full "
+                  placeholder="Price"
+                  value={price}
+                  onChangeText={text => setPrice(text)}
+                />
+              </View>
+              <View className="flex flex-row items-center w-full mb-4">
+                <Text className="text-lg font-medium">Preparation Time: </Text>
+                <TextInput
+                  className="placeholder:text-lg w-full "
+                  placeholder="Preparation Time"
+                  value={preparationTime}
+                  onChangeText={text => setPreparationTime(text)}
+                />
+              </View>
+              <View className="border-l-2 px-3 border-EacColor-BlackPearl">
+                <Text className="text-lg font-medium">Tags: </Text>
+                {tags.map((tag, index) => (
+                  <View 
+                    key={tag._id}
+                    className="flex flex-row items-center w-full px-5 pt-4"
+                    style={{ backgroundColor: 'EacColor-TahitiGold', padding: 1, borderRadius: 10 }}>
+                    <Text className="placeholder:text-lg w-full">{tag.tagName}</Text>
+                    
+                    <TouchableOpacity 
+                      className=" flex justify-center items-center"
+                      onPress={() => removeTag(index)}>
+                      {/* Minus button to remove tags */}
+                      <FontAwesome5 name="minus" size={20} color="black" />
+                    </TouchableOpacity>
+                  </View>
+                ))}
+                <TouchableOpacity 
+                  className="flex flex-row items-center w-full px-5 pt-4"
+                  onPress={() => setModalVisible(true)}>
+                  {/* Plus button to add tags */}
+                  <FontAwesome5 name="plus" size={20} color="black" />
                 </TouchableOpacity>
-              ) : (
-                <View className="bg-gray-600">
-                  <AntDesign name="save" size={24} color="black" />
-                  <Text className="text-EacColor-BlackPearl">Save Changes</Text>
-                </View>
-              )
-            }
+                <Modal
+                  animationType="slide"
+                  transparent={false}
+                  visible={modalVisible}
+                  onRequestClose={(e) => {
+                    setModalVisible(false);
+                    console.log(e);
+                  }}
+                >
+                  <View>
+                    <FlatList
+                      data={['Tag3', 'Tag4', 'Tag5']} // Replace with your available tags data
+                      keyExtractor={(item) => item}
+                      renderItem={({ item }) => (
+                        <TouchableOpacity onPress={() => addTag(item)}>
+                          <Text>{item}</Text>
+                        </TouchableOpacity>
+                      )}
+                    />
+                    <TouchableOpacity onPress={() => setModalVisible(false)}>
+                      <Text>Close</Text>
+                    </TouchableOpacity>
+                  </View>
+                </Modal>
+              </View>
+            </View>
+            <View className="flex flex-row justify-center items-center w-full mt-5">
+              {
+                onUpdate ? (
+                  <TouchableOpacity 
+                    onclick={()=>{saveChanges()}} 
+                    className="bg-EacColor-TahitiGold w-1/2 flex flex-row justify-center items-center px-5 py-4 rounded-full">
+                      <AntDesign name="save" size={24} color="white" />
+                      <Text className="text-white">Save Changes</Text>
+                  </TouchableOpacity>
+                ) : (
+                  <View className="bg-gray-400 w-1/2 flex flex-row justify-center items-center px-5 py-4 rounded-full">
+                    <AntDesign name="save" size={24} color="black" />
+                    <Text className="text-EacColor-BlackPearl">Save Changes</Text>
+                  </View>
+                )
+              }
+            </View>
         </ScrollView>
+      </ScrollView>
     </View>
   )
 }

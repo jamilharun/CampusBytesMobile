@@ -9,6 +9,7 @@ import ProductRow from '../../components/ProductRow';
 import { qfsdf } from '../../utils/query';
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Menu} from "react-native-feather";
+import { predefineshopData } from '../../constants/predefineData';
 
 // import { useDispatch } from 'react-redux'; 
 
@@ -29,32 +30,34 @@ export default function ShopScreen({}) {
     //         dispatch(setShop({...item}))
     //     }
     // },[])
-    const fetchingData = async () => {
-        const data = await sanityFetch(qfsdf)
-        return data;
-      };
+    // const fetchingData = async () => {
+    //     const data = await sanityFetch(qfsdf)
+    //     return data;
+    //   };
 
-    const { data: sdp, isLoading, error, isFetching} = useQuery({ 
-        queryKey: [`shopDisplay`], 
-        queryFn: fetchingData,
-        gcTime: 10000,
-    });
+    // const { data: sdp, isLoading, error, isFetching} = useQuery({ 
+    //     queryKey: [`shopDisplay`], 
+    //     queryFn: fetchingData,
+    //     gcTime: 10000,
+    // });
       
-    console.log({isLoading, isFetching, error, sdp});
+    // console.log({isLoading, isFetching, error, sdp});
     
-    if (isLoading) {
-        return (
-            <View className='w-full h-64 flex justify-center items-center'>
-              <Text className='text-2xl'>Loading...</Text>
-            </View>
-          )
-    }
+    // if (isLoading) {
+    //     return (
+    //         <View className='w-full h-64 flex justify-center items-center'>
+    //           <Text className='text-2xl'>Loading...</Text>
+    //         </View>
+    //       )
+    // }
 
-    if (error) {
-      setErr(error);
-    }
+    // if (error) {
+    //   setErr(error);
+    // }
 
 
+    //sample data
+    const sdp = predefineshopData;
     return (
         <View >
         {
@@ -84,6 +87,9 @@ export default function ShopScreen({}) {
                         <View key={data._id}>
                             <View style={{borderTopLeftRadius:40, borderTopRightRadius: 40}}
                 className=' bg-white '>
+                <View>
+                    <Image className='h-32 w-full object-cover rounded-xl mt-1' source={{ uri: urlFor(data?.cover).url()}}/>
+                </View>
                 <View className='flex flex-row mx-3 '>
                     <Image 
                         className='h-32 w-24 object-cover rounded-xl mt-1' 

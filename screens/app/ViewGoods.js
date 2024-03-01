@@ -9,18 +9,19 @@ export default function ViewGoods({route, navigation}) {
   const {data} = route.params;
   return (
     <View >
-        <TouchableOpacity 
-        onPress={()=>{navigation.goBack()}}
-        className="TahitiGold p-3 rounded-full">
-          <ChevronLeft
-          className="text-EacColor-RedOxide"
-          style={{ width: 40, height: 40 }}
-        />
-            <ChevronLeft
-              className="text-EacColor-BlackPearl"
-              style={{ width: 28, height: 28 }}
-            />
-        </TouchableOpacity>
+        <View className="w-full flex flex-row justify-between items-center bg-white pr-4 shadow-sm">
+            <TouchableOpacity 
+            onPress={()=>{navigation.goBack()}}
+            className="TahitiGold p-3 rounded-full">
+                <ChevronLeft
+                className="text-EacColor-BlackPearl"
+                style={{ width: 28, height: 28 }}
+                />
+            </TouchableOpacity>
+            <Text className="text-xl font-bold text-EacColor-TahitiGold">
+                View Shop mode
+            </Text>
+        </View>
         <StatusBar style='light'/>
         <ScrollView>
             <View className=' relative'>

@@ -1,5 +1,4 @@
 import React, { useContext } from 'react'
-import HomeScreen from "../screens/app/HomeScreen";
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import ShopsScreen from '../screens/app/ShopsScreen';
 import { AuthContext } from '../context/AuthContext';

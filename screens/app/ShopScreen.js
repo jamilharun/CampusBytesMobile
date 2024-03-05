@@ -1,63 +1,65 @@
-import { DrawerActions, useNavigation, useRoute } from '@react-navigation/native'
-import React, { useEffect, useReducer, useState } from 'react'
+import { DrawerActions, useNavigation } from '@react-navigation/native'
+import React, { useEffect, useState } from 'react'
 import { View, ScrollView, Image, TouchableOpacity, StatusBar, Text} from 'react-native';
 import DishRow from '../../components/DishRow';
 import CartIcon from '../../components/CartIcon';
-import { sanityFetch, urlFor } from '../../apis/sanity';
-import { ChevronLeft, MapPin } from 'react-native-feather';
+import { urlFor } from '../../apis/sanity';
+import { MapPin } from 'react-native-feather';
 import ProductRow from '../../components/ProductRow';
-import { qfsdf } from '../../utils/query';
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Menu} from "react-native-feather";
-import { predefineshopData } from '../../constants/predefineData';
+import { axiosfetchShop, fetchShop} from '../../apis/server';
 
 // import { useDispatch } from 'react-redux'; 
 
 export default function ShopScreen({}) {
     const [cartHasItems, getCartHasItems] = useState(null)
+    // const [sdp, setSdp] = useState(null)
     // const {params: {id, shopName, logo, cover, address, latitude, longitude, description, products, dishes, isisActiv, isVerified}} = useRoute();
     // let item = params;
     const navigation = useNavigation();
 
+    // const [sdp, setSdp] = useState(null)
     const [err, setErr] = useState(null);
 
     let automaticPading = cartHasItems && 'p-10';
 
-    // const dispatch = useDispatch();
+
+    const { data: sdp, isLoading, error, isFetching} = useQuery({ 
+        queryKey: [`shopDisplay`], 
+        queryFn: fetchShop,
+        gcTime: 10000,
+    });
+    console.log({isLoading, isFetching, error, sdp});
+    if (isLoading) {
+        return (
+            <View className='w-full h-64 flex justify-center items-center'>
+              <Text className='text-2xl'>Loading...</Text>
+            </View>
+          )
+    }
+    if (error) setErr(error);
+
+    // const initialFetch = async () => {
+    //     try {
+    //         const data = await fetchShop();
+    //         if (data) {
+    //             console.log('Success fetching');
+    //             setSdp(data);
+    //         } else {
+    //             console.log('Error in axios fetching');
+    //             return null;
+    //         }
+    //     } catch (error) {
+    //         console.log('Error fetching', error);
+    //     }
+    // };
+
 
     // useEffect(()=>{
-    //     if(item && item.id){
-    //         dispatch(setShop({...item}))
-    //     }
-    // },[])
-    // const fetchingData = async () => {
-    //     const data = await sanityFetch(qfsdf)
-    //     return data;
-    //   };
+    //     if (!sdp) initialFetch();
+    // }, [sdp]);
 
-    // const { data: sdp, isLoading, error, isFetching} = useQuery({ 
-    //     queryKey: [`shopDisplay`], 
-    //     queryFn: fetchingData,
-    //     gcTime: 10000,
-    // });
-      
-    // console.log({isLoading, isFetching, error, sdp});
-    
-    // if (isLoading) {
-    //     return (
-    //         <View className='w-full h-64 flex justify-center items-center'>
-    //           <Text className='text-2xl'>Loading...</Text>
-    //         </View>
-    //       )
-    // }
-
-    // if (error) {
-    //   setErr(error);
-    // }
-
-
-    //sample data
-    const sdp = predefineshopData;
     return (
         <View >
         {

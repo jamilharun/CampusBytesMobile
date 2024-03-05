@@ -3,12 +3,15 @@
 import axios from "axios";
 
 const ip = process.env.EXPO_PUBLIC_SERVER
+console.log(ip);
 
-export const fetchShop = async () => {
+//initial fetch
+// idk why this is problematic
+export const axiosfetchShop = async () => {
     try {
         await axios.get(`${ip}/api/sanity/shop/`)
-          .then(response => {
-            console.log(response.data);
+          .then( response => {
+            console.log('successful');
             return response.data;
           })
           .catch(error => {
@@ -20,3 +23,32 @@ export const fetchShop = async () => {
         throw error;
     }
 }
+
+// build in fetch is good
+export const fetchShop = async () => {
+  try {
+    const response = await fetch(`${ip}/api/sanity/shop/`);
+    const data = await response.json();
+    
+    console.log(data);
+    return data;
+  } catch (error) {
+    console.error('Error:', error);
+    throw error;
+  }
+};
+
+//fetch by id
+// use case: managing shopOwner shops
+export const fetchShopById = async (id) => {
+  try {
+    const response = await axios.get(`${ip}/api/sanity/shop/${id}`);
+    const data = await response.data;
+
+    console.log(data);
+    return data;
+  } catch (error) {
+    console.error('Error:', error);
+    throw error;
+  }
+};

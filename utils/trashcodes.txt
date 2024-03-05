@@ -1,0 +1,15 @@
+    // const dispatch = useDispatch();
+
+    // useEffect(()=>{
+    //     if(item && item.id){
+    //         dispatch(setShop({...item}))
+    //     }
+    // },[])
+    // const fetchingData = async () => {
+    //     const data = await sanityFetch(qfsdf)
+    //     return data;
+    //   };
+
+
+    
+    

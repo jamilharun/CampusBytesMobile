@@ -4,11 +4,12 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { useQuery } from '@tanstack/react-query';
 import { qfs1df, qfsdf } from '../../utils/query';
 import { AuthContext } from '../../context/AuthContext';
-import { sanityFetch, urlFor } from '../../apis/sanity';
+import {  urlFor } from '../../apis/sanity';
 import { DrawerActions, useNavigation } from "@react-navigation/native";
 import { Menu} from "react-native-feather";
 import { Feather, AntDesign, FontAwesome, Entypo   } from '@expo/vector-icons';
 import { predefineshopData } from '../../constants/predefineData';
+import { fetchShopById } from '../../apis/server';
 
 export default function YourShop() {
     const navigation = useNavigation();
@@ -28,8 +29,8 @@ export default function YourShop() {
     // };
 
     // const { data: sdp, isLoading, error, isFetching} = useQuery({ 
-    //     queryKey: [`shopData`], 
-    //     queryFn: fetchingData,
+    //     queryKey: [`yourShop`], 
+    //     queryFn: () => fetchShopById('Michael%Rodriguez'),
     //     gcTime: 10000,
     // });
       
@@ -103,13 +104,22 @@ export default function YourShop() {
         </View>
           <View className=' '>
             <View className='flex flex-row justify-between w-full h-60'>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 onPress={() => {navigation.navigate("addGoods", {data})}}
                 className="flex flex-col justify-center items-center w-1/2"
               >
                 <AntDesign name="pluscircleo" size={44} color="green" />
                 <Text className='text-2xl font-normal'>Add Menu</Text>
+              </TouchableOpacity> */}
+
+              <TouchableOpacity
+                onPress={() => {navigation.navigate("ViewMenu", {data})}}
+                className="flex flex-col justify-center items-center w-1/2"
+              >
+                <AntDesign name="eyeo" size={44} color="green" />
+                <Text className='text-2xl font-normal'>View Menu</Text>
               </TouchableOpacity>
+
               
               <TouchableOpacity
                 onPress={() => {navigation.navigate("QueueList", {data})}}
@@ -121,21 +131,15 @@ export default function YourShop() {
             </View>
             <View className='flex flex-row justify-between w-full h-60'>
 
-              <TouchableOpacity
-                onPress={() => {navigation.navigate("viewGoods", {data})}}
-                className="flex flex-col justify-center items-center w-1/2"
-              >
-                <AntDesign name="eyeo" size={44} color="green" />
-                <Text className='text-2xl font-normal'>View Menu</Text>
-              </TouchableOpacity>
+              
 
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 onPress={() => {navigation.navigate("editGoods", {data})}}
                 className="flex flex-col justify-center items-center w-1/2"
               >
                 <AntDesign name="edit" size={44} color="green" />
                 <Text className='text-2xl font-normal'>Edit Menu</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           </View>
           <View className="pb-5"></View>

@@ -40,7 +40,8 @@
     "v": "^0.3.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0"
+    "@babel/core": "^7.20.0",
+    "@tanstack/eslint-plugin-query": "^5.20.1"
   },
   "private": true
 }

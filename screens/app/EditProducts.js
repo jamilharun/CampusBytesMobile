@@ -7,7 +7,7 @@ import { ChevronLeft, MapPin } from 'react-native-feather';
 export default function EditProducts({route, navigation}) {
     const {product} = route.params;
 
-    const [id, setId] = useState(product.id);
+    const [id, setId] = useState(product._id);
     const [productName, setProductName] = useState(product.productName);
     const [type, setType] = useState(product.type);
     const [description, setDescription] = useState(product.description);
@@ -50,7 +50,7 @@ export default function EditProducts({route, navigation}) {
     };
 
     const addTag = (item) => {
-      setTags([...tags, { _id: Math.random().toString(), tagName: item }]);
+      setTags([...tags, { _id: Math.random(), tagName: item }]);
       setModalVisible(false);
     };
 
@@ -60,9 +60,10 @@ export default function EditProducts({route, navigation}) {
     };
 
     const saveChanges = async () => {
+        // Create an updated dish object with the new values
         const updatedDish = {
           _id: id,
-          productName: [product],
+          productName: productName,
           description: description,
           type: type,
           image: image,
@@ -74,7 +75,7 @@ export default function EditProducts({route, navigation}) {
           isAvailable: isAvailable,
 
         };
-        const mergedData = { ...product, ...updatedDish };
+        const mergedData = { ...dish, ...updatedDish };
         console.log(mergedData);
         try {
           await sanityUpdate(mergedData );
@@ -139,11 +140,11 @@ export default function EditProducts({route, navigation}) {
             </View>
             <View className='mx-3 my-2'>
               <View className="flex flex-row items-center w-full mb-4">
-                <Text className="text-lg font-medium">Dish Name: </Text>
+                <Text className="text-lg font-medium">Product Name: </Text>
                 <TextInput
                   className="placeholder:text-lg w-full "
                   placeholder="Dish Name"
-                  value={product}
+                  value={productName}
                   onChangeText={text => setDishName(text)}/>
               </View>
               <View className="flex flex-row items-center w-full mb-4">
@@ -166,7 +167,7 @@ export default function EditProducts({route, navigation}) {
               <View className="flex flex-row items-center w-full mb-4">
                 <Text className="text-lg font-medium">Preparation Time: </Text>
                 <TextInput
-                  className="placeholder:text-lg "
+                  className="placeholder:text-lg"
                   placeholder="Preparation Time"
                   value={preparationTime.toString()}
                   onChangeText={text => setPreparationTime(text)}
@@ -185,7 +186,7 @@ export default function EditProducts({route, navigation}) {
                     <TouchableOpacity 
                       className=" flex justify-center items-center"
                       onPress={() => removeTag(index)}>
-                      {/* Minus button to remove tags */}
+                     
                       <FontAwesome5 name="minus" size={20} color="black" />
                     </TouchableOpacity>
                   </View>
@@ -193,7 +194,6 @@ export default function EditProducts({route, navigation}) {
                   <TouchableOpacity 
                     className="flex flex-row items-center w-full px-5 pt-4"
                     onPress={() => setModalVisible(true)}>
-                    {/* Plus button to add tags */}
                     <FontAwesome5 name="plus" size={20} color="black" />
                   </TouchableOpacity>
 
@@ -215,8 +215,7 @@ export default function EditProducts({route, navigation}) {
                     <Text>isPromoted:</Text>
                     <Switch
                       value={isPromoted}
-                      onValueChange={(bool) => setIsPromoted(bool)}
-                    />
+                      onValueChange={(bool) => setIsPromoted(bool)}/>
                   </View>
 
                   <Modal

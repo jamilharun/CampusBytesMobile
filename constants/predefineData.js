@@ -45,6 +45,7 @@ export const predefineshopData = [
           ],
           "image": "image-599fc58300466d0d8fa86a9ae0393846d0205f39-1024x1024-jpg",
           "price": 29.99,
+          "preparationTime": 30,
           "description": "A comfortable and stylish shirt for any occasion.",
           "isFeatured": true,
           "isAvailable": true,

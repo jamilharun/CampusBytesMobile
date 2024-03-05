@@ -135,7 +135,7 @@ export default function ShopScreen({}) {
                         category={dish.category}
                         tags={dish.tags}
                         description={dish.description}
-                        price={dish.Price}
+                        price={dish.price}
                         image={dish.image}
                         isAvailable={dish.isAvailable}
                         createdAt={dish._createdAt}
@@ -157,7 +157,7 @@ export default function ShopScreen({}) {
                                 name={product.productName}
                                 category={product.category}
                                 tags={product.tags}
-                                price={product.Price}
+                                price={product.price}
                                 image={product.image}
                                 description={product.description}
                                 createdAt={product._createdAt}

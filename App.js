@@ -10,6 +10,8 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query'
 
+
+
 export default function App() {
   return (
     // <Auth0Provider domain={config.domain} clientId={config.clientId}>

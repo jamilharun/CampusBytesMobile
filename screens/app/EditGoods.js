@@ -76,13 +76,13 @@ export default function EditGoods({ route, navigation }) {
             data?.products?.map((product)=>{
               return (
                 <TouchableOpacity 
-                  key={product._id} 
+                  key={product?._id} 
                   className={` ml-3 w-60 rounded-2xl border-4 ${product.isAvailable ? '  border-EacColor-TahitiGold' : ' border-gray-500 opacity-75'}`}
                   onPress={()=>{navigation.navigate('EditProduct', {product})}}>
                   <Image className=' w-full h-72 rounded-t-2xl' source={{uri: urlFor(product?.image).url()}} />
                   <View className='flex flex-col px-5'>
                     <Text className='text-xl font-extrabold'>{product.productName}</Text>
-                    <Text className='text-lg font-bold'>{product.Price}</Text>
+                    <Text className='text-lg font-bold'>{product.price}</Text>
                     <View className='flex flex-row space-x-2'>
                       <ScrollView horizontal={true}>
                         {

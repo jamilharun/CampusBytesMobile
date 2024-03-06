@@ -6,8 +6,6 @@ import { AntDesign, Entypo} from '@expo/vector-icons';
 import { Image } from'react-native';
 import ProfileScreen from '../screens/app/ProfileScreen';
 import ShopScreen from '../screens/app/ShopScreen';
-import YourShop from '../screens/app/YourShop';
-import EditGoods from '../screens/app/EditGoods';
 import ShopStack from './shopStack';
 
 export default function AppStack() {
@@ -29,7 +27,6 @@ export default function AppStack() {
   }
   debug();
   
-  console.log(user);
   
   return (
     <Drawer.Navigator screenOptions={{headerShown: false}} initialRouteName='Home'>

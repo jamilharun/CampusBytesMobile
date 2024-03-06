@@ -4,9 +4,14 @@ import DishRow from '../../components/DishRow';
 import {  urlFor } from '../../apis/sanity';
 import { ChevronLeft, MapPin } from 'react-native-feather';
 import ProductRow from '../../components/ProductRow';
+import { AntDesign } from '@expo/vector-icons';
 
 export default function ViewGoods({route, navigation}) {
   const {data} = route.params;
+
+  
+  const dishType = 'dish';
+  const productType = 'product';
   return (
     <View >
         <View className="w-full flex flex-row justify-between items-center bg-white pr-4 shadow-sm">
@@ -38,10 +43,9 @@ export default function ViewGoods({route, navigation}) {
             }}> 
                 <TouchableOpacity 
                     className={' ml-3 w-60 rounded-2xl border-4  border-gray-500 opacity-75'} //if dish is isAvailable, add border color green. if not add gray border
-                    onPress={()=>{navigation.navigate('EditDish', {dish})}}>
-                    {/* <Image className=' w-full h-72 rounded-t-2xl' source={{uri: urlFor(dish?.image).url()}} /> */}
-                    <View className=' w-full h-72 rounded-t-2xl bg-gray-300'>
-
+                    onPress={()=>{navigation.navigate('addGoods', dishType)}}>
+                    <View className=' w-full h-72 rounded-t-2xl bg-gray-300 flex justify-center items-center'>
+                        <AntDesign name="plus" size={44} color="black" />
                     </View>
                     <View className='flex flex-col px-5'>
                     <Text className='text-xl font-extrabold'>add new dish</Text>
@@ -84,12 +88,25 @@ export default function ViewGoods({route, navigation}) {
                     Products
                 </Text> 
             </View>
+
+            {/* product */}
             <ScrollView horizontal
             showsHorizontalScrollIndicator={false}
             className=" overflow-visible"
             contentContainerStyle={{
                 paddingHorizontal:15
             }}>
+                <TouchableOpacity 
+                    className={' ml-3 w-60 rounded-2xl border-4  border-gray-500 opacity-75'} //if dish is isAvailable, add border color green. if not add gray border
+                    onPress={()=>{navigation.navigate('addGoods', productType)}}>
+                    <View className=' w-full h-72 rounded-t-2xl bg-gray-300 flex justify-center items-center'>
+                        <AntDesign name="plus" size={44} color="black" />
+                    </View>
+                    <View className='flex flex-col px-5'>
+                    <Text className='text-xl font-extrabold'>add new product</Text>
+                    <Text className='text-lg font-bold'>₱ price</Text>
+                    </View>
+                </TouchableOpacity>
             {
                 data?.products?.map((product)=>{
                 return (

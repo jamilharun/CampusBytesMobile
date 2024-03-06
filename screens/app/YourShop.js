@@ -14,7 +14,6 @@ import { fetchShopById } from '../../apis/server';
 export default function YourShop() {
     const navigation = useNavigation();
     const { user } = useContext(AuthContext);
-    const [data, setData] = useState(null)
     const [err, setErr] = useState(null);
 
     // const fetchingData = async () => {
@@ -27,14 +26,16 @@ export default function YourShop() {
     //     console.log('Error feyching', error);
     //   }
     // };
+    const requestData = 'Michael%Rodriguez'
 
-    // const { data: sdp, isLoading, error, isFetching} = useQuery({ 
-    //     queryKey: [`yourShop`], 
-    //     queryFn: () => fetchShopById('Michael%Rodriguez'),
-    //     gcTime: 10000,
-    // });
+    
+    const { data: ysd, isLoading, error, isFetching} = useQuery({ 
+        queryKey: [`yourShop`], 
+        queryFn: () => fetchShopById(requestData),
+        gcTime: 10000,
+    });
       
-    // console.log({isLoading, isFetching, error, sdp});
+    console.log({isLoading, isFetching, error, ysd});
     
     // if (isLoading) {
     //   return (
@@ -47,19 +48,11 @@ export default function YourShop() {
     // if (error) {
     //   setErr(`YourShop page: ${error}`)
     // }
-
-    // if (sdp) {
-    //   //single data
-    //   setData(sdp[0])
-    //   console.log('Success');
+    
+    // const zeroindex = null;
+    // if (ysd) {
+    //   zeroindex = ysd[0];
     // }
-
-    useEffect(()=>{
-      const qwe = predefineshopData[0];
-      console.log('testing predata yourshop ===============');
-      console.log(qwe);
-      setData(qwe)
-    })
 
   return (
     <SafeAreaView>
@@ -75,12 +68,11 @@ export default function YourShop() {
                     className="text-EacColor-TahitiGold"/>
         </TouchableOpacity>
         <ScrollView>
-
           {
-            data?.cover && (
+            ysd[0]?.cover && (
               <Image 
                   className='h-32 w-full object-cover rounded-xl mt-1' 
-                  source={{ uri: urlFor(data?.cover).url()}}/>
+                  source={{ uri: urlFor(cover).url()}}/>
             )
           }
         <View className='flex mt-3 flex-col justify-center items-center'>
@@ -104,25 +96,17 @@ export default function YourShop() {
         </View>
           <View className=' '>
             <View className='flex flex-row justify-between w-full h-60'>
-              {/* <TouchableOpacity
-                onPress={() => {navigation.navigate("addGoods", {data})}}
-                className="flex flex-col justify-center items-center w-1/2"
-              >
-                <AntDesign name="pluscircleo" size={44} color="green" />
-                <Text className='text-2xl font-normal'>Add Menu</Text>
-              </TouchableOpacity> */}
 
               <TouchableOpacity
-                onPress={() => {navigation.navigate("ViewMenu", {data})}}
+                // onPress={() => {navigation.navigate("ViewMenu", {ysd})}}
                 className="flex flex-col justify-center items-center w-1/2"
               >
                 <AntDesign name="eyeo" size={44} color="green" />
                 <Text className='text-2xl font-normal'>View Menu</Text>
               </TouchableOpacity>
-
               
               <TouchableOpacity
-                onPress={() => {navigation.navigate("QueueList", {data})}}
+                // onPress={() => {navigation.navigate("QueueList", {ysd})}}
                 className="flex flex-col justify-center items-center w-1/2"
               >
                 <Entypo name="list" size={44} color="green" />
@@ -130,21 +114,10 @@ export default function YourShop() {
               </TouchableOpacity>
             </View>
             <View className='flex flex-row justify-between w-full h-60'>
-
-              
-
-              {/* <TouchableOpacity
-                onPress={() => {navigation.navigate("editGoods", {data})}}
-                className="flex flex-col justify-center items-center w-1/2"
-              >
-                <AntDesign name="edit" size={44} color="green" />
-                <Text className='text-2xl font-normal'>Edit Menu</Text>
-              </TouchableOpacity> */}
             </View>
           </View>
           <View className="pb-5"></View>
         </ScrollView>
-        
     </SafeAreaView>
   )
 }

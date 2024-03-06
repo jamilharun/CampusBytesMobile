@@ -6,9 +6,10 @@ import CartIcon from '../../components/CartIcon';
 import { urlFor } from '../../apis/sanity';
 import { MapPin } from 'react-native-feather';
 import ProductRow from '../../components/ProductRow';
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery} from "@tanstack/react-query";
 import { Menu} from "react-native-feather";
 import { axiosfetchShop, fetchShop} from '../../apis/server';
+import reactQuery from '../../apis/reactQuery';
 
 // import { useDispatch } from 'react-redux'; 
 
@@ -24,7 +25,6 @@ export default function ShopScreen({}) {
 
     let automaticPading = cartHasItems && 'p-10';
 
-
     const { data: sdp, isLoading, error, isFetching} = useQuery({ 
         queryKey: [`shopDisplay`], 
         queryFn: fetchShop,
@@ -39,26 +39,6 @@ export default function ShopScreen({}) {
           )
     }
     if (error) setErr(error);
-
-    // const initialFetch = async () => {
-    //     try {
-    //         const data = await fetchShop();
-    //         if (data) {
-    //             console.log('Success fetching');
-    //             setSdp(data);
-    //         } else {
-    //             console.log('Error in axios fetching');
-    //             return null;
-    //         }
-    //     } catch (error) {
-    //         console.log('Error fetching', error);
-    //     }
-    // };
-
-
-    // useEffect(()=>{
-    //     if (!sdp) initialFetch();
-    // }, [sdp]);
 
     return (
         <View >
@@ -79,105 +59,100 @@ export default function ShopScreen({}) {
                     className="text-EacColor-TahitiGold"/>
         </TouchableOpacity>
         <StatusBar style='light'/>
-        <ScrollView>
+        {/* <ScrollView>
             <View className=' relative'>
-                {/* <Image className=' w-full h-72' source={{uri: urlFor(sdp?.cover).url()}} /> */}
             </View>
             {
-                sdp?.map(data => {
-                    return (
-                        <View key={data._id}>
-                            <View style={{borderTopLeftRadius:40, borderTopRightRadius: 40}}
-                className=' bg-white '>
-                <View>
-                    <Image className='h-32 w-full object-cover rounded-xl mt-1' source={{ uri: urlFor(data?.cover).url()}}/>
-                </View>
-                <View className='flex flex-row mx-3 '>
-                    <Image 
-                        className='h-32 w-24 object-cover rounded-xl mt-1' 
-                        source={{ uri: urlFor(data?.logo).url()}}/>
-                    <View className=' px-5'>
-                        <Text className=' text-3xl font-bold'>{data?.shopName}</Text>
-                        <View className=' flex-row space-x-2 my-1'>
-                        <View className=' flex-row items-center space-x-1'>
-                            {/* <Image source={require()} className=' h-4 w-4'/> */}
-                            <Text className=' text-xs'>
-                            <Text className=' text-EacColor-SelectiveYellow'>rating</Text>
-                            {/* <Text className=' text-EacColor-BlackPearl'>
-                                ({data.reviews} reviews) . <Text className=' font-semibold'>{item.category}</Text>
-                            </Text> */}
-                            </Text>
-                        </View>
-                        <View className=' flex-row items-center space-x-1'>
-                            <MapPin color='gray' width='15'/>
-                            <Text numberOfLines={3} className=' text-gray-700 text-xs'>Nearby.{data?.address}</Text>
-                        </View>
-                        </View>
-                        <Text numberOfLines={3} className=' text-gray-500 mt-2'>{data?.description}</Text>
-                        {
-                            data?.tags?.map((tag) => {
-                                return (
-                                    <View key={tag._id} className=' flex-row items-center space-x-1'>
-                                        <Text className=' text-gray-500 text-xs'>{tag.tagName}</Text>
+               
+                    sdp?.map(data => {
+                        return (
+                            <View key={data._id}>
+                                <View 
+                                    style={{borderTopLeftRadius:40, borderTopRightRadius: 40}}
+                                    className=' bg-white '>
+                                    <View>
+                                        <Image className='h-32 w-full object-cover rounded-xl mt-1' source={{ uri: urlFor(data?.cover).url()}}/>
                                     </View>
-                                )
-                            })
-                        }
+                                    <View className='flex flex-row mx-3 '>
+                                    <Image 
+                                        className='h-32 w-24 object-cover rounded-xl mt-1' 
+                                        source={{ uri: urlFor(data?.logo).url()}}/>
+                                        <View className=' px-5'>
+                                            <Text className=' text-3xl font-bold'>{data?.shopName}</Text>
+                                            <View className=' flex-row space-x-2 my-1'>
+                                            <View className=' flex-row items-center space-x-1'>
+                                            <Text className=' text-xs'>
+                                            <Text className=' text-EacColor-SelectiveYellow'>rating</Text>
+                                        
+                                        </Text>
+                                    </View>
+                                    <View className=' flex-row items-center space-x-1'>
+                                        <MapPin color='gray' width='15'/>
+                                        <Text numberOfLines={3} className=' text-gray-700 text-xs'>Nearby.{data?.address}</Text>
+                                    </View>
+                                </View>
+                                <Text numberOfLines={3} className=' text-gray-500 mt-2'>{data?.description}</Text>
+                                {
+                                    data?.tags?.map((tag) => {
+                                        return (
+                                            <View key={tag._id} className=' flex-row items-center space-x-1'>
+                                                <Text className=' text-gray-500 text-xs'>{tag.tagName}</Text>
+                                            </View>
+                                        )
+                                    })
+                                }
+                            </View>
+                        </View>
                     </View>
-                </View>
-            </View>
-            <View className='pb-36 bg-white'>
-                <Text className=' px-4 py-4 text-2xl font-bold'>Menu</Text>
-                {/* dishes */}
-                {
-                    data?.dishes?.map((dish)=> <DishRow 
-                        key={dish._id}
-                        id={dish._id}
-                        name={dish.dishName}
-                        category={dish.category}
-                        tags={dish.tags}
-                        description={dish.description}
-                        price={dish.price}
-                        image={dish.image}
-                        isAvailable={dish.isAvailable}
-                        createdAt={dish._createdAt}
-                    />)
-                }
-                <View>
-                    <Text className=' px-4 py-4 text-2xl font-bold'>Others</Text>
-                    <ScrollView 
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    className=" overflow-visible"
-                    contentContainerStyle={{
-                        paddingHorizontal:15
-                    }}>
+                    <View className='pb-36 bg-white'>
+                        <Text className=' px-4 py-4 text-2xl font-bold'>Menu</Text>
                         {
-                            data?.products?.map((product)=> <ProductRow
-                                key={product._id}
-                                id={product._id}
-                                name={product.productName}
-                                category={product.category}
-                                tags={product.tags}
-                                price={product.price}
-                                image={product.image}
-                                description={product.description}
-                                createdAt={product._createdAt}
-                                isAvailable={product.isAvailable}
+                            data?.dishes?.map((dish)=> <DishRow 
+                                key={dish._id}
+                                id={dish._id}
+                                name={dish.dishName}
+                                category={dish.category}
+                                tags={dish.tags}
+                                description={dish.description}
+                                price={dish.price}
+                                image={dish.image}
+                                isAvailable={dish.isAvailable}
+                                createdAt={dish._createdAt}
                             />)
                         }
-                    </ScrollView>
-                </View>
-            </View>
+                        <View>
+                            <Text className=' px-4 py-4 text-2xl font-bold'>Others</Text>
+                            <ScrollView 
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                            className=" overflow-visible"
+                            contentContainerStyle={{
+                                paddingHorizontal:15
+                            }}>
+                                {
+                                    data?.products?.map((product)=> <ProductRow
+                                        key={product._id}
+                                        id={product._id}
+                                        name={product.productName}
+                                        category={product.category}
+                                        tags={product.tags}
+                                        price={product.price}
+                                        image={product.image}
+                                        description={product.description}
+                                        createdAt={product._createdAt}
+                                        isAvailable={product.isAvailable}
+                                    />)
+                                }
+                            </ScrollView>
                         </View>
-                    )
-                }) 
+                    </View>
+                            </View>
+                        )
+                    }) 
                 
-
             }
             
-            {/* <View className={automaticPading}></View> */}
-        </ScrollView>
+        </ScrollView> */}
     </View>
   )
 }

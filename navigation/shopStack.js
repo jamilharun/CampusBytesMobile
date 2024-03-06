@@ -1,7 +1,6 @@
 import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import YourShop from '../screens/app/YourShop';
-import EditGoods from '../screens/app/EditGoods';
 import AddGoods from '../screens/app/AddGoods';
 import ViewGoods from '../screens/app/ViewGoods';
 import QueueListScreen from '../screens/app/QueueListScreen';
@@ -42,11 +41,6 @@ export default function ShopStack() {
                 component={AddGoods}
             />
              
-            <Stack.Screen
-                name='editGoods'
-                options={{ headerShown: false }}
-                component={EditGoods}
-            />
             <Stack.Screen
                 name='EditDish'
                 options={{ headerShown: false }}

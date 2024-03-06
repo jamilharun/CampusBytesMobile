@@ -6,7 +6,7 @@ import { FontAwesome5, AntDesign, FontAwesome   } from '@expo/vector-icons';
 
 
 export default function AddGoods({route, navigation}) {
-  const {data } = route.params;
+  const data = route.params;
 
   const [itemId, setItemId] = useState(null);
   const [itemName, setItemName] = useState(null);
@@ -15,7 +15,7 @@ export default function AddGoods({route, navigation}) {
   const [itemDescription, setItemDescription] = useState(null);
   const [itemPrice, setItemPrice] = useState(null);
   const [preparationTime, setPreparationTime] = useState(null);
-  const [type, setType] = useState(null);
+  const [type, setType] = useState(data);
   const [isAvailable, setIsAvailable] = useState(null);
   const [isFeatured, setIsFeatured] = useState(null);
   const [isPromoted, setIsPromoted] = useState(null);
@@ -24,9 +24,9 @@ export default function AddGoods({route, navigation}) {
   const [onUpdate, setOnUpdate] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [alertModal, setAlertModal] = useState(false);
-  const [modalType, setModalType] = useState(false);
 
   useEffect(() => {
+    console.log(data);
     if (
       itemId ||
       itemName ||
@@ -35,7 +35,6 @@ export default function AddGoods({route, navigation}) {
       itemDescription  ||
       itemPrice  ||
       preparationTime  ||
-      type  ||
       isAvailable  ||
       isFeatured  ||
       isPromoted  ||
@@ -161,11 +160,15 @@ export default function AddGoods({route, navigation}) {
                   keyboardType="numeric"/>
                 <Text>mins</Text>
               </View>
-              <TouchableOpacity onPress={()=>setModalType(true)} className="flex flex-row items-center w-full mb-4">
+              {/* <TouchableOpacity onPress={()=>setModalType(true)} className="flex flex-row items-center w-full mb-4">
                 <Text className="text-lg font-medium">item Type: </Text>
                 <Text >{type ? type: 'data type'}</Text>
                 
-              </TouchableOpacity>
+              </TouchableOpacity> */}
+              <View className="flex flex-row items-center w-full mb-4">
+                <Text className="text-lg font-medium">item Type: </Text>
+                <Text className="text-EacColor-BlackPearl text-lg">{data}</Text>
+              </View>
               <View className="border-l-2 px-3 border-EacColor-BlackPearl">
                 <Text className="text-lg font-medium">Tags: </Text>
                 {tags.map((tag, index) => (
@@ -258,7 +261,7 @@ export default function AddGoods({route, navigation}) {
                   </View>
                 </Modal>
 
-                <Modal
+                {/* <Modal
                     animationType="slide"
                     transparent={false}
                     visible={modalType}
@@ -266,8 +269,8 @@ export default function AddGoods({route, navigation}) {
                       setModalType(false);
                       console.log(e);
                     }}
-                  >
-                  <View>
+                  > */}
+                  {/* <View>
                     <FlatList
                       data={['shop', 'product']} // Replace with your available tags data
                       keyExtractor={(item) => item}
@@ -282,8 +285,8 @@ export default function AddGoods({route, navigation}) {
                     <TouchableOpacity onPress={() => setModalType(false)}>
                       <Text>Close</Text>
                     </TouchableOpacity>
-                  </View>
-                </Modal>
+                  </View> */}
+                {/* </Modal> */}
               </View>
             </View>
             <View className="flex flex-row justify-between items-center w-full p-5">

@@ -41,8 +41,9 @@ export const fetchShop = async () => {
 //fetch by id
 // use case: managing shopOwner shops
 export const fetchShopById = async (id) => {
+  // const reqdata = {shopOwner: id}
   try {
-    const response = await axios.get(`${ip}/api/sanity/shop/${id}`);
+    const response = await axios.post(`${ip}/api/sanity/shop/id`, {shopOwner: id});
     const data = await response.data;
 
     console.log(data);

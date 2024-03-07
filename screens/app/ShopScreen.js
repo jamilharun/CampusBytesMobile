@@ -59,7 +59,7 @@ export default function ShopScreen({}) {
                     className="text-EacColor-TahitiGold"/>
         </TouchableOpacity>
         <StatusBar style='light'/>
-        {/* <ScrollView>
+        <ScrollView>
             <View className=' relative'>
             </View>
             {
@@ -152,7 +152,7 @@ export default function ShopScreen({}) {
                 
             }
             
-        </ScrollView> */}
+        </ScrollView>
     </View>
   )
 }

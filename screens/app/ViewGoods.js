@@ -1,15 +1,25 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { View, ScrollView, Image, TouchableOpacity, StatusBar, Text} from 'react-native';
 import DishRow from '../../components/DishRow';
 import {  urlFor } from '../../apis/sanity';
 import { ChevronLeft, MapPin } from 'react-native-feather';
 import ProductRow from '../../components/ProductRow';
 import { AntDesign } from '@expo/vector-icons';
+import { useQuery } from '@tanstack/react-query';
 
 export default function ViewGoods({route, navigation}) {
-  const {data} = route.params;
+  const {ysd} = route.params;
+//     console.log('view menu: ',data);
 
-  
+    
+
+    const toDish = (dish) => {
+        navigation.navigate('EditDish', { dish });
+    };
+    const toProduct = (product) => {
+        navigation.navigate('EditProduct', { product });
+    };
+
   const dishType = 'dish';
   const productType = 'product';
   return (
@@ -43,7 +53,7 @@ export default function ViewGoods({route, navigation}) {
             }}> 
                 <TouchableOpacity 
                     className={' ml-3 w-60 rounded-2xl border-4  border-gray-500 opacity-75'} //if dish is isAvailable, add border color green. if not add gray border
-                    onPress={()=>{navigation.navigate('addGoods', dishType)}}>
+                    onPress={()=>{ navigation.navigate('addGoods', dishType)}}>
                     <View className=' w-full h-72 rounded-t-2xl bg-gray-300 flex justify-center items-center'>
                         <AntDesign name="plus" size={44} color="black" />
                     </View>
@@ -53,12 +63,12 @@ export default function ViewGoods({route, navigation}) {
                     </View>
                 </TouchableOpacity>
             {
-            data?.dishes?.map((dish)=>{
+            ysd[0]?.dishes?.map((dish)=>{
                 return (
                 <TouchableOpacity 
                     key={dish._id}
                     className={` ml-3 w-60 rounded-2xl border-4 ${dish.isAvailable ? '  border-EacColor-TahitiGold' : ' border-gray-500 opacity-75'}`} //if dish is isAvailable, add border color green. if not add gray border
-                    onPress={()=>{navigation.navigate('EditDish', {dish})}}>
+                    onPress={()=>{toDish(dish) }}>
                     <Image className=' w-full h-72 rounded-t-2xl' source={{uri: urlFor(dish?.image).url()}} />
                     <View className='flex flex-col px-5'>
                     <Text className='text-xl font-extrabold'>{dish.dishName}</Text>
@@ -108,16 +118,16 @@ export default function ViewGoods({route, navigation}) {
                     </View>
                 </TouchableOpacity>
             {
-                data?.products?.map((product)=>{
+                ysd[0]?.products?.map((product)=>{
                 return (
                     <TouchableOpacity 
                     key={product?._id} 
                     className={` ml-3 w-60 rounded-2xl border-4 ${product.isAvailable ? '  border-EacColor-TahitiGold' : ' border-gray-500 opacity-75'}`}
-                    onPress={()=>{navigation.navigate('EditProduct', {product})}}>
+                    onPress={()=>{toProduct(product)}}>
                     <Image className=' w-full h-72 rounded-t-2xl' source={{uri: urlFor(product?.image).url()}} />
                     <View className='flex flex-col px-5'>
                         <Text className='text-xl font-extrabold'>{product.productName}</Text>
-                        <Text className='text-lg font-bold'>{product.price}</Text>
+                        <Text className='text-lg font-bold'>{product.Price}</Text>
                         <View className='flex flex-row space-x-2'>
                         <ScrollView horizontal={true}>
                             {
@@ -137,6 +147,7 @@ export default function ViewGoods({route, navigation}) {
                 })
             }
             </ScrollView>
+            <View className='pb-20'></View>
         </ScrollView>
 </View>
 )

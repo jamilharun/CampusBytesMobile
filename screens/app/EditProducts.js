@@ -11,9 +11,8 @@ export default function EditProducts({route, navigation}) {
     const [productName, setProductName] = useState(product.productName);
     const [type, setType] = useState(product.type);
     const [description, setDescription] = useState(product.description);
-    const [price, setPrice] = useState(product.price);
+    const [price, setPrice] = useState(product.Price);
     const [image, setImage] = useState(product.image);
-    const [preparationTime, setPreparationTime] = useState(product.preparationTime);
     
     const [tags, setTags] = useState(product.tags || []);
     const [isPromoted, setIsPromoted] = useState(product.isPromoted);
@@ -30,18 +29,17 @@ export default function EditProducts({route, navigation}) {
         product.description !== description ||
         product.image !== image ||
         product.price !== price ||
-        product.preparationTime !== preparationTime ||
         product.isAvailable !== isAvailable ||
         product.isFeatured !== isFeatured ||
         product.isPromoted !== isPromoted ||
-        product.tags.length !== tags.length
+        product?.tags?.length !== tags?.length
       ) {
         setOnUpdate(true);
       } else {
         setOnUpdate(false);
       }
-    }, [product.productName, product.description, product.image, product.price, product.preparationTime, product.isFeatured, product.isAvailable, product.isPromoted, product.tags.length,
-      productName, description, image, price, preparationTime, isAvailable, isFeatured, isPromoted, tags.length]);
+    }, [product.productName, product.description, product.image, product.price, product.isFeatured, product.isAvailable, product.isPromoted, product?.tags?.length,
+      productName, description, image, price, isAvailable, isFeatured, isPromoted, tags?.length]);
 
     const handleTagChange = (tagIndex, text) => {
       const updatedTags = [...tags];
@@ -68,7 +66,6 @@ export default function EditProducts({route, navigation}) {
           type: type,
           image: image,
           price: price,
-          preparationTime: preparationTime,
           tags: tags,
           isPromoted: isPromoted,
           isFeatured: isFeatured,
@@ -160,19 +157,9 @@ export default function EditProducts({route, navigation}) {
                 <TextInput
                   className="placeholder:text-lg w-full "
                   placeholder="Price"
-                  value={price.toString()}
+                  value={price?.toString()}
                   onChangeText={text => setPrice(text)}
                   keyboardType="numeric"/>
-              </View>
-              <View className="flex flex-row items-center w-full mb-4">
-                <Text className="text-lg font-medium">Preparation Time: </Text>
-                <TextInput
-                  className="placeholder:text-lg"
-                  placeholder="Preparation Time"
-                  value={preparationTime.toString()}
-                  onChangeText={text => setPreparationTime(text)}
-                  keyboardType="numeric"/>
-                <Text>mins</Text>
               </View>
               <View className="border-l-2 px-3 border-EacColor-BlackPearl">
                 <Text className="text-lg font-medium">Tags: </Text>

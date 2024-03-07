@@ -14,44 +14,41 @@ import { fetchShopById } from '../../apis/server';
 export default function YourShop() {
     const navigation = useNavigation();
     const { user } = useContext(AuthContext);
+
     const [err, setErr] = useState(null);
 
-    // const fetchingData = async () => {
-    //   try {
-    //     const data = await sanityFetch(qfs1df('Michael Rodriguez'))
-    //     console.log('Success feyching');
-    //     return data;      
-        
-    //   } catch (error) {
-    //     console.log('Error feyching', error);
-    //   }
-    // };
-    const requestData = 'Michael%Rodriguez'
+    const requestData = 'MichaelRodriguez'
 
+    // const [ysd, setYsd] = useState(null);
+    // useEffect(()=>{
+    //   const ysd = fetchShopById(requestData);
+    //   setYsd(ysd);
+    // })
     
     const { data: ysd, isLoading, error, isFetching} = useQuery({ 
         queryKey: [`yourShop`], 
         queryFn: () => fetchShopById(requestData),
         gcTime: 10000,
+        keepPreviousData: true,
     });
       
     console.log({isLoading, isFetching, error, ysd});
     
-    // if (isLoading) {
-    //   return (
-    //     <View className='w-full h-64 flex justify-center items-center'>
-    //       <Text className='text-2xl'>Loading...</Text>
-    //     </View>
-    //   )
-    // }
+    if (isLoading) {
+      return (
+        <View className='w-full h-64 flex justify-center items-center'>
+          <Text className='text-2xl'>Loading...</Text>
+        </View>
+      )
+    }
 
-    // if (error) {
-    //   setErr(`YourShop page: ${error}`)
-    // }
+    if (error) {
+      setErr(`YourShop page: ${error}`)
+    }
     
     // const zeroindex = null;
     // if (ysd) {
-    //   zeroindex = ysd[0];
+    //   setFIndex(ysd[0]) 
     // }
 
   return (
@@ -72,7 +69,7 @@ export default function YourShop() {
             ysd[0]?.cover && (
               <Image 
                   className='h-32 w-full object-cover rounded-xl mt-1' 
-                  source={{ uri: urlFor(cover).url()}}/>
+                  source={{ uri: urlFor(ysd[0].cover).url()}}/>
             )
           }
         <View className='flex mt-3 flex-col justify-center items-center'>
@@ -98,7 +95,7 @@ export default function YourShop() {
             <View className='flex flex-row justify-between w-full h-60'>
 
               <TouchableOpacity
-                // onPress={() => {navigation.navigate("ViewMenu", {ysd})}}
+                onPress={() => {navigation.navigate("ViewMenu", {ysd})}}
                 className="flex flex-col justify-center items-center w-1/2"
               >
                 <AntDesign name="eyeo" size={44} color="green" />
@@ -106,7 +103,7 @@ export default function YourShop() {
               </TouchableOpacity>
               
               <TouchableOpacity
-                // onPress={() => {navigation.navigate("QueueList", {ysd})}}
+                onPress={() => {navigation.navigate("QueueList", {ysd})}}
                 className="flex flex-col justify-center items-center w-1/2"
               >
                 <Entypo name="list" size={44} color="green" />

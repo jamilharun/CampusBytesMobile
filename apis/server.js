@@ -37,13 +37,13 @@ export const fetchShop = async () => {
     throw error;
   }
 };
-
 //fetch by id
 // use case: managing shopOwner shops
 export const fetchShopById = async (id) => {
-  // const reqdata = {shopOwner: id}
+  console.log(id);
   try {
-    const response = await axios.post(`${ip}/api/sanity/shop/id`, {shopOwner: id});
+    // api/sanity/shopid/MichaelRodriguez
+    const response = await axios.get(`${ip}/api/sanity/shopid/${id}/`);
     const data = await response.data;
 
     console.log(data);
@@ -51,5 +51,20 @@ export const fetchShopById = async (id) => {
   } catch (error) {
     console.error('Error:', error);
     throw error;
+  }
+};
+
+export const addToMenu = async (newData) => {
+  console.log(newData);
+
+  try {
+    // Sends a PUT request to the server API endpoint
+    const response = await axios.put(`${ip}/api/sanity/shop/addNewData`, { newData });
+
+    // Assuming you want to return data from the API response
+    return response.data;
+  } catch (error) {
+    console.error('Error:', error);
+    throw error; // Re-throw the error for further handling in the calling function
   }
 };

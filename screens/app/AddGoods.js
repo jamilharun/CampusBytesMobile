@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { ChevronLeft, MapPin } from 'react-native-feather';
 import { uploadImage, urlFor } from '../../apis/sanity';
 import { FontAwesome5, AntDesign, FontAwesome   } from '@expo/vector-icons';
+import axios from 'axios';
 
 
 export default function AddGoods({route, navigation}) {
@@ -26,15 +27,15 @@ export default function AddGoods({route, navigation}) {
   const [alertModal, setAlertModal] = useState(false);
 
   useEffect(() => {
-    console.log(data);
+    // console.log(data);
     if (
-      itemId ||
-      itemName ||
+      itemId &&
+      itemName &&
       itemOwner  ||
       itemImage  ||
       itemDescription  ||
-      itemPrice  ||
-      preparationTime  ||
+      itemPrice  &&
+      preparationTime  &&
       isAvailable  ||
       isFeatured  ||
       isPromoted  ||
@@ -58,21 +59,28 @@ export default function AddGoods({route, navigation}) {
     };
 
     const saveChanges = async () => {
-      const updatedDish = {
+      console.log('sdfsdf');
+      const itemData = {
         _id: itemId, //generate new id
         name: itemName,
         description: itemDescription,
         type: type,
         image: itemImage, // Corrected: Use itemImage instead of image
         price: itemPrice, // Corrected: Use itemPrice instead of price
-        preparationTime: preparationTime,
+        ...(type === 'dish' && { preparationTime: preparationTime }),
         tags: tags,
         isPromoted: isPromoted,
         isFeatured: isFeatured,
         isAvailable: isAvailable,
-
       };
-      
+
+      try {
+        console.log('adding new item', itemData);
+        // await addToMenu(itemData);
+      } catch (error) {
+        // Handle error as needed
+        console.error('Error:', error);
+      }
     };
 
   return (
@@ -150,16 +158,22 @@ export default function AddGoods({route, navigation}) {
                   onChangeText={text => setItemPrice(text)}
                   keyboardType="numeric"/>
               </View>
-              <View className="flex flex-row items-center w-full mb-4">
-                <Text className="text-lg font-medium">Preparation Time: </Text>
-                <TextInput
-                  className="placeholder:text-lg "
-                  placeholder="Preparation Time"
-                  value={preparationTime}
-                  onChangeText={text => setPreparationTime(text)}
-                  keyboardType="numeric"/>
-                <Text>mins</Text>
-              </View>
+              {
+                type === 'dish' ? (
+                  <View className="flex flex-row items-center w-full mb-4">
+                    <Text className="text-lg font-medium">Preparation Time: </Text>
+                    <TextInput
+                      className="placeholder:text-lg"
+                      placeholder="Preparation Time"
+                      value={preparationTime}
+                      onChangeText={text => setPreparationTime(text)}
+                      keyboardType="numeric"
+                    />
+                    <Text>mins</Text>
+                  </View>
+                ) : null
+              }
+
               {/* <TouchableOpacity onPress={()=>setModalType(true)} className="flex flex-row items-center w-full mb-4">
                 <Text className="text-lg font-medium">item Type: </Text>
                 <Text >{type ? type: 'data type'}</Text>
@@ -293,7 +307,7 @@ export default function AddGoods({route, navigation}) {
               {
                 onUpdate ? (
                   <TouchableOpacity 
-                    onclick={()=>{saveChanges()}} 
+                    onPress={()=>{saveChanges()}} 
                     className="bg-EacColor-TahitiGold w-1/2 flex flex-row justify-center items-center px-5 py-4 rounded-full">
                       <AntDesign name="save" size={24} color="white" />
                       <Text className="text-white">Save Changes</Text>

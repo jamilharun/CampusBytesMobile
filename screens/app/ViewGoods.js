@@ -11,17 +11,39 @@ export default function ViewGoods({route, navigation}) {
   const {ysd} = route.params;
 //     console.log('view menu: ',data);
 
-    
-
+    const toAdd = (data) => {
+        console.log('item: ', data);
+        navigation.navigate('addGoods', {data});
+    };
     const toDish = (dish) => {
-        navigation.navigate('EditDish', { dish });
+        console.log('dish: ', dish);
+        navigation.navigate('EditDish', {dish} );
     };
     const toProduct = (product) => {
-        navigation.navigate('EditProduct', { product });
+        console.log('product: ',product);
+        navigation.navigate('EditProduct', {product} );
     };
 
-  const dishType = 'dish';
-  const productType = 'product';
+    const newid = Math.random().toString(36).substring(2);
+    
+    const dishType = [`${newid}`, 'dish', `${ysd[0]._id}`];
+    // const dishType = [{
+    //     id: `${newid}`,
+    //     type: 'dish',
+    //     shop: {
+    //         _ref: `${ysd[0]._id}`,
+    //         _type:'reference'
+    //     }
+    // }];
+    const productType = [`${newid}`, 'product', `${ysd[0]._id}`];
+    // const productType = {
+    //     id: `${newid}`,
+    //     type: 'product',
+    //     shop: {
+    //         _ref:`${ysd[0]._id}`,
+    //         _type:'reference'
+    //     }
+    // };
   return (
     <View >
         <View className="w-full flex flex-row justify-between items-center bg-white pr-4 shadow-sm">
@@ -53,7 +75,7 @@ export default function ViewGoods({route, navigation}) {
             }}> 
                 <TouchableOpacity 
                     className={' ml-3 w-60 rounded-2xl border-4  border-gray-500 opacity-75'} //if dish is isAvailable, add border color green. if not add gray border
-                    onPress={()=>{ navigation.navigate('addGoods', dishType)}}>
+                    onPress={()=>{ toAdd(dishType)}}>
                     <View className=' w-full h-72 rounded-t-2xl bg-gray-300 flex justify-center items-center'>
                         <AntDesign name="plus" size={44} color="black" />
                     </View>
@@ -108,7 +130,7 @@ export default function ViewGoods({route, navigation}) {
             }}>
                 <TouchableOpacity 
                     className={' ml-3 w-60 rounded-2xl border-4  border-gray-500 opacity-75'} //if dish is isAvailable, add border color green. if not add gray border
-                    onPress={()=>{navigation.navigate('addGoods', productType)}}>
+                    onPress={()=>{toAdd(productType)}}>
                     <View className=' w-full h-72 rounded-t-2xl bg-gray-300 flex justify-center items-center'>
                         <AntDesign name="plus" size={44} color="black" />
                     </View>

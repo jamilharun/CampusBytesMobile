@@ -3,20 +3,20 @@ import React, { useEffect, useState } from 'react'
 import { ChevronLeft, MapPin } from 'react-native-feather';
 import { uploadImage, urlFor } from '../../apis/sanity';
 import { FontAwesome5, AntDesign, FontAwesome   } from '@expo/vector-icons';
-import axios from 'axios';
 
 
 export default function AddGoods({route, navigation}) {
-  const data = route.params;
+const {data} = route.params;
+  console.log('data',{data});
 
-  const [itemId, setItemId] = useState(null);
+  const [itemId, setItemId] = useState(data[0]);
   const [itemName, setItemName] = useState(null);
-  const [itemOwner, setItemOwner] = useState();
+  const [itemOwner, setItemOwner] = useState({_ref: data[2],_type:'reference'});
   const [itemImage, setItemImage] = useState(null);
   const [itemDescription, setItemDescription] = useState(null);
   const [itemPrice, setItemPrice] = useState(null);
   const [preparationTime, setPreparationTime] = useState(null);
-  const [type, setType] = useState(data);
+  const [type, setType] = useState(data[1]);
   const [isAvailable, setIsAvailable] = useState(null);
   const [isFeatured, setIsFeatured] = useState(null);
   const [isPromoted, setIsPromoted] = useState(null);
@@ -59,14 +59,16 @@ export default function AddGoods({route, navigation}) {
     };
 
     const saveChanges = async () => {
-      console.log('sdfsdf');
       const itemData = {
         _id: itemId, //generate new id
-        name: itemName,
+        ...(type === 'dish' && { dishName: itemName }),
+        ...(type === 'product' && { productName: itemName }),
+        shop: itemOwner,
         description: itemDescription,
         type: type,
         image: itemImage, // Corrected: Use itemImage instead of image
-        price: itemPrice, // Corrected: Use itemPrice instead of price
+        ...(type === 'dish' && { price: itemPrice }),
+        ...(type === 'product' && { Price: itemPrice }),
         ...(type === 'dish' && { preparationTime: preparationTime }),
         tags: tags,
         isPromoted: isPromoted,
@@ -181,7 +183,7 @@ export default function AddGoods({route, navigation}) {
               </TouchableOpacity> */}
               <View className="flex flex-row items-center w-full mb-4">
                 <Text className="text-lg font-medium">item Type: </Text>
-                <Text className="text-EacColor-BlackPearl text-lg">{data}</Text>
+                <Text className="text-EacColor-BlackPearl text-lg">{data[1]}</Text>
               </View>
               <View className="border-l-2 px-3 border-EacColor-BlackPearl">
                 <Text className="text-lg font-medium">Tags: </Text>

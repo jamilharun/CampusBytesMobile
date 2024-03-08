@@ -57,6 +57,7 @@ export const sanityDelete = async (data) => {
 
 
 export const uploadImage = async () => {
+  console.log('attempting to upload image');
   try {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 

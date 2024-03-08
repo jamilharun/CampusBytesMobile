@@ -55,11 +55,11 @@ export const fetchShopById = async (id) => {
 };
 
 export const addToMenu = async (newData) => {
-  console.log(newData);
+  console.log('posting to server',newData);
 
   try {
     // Sends a PUT request to the server API endpoint
-    const response = await axios.put(`${ip}/api/sanity/shop/addNewData`, { newData });
+    const response = await axios.post(`${ip}/api/sanity/shop/addNewData`, { newData });
 
     // Assuming you want to return data from the API response
     return response.data;

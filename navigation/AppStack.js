@@ -8,6 +8,7 @@ import ProfileScreen from '../screens/app/ProfileScreen';
 import ShopScreen from '../screens/app/ShopScreen';
 import ShopStack from './shopStack';
 import CartScreen from '../screens/app/CartScreen';
+import ClientStack from './ClientStack';
 
 export default function AppStack() {
   const Drawer = createDrawerNavigator();
@@ -54,7 +55,7 @@ export default function AppStack() {
             <AntDesign name="home" size={24} color="black" />
           )
         }} 
-        component={ShopScreen} /> 
+        component={ClientStack} /> 
 
       {/* {
         user["https://myroles.com/roles"] && user["https://myroles.com/roles"].includes('admin') && (
@@ -71,7 +72,7 @@ export default function AppStack() {
           )}} 
           component={ShopStack} />
 
-        <Drawer.Screen 
+        {/* <Drawer.Screen 
         //this drawer will serve as shop screen
           name='Cart' 
           options={{
@@ -80,7 +81,7 @@ export default function AppStack() {
               <AntDesign name="Cart" size={24} color="black" />
             )
           }} 
-          component={CartScreen} />
+          component={CartScreen} /> */}
 
         {/* <Drawer.Screen 
           name='Edit goods' 

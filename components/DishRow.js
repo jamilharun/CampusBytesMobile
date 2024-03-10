@@ -2,10 +2,8 @@ import React, { useEffect } from 'react'
 import {View, Image, TouchableOpacity, Text } from 'react-native'
 import { Minus, Plus } from 'react-native-feather'
 import { urlFor } from '../apis/sanity'
-// import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
 import { useDispatch , useSelector } from 'react-redux';
 import { addtoCart, removefromCart, selectCartItemsById } from '../slices/CartSlice';
-import CartIcon from './CartIcon';
 
 export default function DishRow({item}) {
     const dispatch = useDispatch();

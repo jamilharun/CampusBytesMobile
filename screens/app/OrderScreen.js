@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native'
 import React, { useEffect } from 'react'
 import {View, Image, TouchableOpacity } from 'react-native';
 
-export default function OrderPrepairingScreen() {
+export default function OrderScreen() {
   const navigation = useNavigation();
   useEffect(()=>{
     setTimeout(()=>{

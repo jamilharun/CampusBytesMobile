@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { featured } from '../constants'
 import { useNavigation } from '@react-navigation/native'
-import { ScrollView, TouchableOpacity, View } from 'react-native';
-import { AiOutlineArrowLeft, AiOutlineMinus } from "react-icons/ai";
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectShop } from '../../slices/ShopSlice';
-import { removeFromCart, selectCartItems, selectCarttotal } from '../../slices/CartSlice';
+// import { removefromCart, selectCartItems, selectCarttotal } from '../../slices/CartSlice';
+import { Menu } from 'react-native-feather';
+import { selectCartItems, selectCarttotal } from '../../slices/CartSlice';
+
 export default function CartScreen() {
     const shop = useSelector(selectShop)
     const navigation = useNavigation();
@@ -16,36 +17,40 @@ export default function CartScreen() {
     const dispatch = useDispatch()
 
 
-    useEffect(()=>{
-        const items = cartitems.reduce((group, item)=> {
-            if(group[item.id]){
-                group[item.id].push(item);
-            }else{
-                group[item.id] = [item];
-            }
-            return group;
-        }, {})
-        setGroupedItems(items);
-    }, [cardItems])
+    // useEffect(()=>{
+    //     const items = cartI.reduce((group, item)=> {
+    //         if(group[item.id]){
+    //             group[item.id].push(item);
+    //         }else{
+    //             group[item.id] = [item];
+    //         }
+    //         return group;
+    //     }, {})
+    //     setGroupedItems(items);
+    // }, [cardItems])
     return (
     <View className=' bg-white flex-1'>
         {/* back button */}
         <View className=' relative py-4 shadow-sm'>
-            <TouchableOpacity 
-            onPress={()=> navigation.goBack}
-            className=' bg-EacColor-SelectiveYellow absolute z-10 rounded-full p-1 shadow top-5 left-2'>
-                <AiOutlineArrowLeft stroke='white' strokeWidth={3}/>
-            </TouchableOpacity>
+        <TouchableOpacity 
+            onPress={()=>{
+              navigation.dispatch(DrawerActions.openDrawer())
+            }}
+            className="TahitiGold p-3 rounded-full">
+              <Menu 
+                height="20" 
+                width="20" 
+                strokeWidth={2.5} 
+                className="text-EacColor-TahitiGold"/>
+        </TouchableOpacity>
             <View>
                 <Text className=' text-center font-bold text-xl'>Your Cart</Text>
-                <Text className=' text-center text-gray-500'>{restaurant.name   }</Text>
+                {/* <Text className=' text-center text-gray-500'>{shop.name   }</Text> */}
             </View>
         </View>
         {/* Pick Up only */}
         <View className=' opacity-50 bg-EacColor-SelectiveYellow flex-row px-4 items-center'>
-            <Image source={require()} className=' w-20 h-20 rounded-full'>
-                
-            </Image>
+            {/* <Image source={} className=' w-20 h-20 rounded-full'/> */}
         </View>
         {/* dishes */}
         <ScrollView
@@ -65,7 +70,7 @@ export default function CartScreen() {
                                     <Text className=' flex-1 font-bold text-gray-700'>{dish.name}</Text>
                                     <Text className=' font-semibold text-base'>{dish.price}</Text>
                                     <TouchableOpacity 
-                                        onPress={()=> dispatch(removeFromCart({id: dish.id}))}
+                                        onPress={()=> dispatch(removefromCart({id: dish.id}))}
                                         className=' p-1 rounded-full bg-EacColor-SelectiveYellow'>
                                             <AiOutlineMinus stroke='white' strokeWidth={2} height={20} width={20}/>
                                     </TouchableOpacity>
@@ -82,7 +87,7 @@ export default function CartScreen() {
             </View>
             <View className=' flex-row justify-between'>
                 <Text className=' text-gray-700'>Order fee</Text>
-                <Text className=' text-gray-700'>1% | {orderFee}</Text>
+                {/* <Text className=' text-gray-700'>1% | {orderFee}</Text> */}
             </View>
             <View className=' flex-row justify-between'>
                 <Text className=' text-gray-700 font-extrabold'>total</Text>

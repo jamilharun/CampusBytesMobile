@@ -7,6 +7,7 @@ import { Image } from'react-native';
 import ProfileScreen from '../screens/app/ProfileScreen';
 import ShopScreen from '../screens/app/ShopScreen';
 import ShopStack from './shopStack';
+import CartScreen from '../screens/app/CartScreen';
 
 export default function AppStack() {
   const Drawer = createDrawerNavigator();
@@ -69,6 +70,17 @@ export default function AppStack() {
             <Entypo name="shop" size={24} color="black" />
           )}} 
           component={ShopStack} />
+
+        <Drawer.Screen 
+        //this drawer will serve as shop screen
+          name='Cart' 
+          options={{
+            headerShown: false,
+            drawerIcon: () => (
+              <AntDesign name="Cart" size={24} color="black" />
+            )
+          }} 
+          component={CartScreen} />
 
         {/* <Drawer.Screen 
           name='Edit goods' 

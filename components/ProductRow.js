@@ -3,12 +3,12 @@ import React from 'react'
 import { urlFor } from '../apis/sanity'
 import { Minus, Plus } from 'react-native-feather'
 
-export default function ProductRow({id, name, category, tags, price, image, description, createdAt, isAvailable}) {
+export default function ProductRow({item}) {
   return (
     <View className='px-4 pt-3 bg-white flex flex-col justify-center items-center'>
-        <Image className='w-20 h-20 object-cover' source={{uri: urlFor(image).url(),}}/>
-        <Text>{name}</Text>
-        <Text>₱{price}.00</Text>
+        <Image className='w-20 h-20 object-cover' source={{uri: urlFor(item.image).url(),}}/>
+        <Text>{item.name}</Text>
+        <Text>₱{item.Price}.00</Text>
         <View className='flex-row items-center pt-3'>
             <TouchableOpacity 
                 // onPress={handleDecrease}

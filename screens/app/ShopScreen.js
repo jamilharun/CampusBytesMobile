@@ -9,7 +9,6 @@ import ProductRow from '../../components/ProductRow';
 import { useQuery} from "@tanstack/react-query";
 import { Menu} from "react-native-feather";
 import { axiosfetchShop, fetchShop} from '../../apis/server';
-import reactQuery from '../../apis/reactQuery';
 
 import { useDispatch, useSelector } from 'react-redux'; 
 import { setShop } from '../../slices/ShopSlice';
@@ -25,13 +24,13 @@ export default function ShopScreen({}) {
 
     let automaticPading = cartHasItems && 'p-10';
     
-    const item = params;
+    // const item = params;
 
-    useEffect(()=>{
-        if (item && item.id) {
-            dispatch(setShop({...item}))
-        }
-    })
+    // useEffect(()=>{
+    //     if (item && item.id) {
+    //         dispatch(setShop({...item}))
+    //     }
+    // })
 
     const { data: sdp, isLoading, error, isFetching} = useQuery({ 
         queryKey: [`shopDisplay`], 
@@ -51,11 +50,7 @@ export default function ShopScreen({}) {
 
     return (
         <View >
-        {
-            
-               <CartIcon/>
-            
-        }
+            <CartIcon/>
         <TouchableOpacity 
                 onPress={()=>{
                   navigation.dispatch(DrawerActions.openDrawer())
@@ -119,15 +114,6 @@ export default function ShopScreen({}) {
                             data?.dishes?.map((dish)=> <DishRow
                                 item={dish}
                                 key={dish._id}
-                                // id={dish._id}
-                                // name={dish.dishName}
-                                // category={dish.category}
-                                // tags={dish.tags}
-                                // description={dish.description}
-                                // price={dish.price}
-                                // image={dish.image}
-                                // isAvailable={dish.isAvailable}
-                                // createdAt={dish._createdAt}
                             />)
                         }
                         <View>
@@ -143,15 +129,6 @@ export default function ShopScreen({}) {
                                     data?.products?.map((product)=> <ProductRow
                                         item={product}
                                         key={product._id}
-                                        // id={product._id}
-                                        // name={product.productName}
-                                        // category={product.category}
-                                        // tags={product.tags}
-                                        // price={product.price}
-                                        // image={product.image}
-                                        // description={product.description}
-                                        // createdAt={product._createdAt}
-                                        // isAvailable={product.isAvailable}
                                     />)
                                 }
                             </ScrollView>

@@ -7,10 +7,9 @@ const initialState = {
 export const ShopSlice = createSlice({
   name: 'shop',
   initialState,
-  reducers: {
-    
+  reducers: {    
     setShop: (state, action) => {
-      state.shop += action.payload
+      state.shop = action.payload
     },
   },
 })

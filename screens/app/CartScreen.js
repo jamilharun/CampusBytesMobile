@@ -1,49 +1,53 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigation } from '@react-navigation/native'
-import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
+// import { useNavigation } from '@react-navigation/native'
+import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectShop } from '../../slices/ShopSlice';
 // import { removefromCart, selectCartItems, selectCarttotal } from '../../slices/CartSlice';
-import { Menu } from 'react-native-feather';
-import { selectCartItems, selectCarttotal } from '../../slices/CartSlice';
+import { Minus, Plus } from 'react-native-feather'
+import { removefromCart, selectCartItems, selectCartItemsById, selectCarttotal } from '../../slices/CartSlice';
+import { ChevronLeft, MapPin } from 'react-native-feather';
+import { urlFor } from '../../apis/sanity';
 
-export default function CartScreen() {
+export default function CartScreen({route, navigation}) {
     const shop = useSelector(selectShop)
-    const navigation = useNavigation();
-    const cardItems = useSelector(selectCartItems)
+    // const navigation = useNavigation();
+    const cartItems = useSelector(selectCartItems)
     const carttotal = useSelector(selectCarttotal)
     const [groupedItems, setGroupedItems] = useState({})
-    const orderfee = carttotal * 0.001;
     const dispatch = useDispatch()
 
 
-    // useEffect(()=>{
-    //     const items = cartI.reduce((group, item)=> {
-    //         if(group[item.id]){
-    //             group[item.id].push(item);
-    //         }else{
-    //             group[item.id] = [item];
-    //         }
-    //         return group;
-    //     }, {})
-    //     setGroupedItems(items);
-    // }, [cardItems])
+    if (cartItems.length === 0) {
+        navigation.navigate('featured')
+    }
+
+    useEffect(()=>{
+        
+        const items = cartItems.reduce((group, item)=>{
+            if (group[item._id]) {
+                group[item._id].push(item)
+            } else (
+                group[item._id] = [item]
+            ) 
+            return group;
+        },{})
+        setGroupedItems(items)
+    },[cartItems])
+
+
     return (
     <View className=' bg-white flex-1'>
         {/* back button */}
         <View className=' relative py-4 shadow-sm'>
-        <TouchableOpacity 
-            onPress={()=>{
-              navigation.dispatch(DrawerActions.openDrawer())
-            }}
-            className="TahitiGold p-3 rounded-full">
-              <Menu 
-                height="20" 
-                width="20" 
-                strokeWidth={2.5} 
-                className="text-EacColor-TahitiGold"/>
-        </TouchableOpacity>
-            <View>
+            <View className=''>
+                <TouchableOpacity 
+                    onPress={()=>{navigation.goBack()}}
+                    className="TahitiGold pl-3 rounded-full absolute z-50">
+                        <ChevronLeft
+                        className="text-EacColor-BlackPearl"
+                        style={{ width: 28, height: 28 }}/>
+                </TouchableOpacity>
                 <Text className=' text-center font-bold text-xl'>Your Cart</Text>
                 {/* <Text className=' text-center text-gray-500'>{shop.name   }</Text> */}
             </View>
@@ -62,17 +66,23 @@ export default function CartScreen() {
                 {
                     Object.entries(groupedItems).map(([key, items])=>{
                         let dish = items[0]
+                        // const totalItems = useSelector(state=> selectCartItemsById(state, item._id));
+                        console.log(items);
                         return(
                             <View key={key}
                                 className=' flex-row items-center space-x-3 py-4 bg-white rounded-3xl mx-2 mb-3 shadow-md '>
                                     <Text className=' font-bold text-EacColor-SelectiveYellow'>{items.lenth}</Text>
-                                    <Image className=' h-14 w-14 rounded-full ' source={dish.Image}/>
+                                    <Image className=' h-14 w-14 rounded-full ' source={{uri: urlFor(dish.image).url()}}/>
                                     <Text className=' flex-1 font-bold text-gray-700'>{dish.name}</Text>
-                                    <Text className=' font-semibold text-base'>{dish.price}</Text>
+                                    <View>
+                                        <Text className=' font-semibold text-base'>₱{dish.price}</Text>
+                                        <Text className=' font-semibold text-base'>* {items.length}</Text>
+                                        <Text className=' font-semibold text-base'>₱{dish.price * items.length}</Text>
+                                    </View>
                                     <TouchableOpacity 
-                                        onPress={()=> dispatch(removefromCart({id: dish.id}))}
+                                        onPress={()=> dispatch(removefromCart({_id: dish._id}))}
                                         className=' p-1 rounded-full bg-EacColor-SelectiveYellow'>
-                                            <AiOutlineMinus stroke='white' strokeWidth={2} height={20} width={20}/>
+                                            <Minus className=' bg-EacColor-TahitiGold rounded-full' strokeWidth={2} height={20} width={20} stroke={'white'}/>
                                     </TouchableOpacity>
                             </View>
                         )
@@ -82,21 +92,21 @@ export default function CartScreen() {
         {/* totals */}
         <View className=' bg-EacColor-TahitiGold opacity-50 p-6 px-8 rounded-t-3xl space-y-4'>
             <View className=' flex-row justify-between'>
-                <Text className=' text-gray-700'>Subtotal</Text>
-                <Text className=' text-gray-700'>{carttotal}</Text>
+                <Text className=' text-EacColor-BlackPearl'>Subtotal</Text>
+                <Text className=' text-EacColor-BlackPearl'>{carttotal}</Text>
             </View>
             <View className=' flex-row justify-between'>
-                <Text className=' text-gray-700'>Order fee</Text>
-                {/* <Text className=' text-gray-700'>1% | {orderFee}</Text> */}
+                <Text className=' text-EacColor-BlackPearl'>Order fee</Text>
+                <Text className=' text-EacColor-BlackPearl'>0</Text>
             </View>
             <View className=' flex-row justify-between'>
-                <Text className=' text-gray-700 font-extrabold'>total</Text>
-                <Text className=' text-gray-700 font-extrabold'>{orderfee + carttotal}</Text>
+                <Text className=' text-EacColor-BlackPearl font-black'>total</Text>
+                <Text className=' text-EacColor-BlackPearl font-extrabold'>{carttotal}</Text>
             </View>
             <View>
                 <TouchableOpacity 
-                    onPress={()=> navigation.navigate('Order')}
-                    className=' bg-EacColor-SelectiveYellow p-3 rounded-full'>
+                    onPress={()=> navigation.navigate('Order', {groupedItems})}
+                    className=' bg-EacColor-DeepFir p-3 rounded-full'>
                     <Text className=' text-white text-center font-bold text-lg'> Place Order</Text>
                 </TouchableOpacity>
             </View>

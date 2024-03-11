@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
 // import { useSelector } from 'react-redux'
 import { selectCartItems, selectCarttotal } from '../slices/CartSlice';
@@ -9,9 +9,14 @@ export default function CartIcon() {
     const navigation = useNavigation();
     const cartItems = useSelector(selectCartItems);
     const carttotal = useSelector(selectCarttotal);
-    // if(!cartItems.length) return null;
+    if(!cartItems.length) return null;
+
+    // useEffect(()=>{
+    //     console.log('cardItems', cartItems);
+    //     console.log('carttotal', carttotal);
+    // },[cartItems, carttotal])
   return (
-    <View className=' absolute bottom-5 w-full z-50'>
+    <View className=' absolute bottom-14 w-full z-50'>
         <TouchableOpacity 
         onPress={()=> navigation.navigate('Cart')}
         className=' bg-EacColor-SelectiveYellow flex-row justify-between items-center mx-5 rounded-full p-4 py-3 shadow-lg'>
@@ -19,7 +24,7 @@ export default function CartIcon() {
                 <Text className=' font-extrabold text-white text-lg'>{cartItems.length}</Text>
 
             </View>
-            <Text className=' flex-1 text-center font-extrabold text-white text-lg'>
+            <Text className=' flex-1 overflow-hidden text-center font-extrabold text-white text-lg'>
                 View Cart
 
             </Text>

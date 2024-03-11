@@ -27,23 +27,9 @@ export default function ViewGoods({route, navigation}) {
     const newid = Math.random().toString(36).substring(2);
     
     const dishType = [`${newid}`, 'dish', `${ysd[0]._id}`];
-    // const dishType = [{
-    //     id: `${newid}`,
-    //     type: 'dish',
-    //     shop: {
-    //         _ref: `${ysd[0]._id}`,
-    //         _type:'reference'
-    //     }
-    // }];
+    
     const productType = [`${newid}`, 'product', `${ysd[0]._id}`];
-    // const productType = {
-    //     id: `${newid}`,
-    //     type: 'product',
-    //     shop: {
-    //         _ref:`${ysd[0]._id}`,
-    //         _type:'reference'
-    //     }
-    // };
+    
   return (
     <View >
         <View className="w-full flex flex-row justify-between items-center bg-white pr-4 shadow-sm">

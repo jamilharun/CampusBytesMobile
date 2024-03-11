@@ -32,7 +32,7 @@ export const { addtoCart, removefromCart , emptyCart} = CartSlice.actions
 
 export const selectCartItems = state=> state.cart.items;
 
-export const selectCartItemsById = (state, id)=> state.cart.items.filter(item=> item.id==id )
+export const selectCartItemsById = (state, _id)=> state.cart.items.filter(item=> item._id == _id )
 
 export const selectCarttotal = state=> state.cart.items.reduce((total, item)=> total= total+item.price, 0);
 

@@ -7,20 +7,25 @@ import { addtoCart, removefromCart, selectCartItemsById } from '../slices/CartSl
 
 export default function DishRow({item}) {
     const dispatch = useDispatch();
-    const totalItems = useSelector(state=> selectCartItemsById(state, item.id));
+    const totalItems = useSelector(state=> selectCartItemsById(state, item._id));
 
     const handleIncrease = ()=>{
-        dispatch(addtoCart({...item}))
+        dispatch(addtoCart({
+            _id: item._id,
+            name: item.dishName,
+            _type: item._type,
+            price: item.price,
+            image: item.image,
+            shop: item?.shop,
+        }))
     }
     const handleDecrease = ()=>{
-        dispatch(removefromCart({id: item.id}))
+        dispatch(removefromCart({_id: item._id}))
     }
 
-    // for debugging cart
-    useEffect(()=>{
-        console.log('total dish in cart\n', {totalItems});
-    }, [totalItems])
-
+    // useEffect(()=>{
+    //     console.log(totalItems);
+    // }, [totalItems])
     return (
         <View className=' flex-row items-center bg-white p-3 rounded-3xl shadow-2xl mb-3 mx-3 '>
          
@@ -46,7 +51,7 @@ export default function DishRow({item}) {
                 </View>
                 <View className=' flex-row justify-between pl-3 items-center'>
                     <Text className=' text-gray-700 text-lg font-bold'>
-                    ₱{item.price}.00
+                    ₱{item.price}
                     </Text>
                     <View className='flex-row items-center'>
                         <TouchableOpacity 

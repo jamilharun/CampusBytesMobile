@@ -1,13 +1,10 @@
 import React, { useContext } from 'react'
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import ShopsScreen from '../screens/app/ShopsScreen';
 import { AuthContext } from '../context/AuthContext';
 import { AntDesign, Entypo} from '@expo/vector-icons';
 import { Image } from'react-native';
 import ProfileScreen from '../screens/app/ProfileScreen';
-import ShopScreen from '../screens/app/ShopScreen';
 import ShopStack from './shopStack';
-import CartScreen from '../screens/app/CartScreen';
 import ClientStack from './ClientStack';
 
 export default function AppStack() {
@@ -71,38 +68,6 @@ export default function AppStack() {
             <Entypo name="shop" size={24} color="black" />
           )}} 
           component={ShopStack} />
-
-        {/* <Drawer.Screen 
-        //this drawer will serve as shop screen
-          name='Cart' 
-          options={{
-            headerShown: false,
-            drawerIcon: () => (
-              <AntDesign name="Cart" size={24} color="black" />
-            )
-          }} 
-          component={CartScreen} /> */}
-
-        {/* <Drawer.Screen 
-          name='Edit goods' 
-          options={{
-            headerShown: false,
-          drawerIcon: ()=> (
-            <Entypo name="shop" size={24} color="black" />
-          )}} 
-          component={EditGoods} /> */}
-
-      {/* <Drawer.Screen 
-        name='Shop' 
-        options={{
-          headerShown: false,
-        drawerIcon: ()=> (
-          <Entypo name="shop" size={24} color="black" />
-        )}} 
-        component={ShopScreen} /> */}
-
-
-
     </Drawer.Navigator>
   )
 }

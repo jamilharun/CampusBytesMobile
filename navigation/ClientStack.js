@@ -3,6 +3,7 @@ import React from 'react'
 import ShopScreen from '../screens/app/ShopScreen';
 import CartScreen from '../screens/app/CartScreen';
 import OrderScreen from '../screens/app/OrderScreen';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 export default function ClientStack() {
     const Stack = createNativeStackNavigator();

@@ -39,11 +39,11 @@ export const fetchShop = async () => {
 };
 //fetch by id
 // use case: managing shopOwner shops
-export const fetchShopById = async (id) => {
-  console.log(id);
+export const fetchShopById = async (_id) => {
+  console.log(_id);
   try {
     // api/sanity/shopid/MichaelRodriguez
-    const response = await axios.get(`${ip}/api/sanity/shopid/${id}/`);
+    const response = await axios.get(`${ip}/api/sanity/shop/${_id}/`);
     const data = await response.data;
 
     console.log(data);

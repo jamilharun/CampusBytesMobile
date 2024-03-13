@@ -1,10 +1,9 @@
-import { View, Text, TouchableOpacity, StatusBar, ScrollView, Switch, TextInput, Modal, FlatList } from 'react-native'
+import { View, Text, TouchableOpacity, StatusBar, ScrollView, Switch, TextInput, Modal, FlatList, Alert, Image } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { ChevronLeft, MapPin } from 'react-native-feather';
-import { urlFor } from '../../apis/sanity';
+import { uploadImage, urlFor } from '../../apis/sanity';
 import { FontAwesome5, AntDesign, FontAwesome   } from '@expo/vector-icons';
 import { addToMenu } from '../../apis/server';
-import * as ImagePicker from 'expo-image-picker';
 
 export default function AddGoods({route, navigation}) {
 const {data} = route.params;
@@ -27,34 +26,24 @@ const {data} = route.params;
   const [modalVisible, setModalVisible] = useState(false);
   const [alertModal, setAlertModal] = useState(false);
 
-  useEffect(() => {
-    (async () => {
-      const { status } = await ImagePicker
-        .requestMediaLibraryPermissionsAsync();
-        if (status !== 'granted') {
-        console.error('Permission to access media library was denied');
+  // const [image, setImage] = useState(null)
+  const importImg = async () => {
+    try {
+      //uploading image
+      const result = await uploadImage()
+      if (!result.canceled) {
+        console.log('result :', result);
+        setItemImage(result)
       }
-    })();
-  }, []);
-
-  const pickImage = async () => {
-    console.log('pickImage');
-    
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
-        allowsMultipleSelection: false, // Set this to false to allow only one image selection
-      });
-
-      if (!result.cancelled) {
-        setItemImage(result.uri);
-      }
-    
+    } catch (error) {
+      console.log('fn importingImg failed: ', error);
+    }
   };
 
-
+  useEffect(()=>{
+    console.log(`${itemImage}`);
+  },[itemImage])
+  
   //====================================
   // initialize create item
   useEffect(() => {
@@ -100,7 +89,13 @@ const {data} = route.params;
         shop: itemOwner,
         description: itemDescription,
         type: type,
-        image: itemImage, // Corrected: Use itemImage instead of image
+        image: { //this image is not working
+          _type: 'imageObject',
+          assets: {
+            _ref: itemImage._id,
+            _type:'reference',
+          }
+        }, // Corrected: Use itemImage instead of image
         ...(type === 'dish' && { price: price }),
         ...(type === 'product' && { Price: price }),
         ...(type === 'dish' && { preparationTime: preptime }),
@@ -112,7 +107,7 @@ const {data} = route.params;
 
       try {
         console.log('adding new item', itemData);
-        await addToMenu(itemData);
+        // await addToMenu(itemData);
       } catch (error) {
         // Handle error as needed
         console.error('Error:', error);
@@ -145,14 +140,11 @@ const {data} = route.params;
                 {itemImage? 
                     (
                       <View className=' w-full h-72 flex justify-center items-center'>
-                        <Image source={{uri: urlFor(itemImage).url()}} className=' w-full h-72' />
+                         {/* img for debugging */}
+                        <Image source={{uri: urlFor(itemImage?._id).url()}} className=' w-full h-72' />
                         <TouchableOpacity 
                           className='absolute flex justify-center items-center'
-                          onPress={async ()=>{
-                            console.log('clicked add image');
-                            const imageUri = await pickImage()
-                            setItemImage(imageUri)
-                            }}>
+                          onPress={()=>{importImg()}}>
                           <FontAwesome  name="edit" size={64} color="lightblue" />
                         </TouchableOpacity>
                       </View>
@@ -161,7 +153,7 @@ const {data} = route.params;
                     (<View className=' w-full h-72 bg-gray-300 flex justify-center items-center' >
                       <TouchableOpacity 
                         className='absolute flex justify-center items-center'
-                        onclick={async ()=>{pickImage()}}>
+                        onPress={()=>{importImg()}}>
                           <FontAwesome5 name="plus" size={24} color="black" />
                       </TouchableOpacity>
                     </View>)

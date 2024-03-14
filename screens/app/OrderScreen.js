@@ -18,7 +18,7 @@ export default function OrderScreen({groupedItems}) {
   // })
 
   const cancelOrder = () => {
-    navigation.navigate('featured');
+    navigation.goBack()
     dispatch(emptyCart())
   }
 

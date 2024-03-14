@@ -2,18 +2,15 @@ import { StatusBar } from "expo-status-bar";
 import React, { useContext, useEffect, useState } from "react";
 import { View, Text, TextInput, ScrollView, Image, ActivityIndicator, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
-import Categories from "../../components/categories";
-import FeaturedRow from "../../components/featuredRow";
-import { Map, Menu, Search, Sliders } from "react-native-feather";
-import { AuthContext } from "../../context/AuthContext";
-import { sanityFetch } from "../../apis/sanity";
-import { fetchAllDishes, fetchingProdDish } from "../../utils/query";
-import ShopCard from "../../components/ShopCard";
+import { AuthContext } from "../../context/AuthContext";import { sanityFetch, urlFor } from "../../apis/sanity";
 import { DrawerActions, useNavigation } from "@react-navigation/native";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import DishCard from "../../components/dishCard";
 import Header from "../../components/header";
+import { fetchShop } from "../../apis/server";
+import { MapPin } from 'react-native-feather';
+import { useDispatch, useSelector } from "react-redux";
+import { selectShop, setShop } from "../../slices/ShopSlice";
+import { emptyCart } from "../../slices/CartSlice";
 
 // sample user data | remove this after testing
 // import { user } from '../constants/sampleuser';
@@ -21,50 +18,37 @@ export default function HomeScreen() {
   const [loading, setLoading] = useState(false)
   const [event, setEvent] = useState("Welcome Home");
   const [err, setErr] = useState(null);
-  // const [shopShowCase, getShopShowCase] = useState(null)
-  // auth0 line of code!!!
   const { user } = useContext(AuthContext);
   const navigation = useNavigation();
 
   const queryClient = useQueryClient();
+  const dispatch = useDispatch();
 
-  const fetchAllAvailable = async () => {
-    try {
-      const sanRes = await sanityFetch(fetchAllDishes);
-      if (!sanRes) {
-        console.log('Error in fetching data from sanity', sanRes);
-        return null
-      } else {
-        console.log(`fetching successful`);
-        return sanRes;
-      }
-    } catch (error) {
-      const fE = `Error in fetching data from sanity: ${error}`;
-      console.log(fE);
-      return null;    
-    }
-  };
-
-  const { data: dishes, isLoading, error, isFetching} = useQuery({ 
-    queryKey: ['dishes'], 
-    queryFn: fetchAllAvailable,
-    gcTime: 10000,
-  });
+  const shopItem = useSelector(selectShop)
   
-  console.log({isLoading, isFetching, error, dishes});
+  //debigging
+  useEffect(()=>{
+    
+    if (shopItem) {
+        console.log(shopItem);
+    }
+},[]);
 
-  if (isLoading) {
-    return <Text>Loading....</Text>
-  }
-
-  if (error) {
-    setErr(error);
-  }
-  //filler Code for debugging
-  if (!user) {
-    // console.log("no data found");
-    // alert("no data found");
-  }
+  const { data: sdp, isLoading, error, isFetching} = useQuery({ 
+    queryKey: [`shopDisplay`], 
+    queryFn: fetchShop,
+    gcTime: 10000,
+    staleTime: 10000,
+});
+console.log({isLoading, isFetching, error, sdp});
+if (isLoading) {
+    return (
+        <View className='w-full h-64 flex justify-center items-center'>
+          <Text className='text-2xl'>Loading...</Text>
+        </View>
+      )
+}
+if (error) setErr(error);
 
   return (
     <SafeAreaView className="bg-white">
@@ -79,34 +63,53 @@ export default function HomeScreen() {
           paddingBottom: 20,
         }}
       >
-      
-        {/* categories */}
-        <Categories />
-
         <View className=" mt-5">
           {
-            dishes ? (
-              dishes?.map((dish)=>{
-                return(
-                  <DishCard
-                  isPromoted={      dish?.isPromoted}
-                  dishName={        dish?.dishName}
-                  isFeatured={      dish?.isFeatured}
-                  isAvailable={     dish?.isAvailable}
-                  preparationTime={ dish?.preparationTime}
-                  _id={             dish?._id}
-                  description={     dish?.description}
-                  price={           dish?.price}
-                  image={           dish?.image}
-                  shop={            dish?.shop}
-                  tags={            dish?.tags}/>
-                )
-              })
-            ) : (
-              <View className=" flex justify-center items-center">
-                 <ActivityIndicator size={"large"} />
-               </View>
-            )
+            sdp?.map(data => {
+              return (
+                <TouchableOpacity 
+                onPress={()=> navigation.navigate('featured', {data})}
+                  key={data._id}>
+                    <View 
+                      style={{borderTopLeftRadius:40, borderTopRightRadius: 40}}
+                      className=' bg-white '>
+                      <View>
+                        <Image className='h-32 w-full object-cover rounded-xl mt-1' source={{ uri: urlFor(data?.cover).url()}}/>
+                      </View>
+                      <View className='flex flex-row mx-3 '>
+                          <Image 
+                            className='h-32 w-24 object-cover rounded-xl mt-1' 
+                            source={{ uri: urlFor(data?.logo).url()}}/>
+                              <View className=' px-5'>
+                                <Text className=' text-3xl font-bold'>{data?.shopName}</Text>
+                                <View className=' flex-row space-x-2 my-1'>
+                                <View className=' flex-row items-center space-x-1'>
+                                <Text className=' text-xs'>
+                                <Text className=' text-EacColor-SelectiveYellow'>rating</Text>
+                              </Text>
+                            </View>
+                            <View className=' flex-row items-center space-x-1'>
+                              <MapPin color='gray' width='15'/>
+                              <Text numberOfLines={3} className=' text-gray-700 text-xs'>Nearby.{data?.address}</Text>
+                            </View>
+                          </View>
+                            <Text numberOfLines={3} className=' text-gray-500 mt-2'>{data?.description}</Text>
+                              {
+                                  data?.tags?.map((tag) => {
+                                      return (
+                                          <View key={tag._id} className=' flex-row items-center space-x-1'>
+                                              <Text className=' text-gray-500 text-xs'>{tag.tagName}</Text>
+                                          </View>
+                                      )
+                                  })
+                              }
+                          </View>
+                        </View>
+                    </View>
+                  </TouchableOpacity>
+              )
+            }) 
+                
           }
         </View>
       </ScrollView>

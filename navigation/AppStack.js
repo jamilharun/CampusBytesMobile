@@ -16,7 +16,7 @@ export default function AppStack() {
   const user = {
     name: 'test',
     picture: 'https://i.pinimg.com/236x/e7/ed/0d/e7ed0d5d069eef78a5bcc21e77242e71.jpg',
-    "https://myroles.com/roles": ["Admin"]
+    "https://myroles.com/roles": ["shopOwner"]
   }
 
   const debug = () => {
@@ -54,20 +54,22 @@ export default function AppStack() {
         }} 
         component={ClientStack} /> 
 
-      {/* {
-        user["https://myroles.com/roles"] && user["https://myroles.com/roles"].includes('admin') && (
+      {
+        user["https://myroles.com/roles"] && 
+        user["https://myroles.com/roles"].includes('shopOwner') && (
           //preparational statement for admin
+          <Drawer.Screen 
+            name='YourShop' 
+            options={{
+              headerShown: false,
+            drawerIcon: ()=> (
+              <Entypo name="shop" size={24} color="black" />
+            )}} 
+            component={ShopStack} />
+          
           )
-      } */}
+      }
 
-        <Drawer.Screen 
-          name='YourShop' 
-          options={{
-            headerShown: false,
-          drawerIcon: ()=> (
-            <Entypo name="shop" size={24} color="black" />
-          )}} 
-          component={ShopStack} />
     </Drawer.Navigator>
   )
 }

@@ -4,6 +4,7 @@ import ShopScreen from '../screens/app/ShopScreen';
 import CartScreen from '../screens/app/CartScreen';
 import OrderScreen from '../screens/app/OrderScreen';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import HomeScreen from '../screens/app/HomeScreen';
 
 export default function ClientStack() {
     const Stack = createNativeStackNavigator();
@@ -11,9 +12,14 @@ export default function ClientStack() {
   return (
     <Stack.Navigator
             screenOptions={{ headerShown: false }}
-            initialRouteName='featured'
+            initialRouteName='home'
         >
             {/* initial page */}
+            <Stack.Screen
+                name='home'
+                options={{ headerShown: false }}
+                component={HomeScreen}
+            />
             <Stack.Screen
                 name='featured'
                 options={{ headerShown: false }}

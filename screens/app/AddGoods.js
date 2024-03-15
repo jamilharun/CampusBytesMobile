@@ -29,14 +29,10 @@ const {data} = route.params;
   // const [image, setImage] = useState(null)
   const importImg = async () => {
     try {
-      //uploading image
       const result = await uploadImage()
-      if (!result.canceled) {
-        console.log('result :', result);
-        setItemImage(result)
-      }
+      setItemImage(result)
     } catch (error) {
-      console.log('fn importingImg failed: ', error);
+      console.log('importImg failed:', error); 
     }
   };
 
@@ -81,7 +77,14 @@ const {data} = route.params;
     const saveChanges = async () => {
       const price = parseInt(itemPrice, 10);
       const preptime = parseInt(preparationTime, 10);
-
+      
+      const formData = new FormData();
+      formData.append('image', { 
+        uri: itemImage.assets[0].uri, 
+        name: new Date() + '_image', 
+        type: 'image/jpeg' 
+      });
+      
       const itemData = {
         _id: itemId, //generate new id
         ...(type === 'dish' && { dishName: itemName }),
@@ -89,13 +92,14 @@ const {data} = route.params;
         shop: itemOwner,
         description: itemDescription,
         type: type,
-        image: { //this image is not working
-          _type: 'imageObject',
-          assets: {
-            _ref: itemImage._id,
-            _type:'reference',
-          }
-        }, // Corrected: Use itemImage instead of image
+        // image: itemImage,
+        // image: { 
+        //   _type: 'imageObject',
+        //   assets: {
+        //     _ref: itemImage._id,
+        //     _type:'reference',
+        //   }
+        // }, 
         ...(type === 'dish' && { price: price }),
         ...(type === 'product' && { Price: price }),
         ...(type === 'dish' && { preparationTime: preptime }),
@@ -106,8 +110,8 @@ const {data} = route.params;
       };
 
       try {
-        console.log('adding new item', itemData);
-        // await addToMenu(itemData);
+        console.log('adding new item', itemData, formData);
+        await addToMenu(itemData, formData);
       } catch (error) {
         // Handle error as needed
         console.error('Error:', error);
@@ -141,7 +145,7 @@ const {data} = route.params;
                     (
                       <View className=' w-full h-72 flex justify-center items-center'>
                          {/* img for debugging */}
-                        <Image source={{uri: urlFor(itemImage?._id).url()}} className=' w-full h-72' />
+                        <Image source={{uri: itemImage?.assets[0]?.uri}} className=' w-full h-72' />
                         <TouchableOpacity 
                           className='absolute flex justify-center items-center'
                           onPress={()=>{importImg()}}>

@@ -25,10 +25,22 @@ export default function ProfileScreen() {
         </TouchableOpacity>
       </View>
       <View>
-        <Image />
-        {/* <Text>{user.sub}</Text>
+        <Image source={{uri: user.picture}} 
+          style={{width: 100, 
+                  height: 100, 
+                  borderRadius: 50}}/>
+        <Text>{user.sub}</Text>
+        <Text>{user.given_name}</Text>
+        <Text>{user.family_name}</Text>
+        <Text>{user.nickname}</Text>
         <Text>{user.name}</Text>
-        <Text>{user.email}</Text> */}
+        <Text>{user.email}</Text>
+        <Text>Roles</Text>
+        {
+          user["https://myroles.com/roles"].map((role, index) => (
+            <Text key={index}>{role}</Text>
+          ))
+        }
       </View>
     </SafeAreaView>
   )

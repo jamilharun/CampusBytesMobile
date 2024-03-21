@@ -36,6 +36,13 @@ export default function CartScreen({route, navigation}) {
     },[cartItems])
 
 
+    useEffect(()=>{ 
+    const preProcessedData = {
+        groupedItems,
+
+    }    
+    })
+    // console.log(groupedItems);
     return (
     <View className=' bg-white flex-1'>
         {/* back button */}
@@ -69,9 +76,9 @@ export default function CartScreen({route, navigation}) {
                     <Image className='h-32 w-full object-cover rounded-xl mt-1' source={{ uri: urlFor(shop?.cover).url()}}/>
                 </View>
                 <View className='flex flex-row mx-3 '>
-                    <Image 
+                    {/* <Image 
                         className='h-32 w-24 object-cover rounded-xl mt-1' 
-                        source={{ uri: urlFor(shop?.logo).url()}}/>
+                        source={{ uri: urlFor(shop?.logo).url()}}/> */}
                     <View className=' px-5'>
                         <Text className=' text-3xl font-bold'>{shop?.shopName}</Text>
                         <View className=' flex-row space-x-2 my-1'>
@@ -88,7 +95,8 @@ export default function CartScreen({route, navigation}) {
             Object.entries(groupedItems).map(([key, items])=>{
             let dish = items[0]
             // const totalItems = useSelector(state=> selectCartItemsById(state, item._id));
-            console.log(items);
+            console.log(dish.name, '|', items.length);
+            // console.log(items);
             return(
             <View key={key}
                 className=' flex-row items-center space-x-3 py-4 bg-white rounded-3xl mx-2 mb-3 shadow-md '>
@@ -117,19 +125,22 @@ export default function CartScreen({route, navigation}) {
                 <Text className=' text-EacColor-BlackPearl'>Subtotal</Text>
                 <Text className=' text-EacColor-BlackPearl'>{carttotal}</Text>
             </View>
-            <View className=' flex-row justify-between'>
+            {/* <View className=' flex-row justify-between'>
                 <Text className=' text-EacColor-BlackPearl'>Order fee</Text>
-                <Text className=' text-EacColor-BlackPearl'>0</Text>
-            </View>
+                <Text className=' text-EacColor-BlackPearl'>?</Text>
+            </View> */}
             <View className=' flex-row justify-between'>
                 <Text className=' text-EacColor-BlackPearl font-black'>total</Text>
                 <Text className=' text-EacColor-BlackPearl font-extrabold'>{carttotal}</Text>
             </View>
             <View>
                 <TouchableOpacity 
-                    onPress={()=> navigation.navigate('Order', {groupedItems})}
+                    onPress={()=>{
+                        console.log('groupedItems: ',groupedItems);
+                        navigation.navigate('Pay', groupedItems)
+                    }}
                     className=' bg-EacColor-DeepFir p-3 rounded-full'>
-                    <Text className=' text-white text-center font-bold text-lg'> Place Order</Text>
+                    <Text className=' text-white text-center font-bold text-lg'> Pick Payment Method</Text>
                 </TouchableOpacity>
             </View>
         </View>

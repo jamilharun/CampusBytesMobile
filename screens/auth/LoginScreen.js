@@ -4,13 +4,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import { ChevronLeft } from "react-native-feather";
 import { AuthContext } from "../../context/AuthContext";
-// import { text } from 'express';
+import { Entypo } from '@expo/vector-icons';
 
 export default function LoginScreen() {
   const [event, setEvent] = useState("login screen");
+  const [loggingIn, setLoggingIn] = useState(null)
 
   const navigation = useNavigation();
-  const { onLogin, isLoading } = useContext(AuthContext);
+  const { onLogin, isLoading, error } = useContext(AuthContext);
 
   // const [email, setEmail] = useState(null)
   // const [password, setPassword] = useState(null)
@@ -54,25 +55,28 @@ export default function LoginScreen() {
         </View>
         <View className="flex-row justify-center">
           {/* <Image  style={{width: 200, height: 200}}/> */}
+          <Entypo name="shop" size={154} color="white" />        
+          {/* <Image className="w-64 h-64  text-EacColor-BlackPearl" source={require('../../assets/favicon.png')}/> */}
         </View>
+
       </SafeAreaView>
       <View
-        className="flex-1 bg-white px-8 pt-8 "
+        className="flex-1 bg-white px-8 pt-20 "
         style={{ borderTopLeftRadius: 50, borderTopRightRadius: 50 }}
       >
-        <Image className="fit  text-EacColor-BlackPearl" source={require('../../assets/favicon.png')}/>
-        {isLoading ? (
+        {loggingIn ? (
           <View className=" flex justify-center items-center">
             <ActivityIndicator size={"large"} />
           </View>
         ) : (
           <View>  
-            <Text className="text-2xl pb-4 pt-36 ">Login</Text>
-
+            <Text className="text-2xl pb-4 ">Login</Text>
             {/* auth0 login */}
-            <TouchableOpacity
+            <View className=''>
+              <TouchableOpacity
               onPress={() => {
                 toLogin();
+                setLoggingIn(true)
               }}
               className=" py-3 bg-EacColor-BlackPearl rounded-xl flex-row justify-self-center justify-center items-center "
             >
@@ -84,7 +88,13 @@ export default function LoginScreen() {
                 className="  "
                 style={{ width: 35, height: 35 }}
               />
-            </TouchableOpacity>
+              </TouchableOpacity>
+              <View className='pt-24'>
+                <Text className='text-justify'>
+                  "I wanted to let you know that the program I've shared with you is part of our thesis project. It's a React Native application developed as part of our research. Your feedback on its functionality and usability would be greatly appreciated."
+                </Text>
+              </View>
+            </View>
           </View>
           )
         }

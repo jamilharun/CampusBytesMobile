@@ -17,11 +17,14 @@ export default function YourShop() {
 
     const [err, setErr] = useState(null);
 
-    const requestData = 'MichaelRodriguez'
+    const requestData = 'google-oauth2|103360425900701922708'
 
+    const shopid = '42662a99-47b5-490d-915b-597b2f8cdbf9'
     // const [ysd, setYsd] = useState(null);
     // useEffect(()=>{
     //   const ysd = fetchShopById(requestData);
+
+
     //   setYsd(ysd);
     // })
     
@@ -30,6 +33,8 @@ export default function YourShop() {
         queryFn: () => fetchShopById(requestData),
         gcTime: 10000,
         keepPreviousData: true,
+        // refetchInterval: 10000,
+        refetchOnWindowFocus: true
     });
       
     console.log({isLoading, isFetching, error, ysd});

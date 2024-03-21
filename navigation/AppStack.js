@@ -6,26 +6,39 @@ import { Image } from'react-native';
 import ProfileScreen from '../screens/app/ProfileScreen';
 import ShopStack from './shopStack';
 import ClientStack from './ClientStack';
+import { toDatabase } from '../apis/server';
 
 export default function AppStack() {
   const Drawer = createDrawerNavigator();
+
+  // const { loggedIn, isLoading, user } = useContext(AuthContext);
+  // if (user) {
+  //   const saveUser = async() => {
+  //      await toDatabase(user.email, 
+  //                       user.family_name, 
+  //                       user.given_name, 
+  //                       user.nickname, 
+  //                       user.name,
+  //                       user.picture,
+  //                       user.sub );
+  //      console.log('okay inserted');
+  //   }
+  //   saveUser()
+  // };
 
 
   
   // predefine data
   const user = {
-    name: 'test',
-    picture: 'https://i.pinimg.com/236x/e7/ed/0d/e7ed0d5d069eef78a5bcc21e77242e71.jpg',
+    email: 'jamilharunl45@gmail.com',
+    family_name: "Harun",
+    given_name: "jamil",
+    nickname: "jamilharunl45",
+    name: 'Jamil Harun',
+    picture: "https://lh3.googleusercontent.com/a/ACg8ocKdr4jAE4jOVsBGUZukEUqK4Yd5E8A3svreYKbwT48f0W8=s96-c",
+    sub: "google-oauth2|103360425900701922708",
     "https://myroles.com/roles": ["shopOwner"]
   }
-
-  const debug = () => {
-    user["https://myroles.com/roles"].map((role) => (
-      console.log('role:', role)
-    ))
-  }
-  debug();
-  
   
   return (
     <Drawer.Navigator screenOptions={{headerShown: false}} initialRouteName='Home'>

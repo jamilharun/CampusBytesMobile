@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { ChevronLeft, MapPin } from 'react-native-feather';
 import { uploadImage, urlFor } from '../../apis/sanity';
 import { FontAwesome5, AntDesign, FontAwesome   } from '@expo/vector-icons';
-import { addToMenu } from '../../apis/server';
+import { addToMenu, uploadImageServer } from '../../apis/server';
 
 export default function AddGoods({route, navigation}) {
 const {data} = route.params;
@@ -30,6 +30,13 @@ const {data} = route.params;
   const importImg = async () => {
     try {
       const result = await uploadImage()
+
+      const formData = new FormData();
+      formData.append('image', result.assets[0]);
+
+      const uploadToServer = await uploadImageServer(formData);
+      console.log('uploadToServer', uploadToServer);
+
       setItemImage(result)
     } catch (error) {
       console.log('importImg failed:', error); 
@@ -79,11 +86,9 @@ const {data} = route.params;
       const preptime = parseInt(preparationTime, 10);
       
       const formData = new FormData();
-      formData.append('image', { 
-        uri: itemImage.assets[0].uri, 
-        name: new Date() + '_image', 
-        type: 'image/jpeg' 
-      });
+      formData.append('image', itemImage.assets[0]);
+
+      
       
       const itemData = {
         _id: itemId, //generate new id

@@ -13,13 +13,13 @@ export default function AppNavigation() {
   const loggedIn = true;
   const isLoading = false;
 
-  // if (isLoading) {
-  //   return (
-  //     <View className=" flex justify-center items-center">
-  //       <ActivityIndicator size={"large"} />
-  //     </View>
-  //   );
-  // }
+  if (isLoading) {
+    return (
+      <View className=" flex justify-center items-center">
+        <ActivityIndicator size={"large"} />
+      </View>
+    );
+  }
 
   if (!loggedIn)
     return (

@@ -2,6 +2,7 @@ import  {createClient}   from "@sanity/client";
 import  ImageUrlBuilder  from "@sanity/image-url";
 import * as ImagePicker from 'expo-image-picker';
 import * as Asset from 'expo-asset';
+import { uploadImageServer } from "./server";
 
 const client = createClient({
   projectId: process.env.EXPO_PUBLIC_SANITY_DATABASE_ID,
@@ -36,6 +37,7 @@ export const uploadImage = async () => {
     });
     if (!result.cancelled) {
       console.log(result);
+      
       return result ;
     }
     

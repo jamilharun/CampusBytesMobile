@@ -5,6 +5,7 @@ import CartScreen from '../screens/app/CartScreen';
 import OrderScreen from '../screens/app/OrderScreen';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from '../screens/app/HomeScreen';
+import PaymentScreen from '../screens/app/PaymentScreen';
 
 export default function ClientStack() {
     const Stack = createNativeStackNavigator();
@@ -30,6 +31,11 @@ export default function ClientStack() {
                 name='Cart'
                 options={{ headerShown: false }}
                 component={CartScreen}
+            />
+            <Stack.Screen
+                name='Pay'
+                options={{ headerShown: false }}
+                component={PaymentScreen}
             />
 
             <Stack.Screen

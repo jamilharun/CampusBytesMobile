@@ -34,13 +34,23 @@ export default function HomeScreen() {
     }
 },[]);
 
-  const { data: sdp, isLoading, error, isFetching} = useQuery({ 
+const { data: sdp, isLoading, error, isFetching} = useQuery({ 
     queryKey: [`shopDisplay`], 
     queryFn: fetchShop,
-    gcTime: 10000,
-    staleTime: 10000,
+    gcTime: 10000000,
+    staleTime: 100000000,
+    refetchInterval: 99999999999,
+    refetchOnWindowFocus: true,
+    retry: (failureCount, error) => {
+      // Define your retry logic here
+      if (failureCount < 3) { // Retry only twice (including the initial attempt)
+        return true; // Retry on the next error
+      }
+      return false; // Don't retry after the second attempt
+    }
+
 });
-console.log({isLoading, isFetching, error, sdp});
+// console.log({isLoading, isFetching, error, sdp});
 if (isLoading) {
     return (
         <View className='w-full h-64 flex justify-center items-center'>
@@ -49,6 +59,11 @@ if (isLoading) {
       )
 }
 if (error) setErr(error);
+
+const handleRefresh = () => {
+  refetch(); // Manually refetch data on button click or other event
+};
+
 
   return (
     <SafeAreaView className="bg-white">
@@ -66,48 +81,50 @@ if (error) setErr(error);
         <View className=" mt-5">
           {
             sdp?.map(data => {
-              return (
-                <TouchableOpacity 
-                onPress={()=> navigation.navigate('featured', {data})}
-                  key={data._id}>
-                    <View 
-                      style={{borderTopLeftRadius:40, borderTopRightRadius: 40}}
-                      className=' bg-white '>
-                      <View>
-                        <Image className='h-32 w-full object-cover rounded-xl mt-1' source={{ uri: urlFor(data?.cover).url()}}/>
-                      </View>
-                      <View className='flex flex-row mx-3 '>
-                          <Image 
-                            className='h-32 w-24 object-cover rounded-xl mt-1' 
-                            source={{ uri: urlFor(data?.logo).url()}}/>
-                              <View className=' px-5'>
-                                <Text className=' text-3xl font-bold'>{data?.shopName}</Text>
-                                <View className=' flex-row space-x-2 my-1'>
-                                <View className=' flex-row items-center space-x-1'>
-                                <Text className=' text-xs'>
-                                <Text className=' text-EacColor-SelectiveYellow'>rating</Text>
-                              </Text>
-                            </View>
-                            <View className=' flex-row items-center space-x-1'>
-                              <MapPin color='gray' width='15'/>
-                              <Text numberOfLines={3} className=' text-gray-700 text-xs'>Nearby.{data?.address}</Text>
-                            </View>
-                          </View>
-                            <Text numberOfLines={3} className=' text-gray-500 mt-2'>{data?.description}</Text>
-                              {
-                                  data?.tags?.map((tag) => {
-                                      return (
-                                          <View key={tag._id} className=' flex-row items-center space-x-1'>
-                                              <Text className=' text-gray-500 text-xs'>{tag.tagName}</Text>
-                                          </View>
-                                      )
-                                  })
-                              }
-                          </View>
+              if (data.isActive === true) {
+                return (
+                  <TouchableOpacity 
+                  onPress={()=> navigation.navigate('featured', {data})}
+                    key={data._id}>
+                      <View 
+                        style={{borderTopLeftRadius:40, borderTopRightRadius: 40}}
+                        className=' bg-white '>
+                        <View>
+                          <Image className='h-32 w-full object-cover rounded-xl mt-1' source={{ uri: urlFor(data?.cover).url()}}/>
                         </View>
-                    </View>
-                  </TouchableOpacity>
-              )
+                        <View className='flex flex-row mx-3 '>
+                            <Image 
+                              className='h-32 w-24 object-cover rounded-xl mt-1' 
+                              source={{ uri: urlFor(data?.logo).url()}}/>
+                                <View className=' px-5'>
+                                  <Text className=' text-3xl font-bold'>{data?.shopName}</Text>
+                                  <View className=' flex-row space-x-2 my-1'>
+                                  <View className=' flex-row items-center space-x-1'>
+                                  <Text className=' text-xs'>
+                                  <Text className=' text-EacColor-SelectiveYellow'>rating</Text>
+                                </Text>
+                              </View>
+                              <View className=' flex-row items-center space-x-1'>
+                                <MapPin color='gray' width='15'/>
+                                <Text numberOfLines={3} className=' text-gray-700 text-xs'>Nearby.{data?.address}</Text>
+                              </View>
+                            </View>
+                              <Text numberOfLines={3} className=' text-gray-500 mt-2'>{data?.description}</Text>
+                                {
+                                    data?.tags?.map((tag) => {
+                                        return (
+                                            <View key={tag._id} className=' flex-row items-center space-x-1'>
+                                                <Text className=' text-gray-500 text-xs'>{tag.tagName}</Text>
+                                            </View>
+                                        )
+                                    })
+                                }
+                            </View>
+                          </View>
+                      </View>
+                    </TouchableOpacity>
+                )
+              }
             }) 
                 
           }

@@ -96,7 +96,9 @@ export default function ShopScreen({route, navigation}) {
                         <View className='pb-36 bg-white'>
                             <Text className=' px-4 py-4 text-2xl font-bold'>Menu</Text>
                             {
-                                data?.dishes?.map((dish)=> <DishRow
+                                data?.dishes?.map((dish)=> 
+                                
+                                dish.isAvailable && <DishRow
                                     item={dish}
                                     key={dish._id}
                                 />)
@@ -111,7 +113,8 @@ export default function ShopScreen({route, navigation}) {
                                     paddingHorizontal:15
                                 }}>
                                     {
-                                        data?.products?.map((product)=> <ProductRow
+                                        data?.products?.map((product)=>
+                                        product.isAvailable && <ProductRow
                                             item={product}
                                             key={product._id}
                                         />)

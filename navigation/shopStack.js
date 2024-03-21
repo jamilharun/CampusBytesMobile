@@ -6,6 +6,7 @@ import ViewGoods from '../screens/app/ViewGoods';
 import QueueListScreen from '../screens/app/QueueListScreen';
 import EditDish from '../screens/app/EditDish';
 import EditProducts from '../screens/app/EditProducts';
+import QueueDetails from '../screens/app/QueueDetails';
 
 export default function ShopStack() {
     const Stack = createNativeStackNavigator();
@@ -36,6 +37,13 @@ export default function ShopStack() {
 
             {/* ------------------------- */}
             <Stack.Screen
+                name='QueueDetails'
+                options={{ headerShown: false }}
+                component={QueueDetails}
+            />
+            
+            
+            {/* <Stack.Screen
                 name='addGoods'
                 options={{ headerShown: false }}
                 component={AddGoods}
@@ -50,7 +58,7 @@ export default function ShopStack() {
                 name='EditProduct'
                 options={{ headerShown: false }}
                 component={EditProducts}
-            />
+            /> */}
         </Stack.Navigator>
   
     )

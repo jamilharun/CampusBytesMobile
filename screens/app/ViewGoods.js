@@ -26,9 +26,9 @@ export default function ViewGoods({route, navigation}) {
 
     const newid = Math.random().toString(36).substring(2);
     
-    const dishType = [`${newid}`, 'dish', `${ysd[0]._id}`];
+    const dishType = [`${newid}`, 'dish', `${ysd[0]?._id}`];
     
-    const productType = [`${newid}`, 'product', `${ysd[0]._id}`];
+    const productType = [`${newid}`, 'product', `${ysd[0]?._id}`];
     
   return (
     <View >
@@ -59,7 +59,7 @@ export default function ViewGoods({route, navigation}) {
             contentContainerStyle={{
                 paddingHorizontal:15
             }}> 
-                <TouchableOpacity 
+                {/* <TouchableOpacity 
                     className={' ml-3 w-60 rounded-2xl border-4  border-gray-500 opacity-75'} //if dish is isAvailable, add border color green. if not add gray border
                     onPress={()=>{ toAdd(dishType)}}>
                     <View className=' w-full h-72 rounded-t-2xl bg-gray-300 flex justify-center items-center'>
@@ -69,14 +69,15 @@ export default function ViewGoods({route, navigation}) {
                     <Text className='text-xl font-extrabold'>add new dish</Text>
                     <Text className='text-lg font-bold'>₱ price</Text>
                     </View>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
             {
             ysd[0]?.dishes?.map((dish)=>{
                 return (
                 <TouchableOpacity 
-                    key={dish._id}
+                    key={dish?._id}
                     className={` ml-3 w-60 rounded-2xl border-4 ${dish.isAvailable ? '  border-EacColor-TahitiGold' : ' border-gray-500 opacity-75'}`} //if dish is isAvailable, add border color green. if not add gray border
-                    onPress={()=>{toDish(dish) }}>
+                    // onPress={()=>{toDish(dish) }}
+                    >
                     <Image className=' w-full h-72 rounded-t-2xl' source={{uri: urlFor(dish?.image).url()}} />
                     <View className='flex flex-col px-5'>
                     <Text className='text-xl font-extrabold'>{dish.dishName}</Text>
@@ -87,8 +88,8 @@ export default function ViewGoods({route, navigation}) {
                         {
                             dish?.tags?.map((tag)=>{
                             return (
-                                <View key={tag._id} className='bg-EacColor-TahitiGold p-1 rounded-full'>
-                                <Text className='text-white'>{tag.tagName}</Text>
+                                <View key={tag?._id} className='bg-EacColor-TahitiGold p-1 rounded-full'>
+                                <Text className='text-white'>{tag?.tagName}</Text>
                                 </View>
                             )
                             })
@@ -114,7 +115,7 @@ export default function ViewGoods({route, navigation}) {
             contentContainerStyle={{
                 paddingHorizontal:15
             }}>
-                <TouchableOpacity 
+                {/* <TouchableOpacity 
                     className={' ml-3 w-60 rounded-2xl border-4  border-gray-500 opacity-75'} //if dish is isAvailable, add border color green. if not add gray border
                     onPress={()=>{toAdd(productType)}}>
                     <View className=' w-full h-72 rounded-t-2xl bg-gray-300 flex justify-center items-center'>
@@ -124,14 +125,15 @@ export default function ViewGoods({route, navigation}) {
                     <Text className='text-xl font-extrabold'>add new product</Text>
                     <Text className='text-lg font-bold'>₱ price</Text>
                     </View>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
             {
                 ysd[0]?.products?.map((product)=>{
                 return (
                     <TouchableOpacity 
                     key={product?._id} 
                     className={` ml-3 w-60 rounded-2xl border-4 ${product.isAvailable ? '  border-EacColor-TahitiGold' : ' border-gray-500 opacity-75'}`}
-                    onPress={()=>{toProduct(product)}}>
+                    // onPress={()=>{toProduct(product)}}
+                    >
                     <Image className=' w-full h-72 rounded-t-2xl' source={{uri: urlFor(product?.image).url()}} />
                     <View className='flex flex-col px-5'>
                         <Text className='text-xl font-extrabold'>{product.productName}</Text>

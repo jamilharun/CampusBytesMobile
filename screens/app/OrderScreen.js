@@ -1,43 +1,38 @@
 import { useNavigation } from '@react-navigation/native'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import {View, Image, TouchableOpacity, Text, Dimensions, StyleSheet, StatusBar, ScrollView } from 'react-native';
 import { ChevronLeft, MapPin } from 'react-native-feather';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectShop } from '../../slices/ShopSlice';
 import { emptyCart } from '../../slices/CartSlice';
 import { MaterialIcons } from '@expo/vector-icons';
+import { AuthContext } from '../../context/AuthContext';
+import { useQuery } from '@tanstack/react-query';
 
 export default function OrderScreen({route, navigation}) {
   // const {} = route.params;
-
+  const { user } = useContext(AuthContext);
   const shop = useSelector(selectShop)
   const dispatch = useDispatch();
   
   const [loading, setLoading] = useState(null);
-  // useEffect(()=>{
-  //   setTimeout(()=>{
-  //     navigation.navigate('Prepairing')
-  //   }, 3000)
-  // })
-  // useEffect(()=>{
-  //   console.log('new order');
-  //   setLoading(true)
-  //   const newOrder = () => {
-  //     const cartSort = Object.entries(groupedItems).map(([key, items])=>{
-  //       let item = items[0];
-        
-  //       let name = item
-  //       let quantity = items.length
-  //     })
-  //   };
-  //   newOrder()
-  // })
+  
+//   const { data: } = useQuery({ 
+//     queryKey: [`checkout data`], 
+//     queryFn: fetchCheckout(user.sub),
+//     gcTime: 10000000,
+//     staleTime: 1000,
+//     refetchInterval: 100000,
+//     refetchOnWindowFocus: true,
+//     retry: (failureCount, error) => {
+//       // Define your retry logic here
+//       if (failureCount < 3) { // Retry only twice (including the initial attempt)
+//         return true; // Retry on the next error
+//       }
+//       return false; // Don't retry after the second attempt
+//     }
+// });
 
-  const cancelOrder = () => {
-    navigation.goBack()
-    dispatch(emptyCart())
-  }
-  // console.log('group items: ', groupedItems);
   console.log('shop: ',shop);
   return (
     
@@ -62,7 +57,7 @@ export default function OrderScreen({route, navigation}) {
                             <Text className=' mt-2text-gray-700 font-semibold'>Your Order is Upcoming!!</Text>
                         </View>
                         <View className='pt-5'>
-                          <Text className=' text-5xl text-center'>1</Text>
+                          <Text className=' text-5xl text-center'>0</Text>
                         </View>
                       </View>
                       

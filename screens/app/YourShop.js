@@ -17,7 +17,7 @@ export default function YourShop() {
 
     const [err, setErr] = useState(null);
 
-    const requestData = 'google-oauth2|103360425900701922708'
+    const requestData = user.sub ? user.sub : 'google-oauth2|103360425900701922708'
 
     const shopid = '42662a99-47b5-490d-915b-597b2f8cdbf9'
     // const [ysd, setYsd] = useState(null);

@@ -1,8 +1,25 @@
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { ChevronLeft, MapPin } from 'react-native-feather';
+import { getAllShopQueue, getMyShopQueue } from '../../apis/server';
 
-export default function QueueListScreen() {
+export default function QueueListScreen({route, navigation}) {
+  const {ysd} = route.params;
+
+  console.log(ysd[0]._id);
+  const shopid = ysd[0]._id;
+  // console.log('shopid: ', shopid);
+
+  const { data: allQueue } = useQuery({ 
+        queryKey: [`allqueue`], 
+        queryFn: () => getAllShopQueue(shopid),
+        gcTime: 10000, // Garbage collection time
+        staleTime: 4 * 60 * 1000, // Consider data stale after 4 minutes
+        refetchInterval: 1 * 30 * 1000, // Refetch every minute (can be adjusted)
+        refetchOnWindowFocus: true,
+    });  
+  
+    console.log(allQueue);
   return (
     <View>
       <View className="w-full flex flex-row justify-between items-center bg-white pr-4 shadow-sm">

@@ -136,8 +136,8 @@ export default function CartScreen({route, navigation}) {
             <View>
                 <TouchableOpacity 
                     onPress={()=>{
-                        console.log('groupedItems: ',groupedItems);
-                        navigation.navigate('Pay', groupedItems)
+                        // console.log('groupedItems: ');
+                        navigation.navigate('Pay')
                     }}
                     className=' bg-EacColor-DeepFir p-3 rounded-full'>
                     <Text className=' text-white text-center font-bold text-lg'> Pick Payment Method</Text>

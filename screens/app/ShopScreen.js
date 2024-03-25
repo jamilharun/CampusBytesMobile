@@ -6,18 +6,21 @@ import CartIcon from '../../components/CartIcon';
 import { urlFor } from '../../apis/sanity';
 import ProductRow from '../../components/ProductRow';
 import { ChevronLeft, MapPin } from 'react-native-feather';
-import { useDispatch } from 'react-redux';
-import { setShop } from '../../slices/ShopSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectShop, setShop } from '../../slices/ShopSlice';
 import { emptyCart } from '../../slices/CartSlice';
 
 export default function ShopScreen({route, navigation}) {
     const {data} = route.params;
+    // const shop = useSelector(selectShop);
     const [cartHasItems, getCartHasItems] = useState(null)
     const [err, setErr] = useState(null);
     const dispatch = useDispatch();
 
+
     useEffect(()=>{
         if (data && data._id) {
+            dispatch(emptyCart())
             dispatch(setShop({
                 id: data._id,
                 shopName: data.shopName,

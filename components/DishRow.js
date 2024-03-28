@@ -37,8 +37,8 @@ export default function DishRow({item}) {
             style={{height: 100, width: 100}}/>
             <View className=' flex flex-1 space-y-3'>
                 <View className=' pl-3'>
-                    <Text className='text-xl'>{item.name}</Text>
-                    <Text numberOfLines={3} className=' text-gray-700'>{item.description}</Text>
+                    <Text className='text-xl'>{item.dishName}</Text>
+                    <Text numberOfLines={1} className=' text-gray-700'>{item.description}</Text>
                     {
                         item?.tags?.map((tag) => {
                             return (

@@ -7,32 +7,15 @@ import { useSelection } from 'react-redux';
 import { selectShop } from '../../slices/ShopSlice';
 
 
-export default function QueueScreen() {
-    const Shop = useSelection(selectShop)
-    const navigation = useNavigation
-
+export default function QueueScreen({route, navigation}) {
+    const {userQueue} = route.params;
+    const { user } = useContext(AuthContext);
+    const [userCheckOut, setUserCheckOut] = useState()
+      
 
     return (
         <View className=' flex-1'>
             {/* map view */}
-            <MapView
-                initialRegion={{
-                    latitude: shop.lat,
-                    longtitude: shop.lng,
-                    latitudeDental: 0.01,
-                    longtitudeDentla: 0.01
-                }}
-                className=' flex-1'
-                mapType='standard'>
-                    <Marker
-                        coordinate={{
-                            latitude: Shop.lat,
-                            longtitude: Shop.lng
-                        }}
-                        title={Shop.name}
-                        description={Shop.description}
-                        pinColor={themeColors.bgColor(1)}/>
-            </MapView>
             <View className=' rounded-t-3xl -mt-12 bg-white relative'>
                 <View className=' flex-row justify-between px-5 pt-10'>
                     <View>

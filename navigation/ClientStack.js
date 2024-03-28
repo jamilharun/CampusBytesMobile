@@ -7,6 +7,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from '../screens/app/HomeScreen';
 import PaymentScreen from '../screens/app/PaymentScreen';
 import QueueDetails from '../screens/app/QueueDetails';
+// import QueueScreen from '../screens/app/QueueScreen';
 
 export default function ClientStack() {
     const Stack = createNativeStackNavigator();
@@ -45,6 +46,14 @@ export default function ClientStack() {
                 component={OrderScreen}
             />
             
+            
+            {/* <Stack.Screen
+                name='Queue'
+                options={{ headerShown: false }}
+                component={QueueScreen}
+            /> */}
+
+
             <Stack.Screen
                 name='queueDetails'
                 options={{ headerShown: false }}

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { AuthContext } from '../context/AuthContext';
 import { AntDesign, Entypo} from '@expo/vector-icons';
@@ -12,44 +12,41 @@ export default function AppStack() {
   const Drawer = createDrawerNavigator();
 
   const { loggedIn, isLoading, user } = useContext(AuthContext);
-  if (user) {
-    const saveUser = async() => {
-       await toDatabase(user?.email, 
-                        user?.family_name, 
-                        user?.given_name, 
-                        user?.nickname, 
-                        user?.name,
-                        user?.picture,
-                        user?.sub );
-       console.log('okay inserted');
-    }
-    saveUser()
-  };
-
-
   
+  useEffect(()=>{
+    if (user || loggedIn) {
+      try {
+        toDatabase(user?.email, user?.family_name, user?.given_name, user?.nickname, user?.name, user?.picture, user?.sub );
+      } catch (error) {
+        console.log('connection error: ',error);
+      }
+    }
+  },[user])
+
+  const userData = user ? user : {
+    email: 'TestUser@email.com',
+    family_name: "ForDubbing",
+    given_name: "User123",
+    nickname: "sample user",
+    name: 'user123',
+    picture: "https://i.ytimg.com/vi/BEZmXjh8l0M/hq720_2.jpg?sqp=-oaymwEYCIACEOADSFryq4qpAwoIARUAAIhC0AEB&rs=AOn4CLDg2TpFauEmoM4VAD2gaMR_nJwSTQ",
+    sub: "user.sub",
+    "https://myroles.com/roles": ["shopOwner", "Special", "Admin", "Client"]
+  }
   // predefine data
   // const user = {
-  //   email: 'jamilharunl45@gmail.com',
-  //   family_name: "Harun",
-  //   given_name: "jamil",
-  //   nickname: "jamilharunl45",
-  //   name: 'Jamil Harun',
-  //   picture: "https://lh3.googleusercontent.com/a/ACg8ocKdr4jAE4jOVsBGUZukEUqK4Yd5E8A3svreYKbwT48f0W8=s96-c",
-  //   sub: "google-oauth2|103360425900701922708",
-  //   "https://myroles.com/roles": ["shopOwner"]
   // }
   
   return (
     <Drawer.Navigator screenOptions={{headerShown: false}} initialRouteName='Home'>
       <Drawer.Screen 
-        name={user?.name}
+        name={userData.name}
         options={{ 
           headerShown: false,
           // drawerLabel: 'Profile',
           // title:'Profile',
           drawerIcon: () => (
-            <Image source={{ uri:  user?.picture }} style={{width: 40, height: 40, borderRadius: 100}}/>
+            <Image source={{ uri: userData.picture }} style={{width: 40, height: 40, borderRadius: 100}}/>
           ),
           headerShown: false 
         }}
@@ -68,9 +65,9 @@ export default function AppStack() {
         component={ClientStack} /> 
 
       {
-        user["https://myroles.com/roles"] && 
-        user["https://myroles.com/roles"]?.includes('shopOwner') && (
-          //preparational statement for admin
+        userData["https://myroles.com/roles"] && 
+        userData["https://myroles.com/roles"]?.includes('shopOwner') && (
+          // preparational statement for admin
           <Drawer.Screen 
             name='YourShop' 
             options={{

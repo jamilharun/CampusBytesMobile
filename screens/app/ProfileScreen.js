@@ -9,6 +9,17 @@ export default function ProfileScreen() {
   const navigation = useNavigation();
 
   const { user } = useContext(AuthContext);
+
+  const userData = user ? user : {
+    email: 'TestUser@email.com',
+    family_name: "ForDubbing",
+    given_name: "User123",
+    nickname: "sample user",
+    name: 'user123',
+    picture: "https://lh3.googleusercontent.com/a/ACg8ocKdr4jAE4jOVsBGUZukEUqK4Yd5E8A3svreYKbwT48f0W8=s96-c",
+    sub: "google-oauth2|103360425900701922708",
+    "https://myroles.com/roles": ["shopOwner", "Special", "Admin", "Client"]
+  }
   return (
     <SafeAreaView>
       <View>
@@ -28,12 +39,12 @@ export default function ProfileScreen() {
         
         <View className='w-full h-44 flex justify-end items-center bg-gray-200'>
           <Image 
-            source={{ uri: user.picture ? user.picture : "https://lh3.googleusercontent.com/a/ACg8ocKdr4jAE4jOVsBGUZukEUqK4Yd5E8A3svreYKbwT48f0W8=s96-c"}}
+            source={{ uri: userData.picture }}
             className='rounded-full w-36 h-36'/>
         </View>
         <View className='flex justify-center items-center flex-col'>
-            <Text className='text-xl'>{user.name ? user.name : 'test profile'}</Text>
-            <Text className='text-xl'>id: {user.sub ? user.sub : '1234567890'}</Text>
+            <Text className='text-xl'>{userData.name}</Text>
+            <Text className='text-xl'>id: {userData.sub}</Text>
           
         </View>
       </View>

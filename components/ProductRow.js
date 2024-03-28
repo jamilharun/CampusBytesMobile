@@ -7,11 +7,11 @@ import { addtoCart, removefromCart, selectCartItemsById } from '../slices/CartSl
 
 export default function ProductRow({item}) {
     const dispatch = useDispatch();
-    const totalItems = useSelector(state=> selectCartItemsById(state, item._id));
+    const totalItems = useSelector(state=> selectCartItemsById(state, item?._id));
 
     const handleIncrease = ()=>{
         dispatch(addtoCart({
-            _id: item._id,
+            _id: item?._id,
             name: item.productName,
             _type: item._type,
             price: item.Price,
@@ -20,7 +20,7 @@ export default function ProductRow({item}) {
         }))
     }
     const handleDecrease = ()=>{
-        dispatch(removefromCart({_id: item._id}))
+        dispatch(removefromCart({_id: item?._id}))
     }
 
     // useEffect(()=>{
@@ -29,7 +29,7 @@ export default function ProductRow({item}) {
     
   return (
     <View className='px-4 pt-3 bg-white flex flex-col justify-center items-center'>
-        <Image className='w-20 h-20 object-cover' source={{uri: urlFor(item.image).url(),}}/>
+        <Image className='w-20 h-20 object-cover' source={{uri: urlFor(item?.image).url(),}}/>
         <Text>{item.productName}</Text>
         <Text>₱{item.Price}</Text>
         <View className='flex-row items-center pt-3'>

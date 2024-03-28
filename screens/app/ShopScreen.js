@@ -9,14 +9,20 @@ import { ChevronLeft, MapPin } from 'react-native-feather';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectShop, setShop } from '../../slices/ShopSlice';
 import { emptyCart } from '../../slices/CartSlice';
+import { selectFilterAmount } from '../../slices/FilterSlice';
+import { dish } from '../../constants/predefineData';
 
 export default function ShopScreen({route, navigation}) {
     const {data} = route.params;
     // const shop = useSelector(selectShop);
+    // console.log(data);
     const [cartHasItems, getCartHasItems] = useState(null)
     const [err, setErr] = useState(null);
     const dispatch = useDispatch();
-
+    const setedFilterAmount = useSelector(selectFilterAmount)
+    
+    const [dishData, getDishData] = useState(data.dishes)
+    const [prodData, getProdData] = useState(data.products)
 
     useEffect(()=>{
         if (data && data._id) {
@@ -39,6 +45,8 @@ export default function ShopScreen({route, navigation}) {
             }))
         }
     },[]);
+    
+    console.log(setedFilterAmount); // Log the value to verify it's defined and holds an expected value
 
     let automaticPading = cartHasItems && 'p-10';
     return (
@@ -97,15 +105,31 @@ export default function ShopScreen({route, navigation}) {
                             </View>
                         </View>
                         <View className='pb-36 bg-white'>
-                            <Text className=' px-4 py-4 text-2xl font-bold'>Menu</Text>
-                            {
-                                data?.dishes?.map((dish)=> 
-                                
-                                dish.isAvailable && <DishRow
-                                    item={dish}
-                                    key={dish._id}
-                                />)
-                            }
+                            <View className='flex flex-row items-center justify-between'>
+                                <Text className=' px-4 py-4 text-2xl font-bold'>Menu</Text>
+                                {
+                                    setedFilterAmount > 10 && 
+                                    <View className='flex flex-row items-center justify-center'>
+                                        <Text className='text-xl'>Your Budget:</Text>
+                                        <Text className=' pr-4 py-4 text-2xl font-bold'> {setedFilterAmount}</Text>
+                                    </View>
+                                }
+                            </View>
+                            {setedFilterAmount === '0' || setedFilterAmount === '' || !setedFilterAmount ? (
+                              dishData?.map((dish) => (
+                                <DishRow item={dish} key={dish._id} />
+                              ))
+                            ) : null}
+
+                            {dishData?.map((dish) => (
+                              // Conditionally render DishRow based on setedFilterAmount
+                              dish.price <= setedFilterAmount ? (
+                                <DishRow key={dish._id} item={dish} />
+                              ) : null
+                            ))}
+
+
+
                             <View>
                                 <Text className=' px-4 py-4 text-2xl font-bold'>Others</Text>
                                 <ScrollView 
@@ -115,13 +139,19 @@ export default function ShopScreen({route, navigation}) {
                                 contentContainerStyle={{
                                     paddingHorizontal:15
                                 }}>
-                                    {
-                                        data?.products?.map((product)=>
-                                        product.isAvailable && <ProductRow
-                                            item={product}
-                                            key={product._id}
-                                        />)
-                                    }
+                                {setedFilterAmount === '0' || setedFilterAmount === '' || !setedFilterAmount ? (
+                                  prodData?.map((prod) => (
+                                    <ProductRow item={prod} key={prod._id} />
+                                  ))
+                                ) : null}
+
+                                {prodData?.map((prod) => (
+                                  // Conditionally render DishRow based on setedFilterAmount
+                                  prod.Price <= setedFilterAmount ? (
+                                    <ProductRow key={prod._id} item={prod} />
+                                  ) : null
+                                ))}
+
                                 </ScrollView>
                             </View>
                         </View>

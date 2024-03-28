@@ -7,12 +7,12 @@ import AuthStack from "./AuthStack";
 import AppStack from "./AppStack";
 
 export default function AppNavigation() {
-  // const { loggedIn, isLoading } = useContext(AuthContext);
+  const { loggedIn, isLoading } = useContext(AuthContext);
 
   // test for debugging
-  const loggedIn = true;
-  const isLoading = false;
-
+  // const loggedIn = true;
+  // const isLoading = false;
+  const auth0isOn = loggedIn ? loggedIn : 'true'
   if (isLoading) {
     return (
       <View className=" flex justify-center items-center">
@@ -21,7 +21,7 @@ export default function AppNavigation() {
     );
   }
 
-  if (!loggedIn)
+  if (!auth0isOn)
     return (
       <NavigationContainer>
         <AuthStack />
@@ -31,7 +31,7 @@ export default function AppNavigation() {
 
   return (
     <NavigationContainer>
-      {loggedIn == null ? <AuthStack /> : <AppStack />}
+      {auth0isOn == null ? <AuthStack /> : <AppStack />}
     </NavigationContainer>
   );
 }

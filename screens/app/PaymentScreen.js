@@ -1,14 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Switch,
-  Image,
-  ScrollView,
-  TextInput,
-  StatusBar,
-} from 'react-native';
+import {View,Text,TouchableOpacity,Switch,Image,ScrollView,TextInput,StatusBar,} from 'react-native';
 import { ChevronLeft, MapPin } from 'react-native-feather';
 import { AuthContext } from '../../context/AuthContext';
 import { useDispatch, useSelector } from 'react-redux';
@@ -18,7 +9,6 @@ import { checkPaySuccess, initializePay, newOrder } from '../../apis/server';
 import { openURL, Linking } from 'expo-linking';
 
 export default function PaymentScreen({ route, navigation }) {
-  // const { groupedItems } = route.params;
   const dispatch = useDispatch();
 
   const { user } = useContext(AuthContext);
@@ -41,17 +31,27 @@ export default function PaymentScreen({ route, navigation }) {
   const [location, setLocation] = useState("")
   const [special, isSpecial] = useState(false)
 
-  const [paymentInfo, getPaymentInfo] = useState(null)
+  const [paymentInfo, getPaymentInfo] = useState([])
   const [paymentInt, getPaymentInt] = useState(null)
   const [next_action, getNext_Action] = useState(null)
 
   const [loading, setLoading] = useState(null)
   const [allProcessSuccess, setAllProcessSuccess] = useState(null)
   
-  const [paymentUrl, setPaymentUrl] = useState(null);
-  const [fetching, setFetching] = useState(false);
-  useEffect(()=>{
+  const [created_at , setCreated_at] = useState(null)
 
+  const userData = user ? user : {
+    email: 'TestUser@email.com',
+    family_name: "ForDubbing",
+    given_name: "User123",
+    nickname: "sample user",
+    name: 'user123',
+    picture: "https://i.ytimg.com/vi/BEZmXjh8l0M/hq720_2.jpg?sqp=-oaymwEYCIACEOADSFryq4qpAwoIARUAAIhC0AEB&rs=AOn4CLDg2TpFauEmoM4VAD2gaMR_nJwSTQ",
+    sub: "user.sub",
+    "https://myroles.com/roles": ["shopOwner", "Special", "Admin", "Client"]
+  }
+  
+  useEffect(()=>{
     const items = cartItems.reduce((group, item)=>{
         if (group[item._id]) {
             group[item._id].push(item)
@@ -62,13 +62,14 @@ export default function PaymentScreen({ route, navigation }) {
     },{})
     setGroupedItems(items)
 
-    if (user["https://myroles.com/roles"] && 
-        user["https://myroles.com/roles"]?.includes('Special')) {
+    if (userData["https://myroles.com/roles"] && 
+        userData["https://myroles.com/roles"]?.includes('Special')) {
         console.log('has special');
         isSpecial(true)
+    } else {
+        isSpecial(false)
     }
 },[cartItems])
-
 
   useEffect(() => {
     const randomNumber = Math.floor(Math.random() * 1000) + 1;
@@ -100,23 +101,18 @@ export default function PaymentScreen({ route, navigation }) {
         getVatRate(0)
     }
   };
+
   useEffect(()=>{
     if (name &&
         email &&
         phoneNumber &&
-        selectedPaymentMethod) {setPlaseOrderReady(true)}
-      
-        console.log('\nto initializePay');
-        console.log(shop.id, totalAmount, name, email, phoneNumber, selectedPaymentMethod);
-      
-        // console.log('\nto initializeOrder');
-        // console.log('paymentRef', 'user.sub', shop.id, randomNum, groupedItems, serviceFee, deliveryFee, totalAmount, special, 'created_at');
-
-        const totals = !delivery ? carttotal + (vatRate * carttotal) : carttotal + deliveryFee + (vatRate * carttotal)
-      // console.log(totals);
+        selectedPaymentMethod) {
+          setPlaseOrderReady(true)
+        }
+      const totals = !delivery ? carttotal + (vatRate * carttotal) : carttotal + deliveryFee + (vatRate * carttotal)
       getTotalAmount(totals)
   },[name, email, phoneNumber, selectedPaymentMethod, delivery])
-  
+
   useEffect(()=>{
     try {
       const url = next_action.url;
@@ -136,9 +132,9 @@ export default function PaymentScreen({ route, navigation }) {
           // setFetching(true);
           const result = await initializePay(shop.id, totalAmount, name, email, phoneNumber, selectedPaymentMethod, created_at);
           // setFetching(false);
-          getPaymentInfo(result.data.result)
-          getPaymentInt(result.data.createPayIntent.data.id)
-          getNext_Action(result.data.attachPayIntent.data.attributes.next_action.redirect)
+          getPaymentInfo(result.result)
+          getPaymentInt(result.createPayIntent.data.id)
+          getNext_Action(result.attachPayIntent.data.attributes.next_action.redirect)
           // console.log(result);
         // }
       // });
@@ -147,7 +143,9 @@ export default function PaymentScreen({ route, navigation }) {
       console.log('error in paymongo instance', error);
     }
   }
-
+  
+  
+  
   const handlePlaceOrder = async () => {
     setLoading(true)
     const created_at = new Date().toISOString().replace('T', ' ').replace('Z', '');
@@ -158,14 +156,14 @@ export default function PaymentScreen({ route, navigation }) {
       
       await paymongoInstance(created_at)
 
-      useEffect(async()=>{
+      // useEffect(async()=>{
         console.log(paymentInfo);
         const isSuccess = await checkPaySuccess(paymentInfo.paymentid)
 
         if (isSuccess) {
           // console.log(paymentInfo);
           // console.log('\n',paymentInt, 'user.sub', shop.id, randomNum, groupedItems, serviceFee, deliveryFee, totalAmount, special, created_at);
-          const checkingout = await newOrder( paymentInfo.paymentid, 'user.sub', shop.id, randomNum, groupedItems, 
+          const checkingout = await newOrder( paymentInfo?.paymentid, userData.sub, shop.id, randomNum, groupedItems, 
                                               serviceFee, deliveryFee, totalAmount, special, created_at,
                                               location)
           if (checkingout) {
@@ -179,7 +177,7 @@ export default function PaymentScreen({ route, navigation }) {
           console.log('checkout: ', checkingout)
           navigation.navigate('Order')
         }
-      },[paymentInfo])
+      // },[paymentInfo])
       
   } catch (error) {
       console.error('Error processing payment:', error);
@@ -188,7 +186,7 @@ export default function PaymentScreen({ route, navigation }) {
     }
   };
 
-
+ 
   return (
 <View className=' bg-white flex-1'>
 {/* back button */}
@@ -209,10 +207,8 @@ export default function PaymentScreen({ route, navigation }) {
 {/* <View className=' opacity-50 bg-EacColor-SelectiveYellow flex-row px-4 items-center'>
     <Image source={} className=' w-20 h-20 rounded-full'/>
 </View> */}
-<ScrollView 
-            style={{ marginTop: 20, marginHorizontal: 10 }}>
-
-<Text>Please fill up your information below:</Text>
+<ScrollView style={{ marginTop: 20, marginHorizontal: 10 }}>
+  <Text>Please fill up your information below:</Text>
         <View className='mb-4'>
           <Text className=' text-EacColor-BlackPearl'>Name</Text>
           <TextInput
@@ -239,9 +235,9 @@ export default function PaymentScreen({ route, navigation }) {
             keyboardType='email-address' // Set keyboard type for email
             />
         </View>
-        {/* {
-        user["https://myroles.com/roles"] && 
-        user["https://myroles.com/roles"]?.includes('Special') &&
+        {
+        userData["https://myroles.com/roles"] && 
+        userData["https://myroles.com/roles"]?.includes('Special') &&
         
         <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
           <Switch
@@ -250,7 +246,7 @@ export default function PaymentScreen({ route, navigation }) {
           />
           <Text style={{ marginLeft: 10 }}>delivery</Text>
         </View>
-        } */}
+        }
         {
         delivery && <View className='mb-4'>
           <Text className=' text-EacColor-BlackPearl'>Location</Text>
@@ -348,8 +344,6 @@ export default function PaymentScreen({ route, navigation }) {
               ) : (
                 <TouchableOpacity 
                     onPress={()=>{
-                        // console.log('groupedItems: ',groupedItems);
-                        // navigation.navigate('')
                         handlePlaceOrder()
                     }}
                     className=' bg-EacColor-DeepFir p-3 rounded-full'>
@@ -367,7 +361,5 @@ export default function PaymentScreen({ route, navigation }) {
     </View>
 </View>
 </View>
-
-
   );
 }

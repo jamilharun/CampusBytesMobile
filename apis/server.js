@@ -100,11 +100,11 @@ export const initializePay = async (
     });
     if (response.data) {
       console.log('initializePay successful on attempt');
-      return response;
+      return response.data;
     }
   } catch (error) {
     console.log('Server connection failed on attempt', error);
-    
+    return null;
   }
   console.log('All retries failed. Payment initialization unsuccessful.');
   return null;

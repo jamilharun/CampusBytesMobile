@@ -35,13 +35,6 @@ export default function CartScreen({route, navigation}) {
         setGroupedItems(items)
     },[cartItems])
 
-
-    useEffect(()=>{ 
-    const preProcessedData = {
-        groupedItems,
-
-    }    
-    })
     // console.log(groupedItems);
     return (
     <View className=' bg-white flex-1'>

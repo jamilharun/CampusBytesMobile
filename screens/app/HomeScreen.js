@@ -25,40 +25,10 @@ export default function HomeScreen() {
   const dispatch = useDispatch();
 
   const shopItem = useSelector(selectShop)
+
+  const [userQueue, setUserQueue] = useState(null)
   
-  //debigging
-  useEffect(()=>{
-    
-    if (shopItem) {
-        console.log(shopItem);
-    }
-},[]);
-
-const id = 'user.sub'
-
-const { data: userQueue } = useQuery({
-  queryKey: [`userQueue`],
-  queryFn: () => getMyQueue(id),
-  gcTime: 10000, // Garbage collection time
-  staleTime: 4 * 60 * 1000, // Consider data stale after 4 minutes
-  refetchInterval: 1 * 30 * 1000, // Refetch every minute (can be adjusted)
-  keepPreviousData: true,
-  // refetchInterval: 10000,
-  refetchOnWindowFocus: true
-  // enabled: !error && !isLoading && userQueue?.length > 0, // Only refetch if no error, not loading, and data exists
-});
-
-// console.log('dsfsdfds',userQueue);
-// const { data: userCheckout} = useQuery({ 
-//   queryKey: [`userCheckout`], 
-//   queryFn: () => fetchCheckout(id),
-//   gcTime: 60 * 1000,
-//   staleTime: 12 * 60 * 1000,
-//   refetchInterval: 10 * 60 * 1000,
-//   refetchOnWindowFocus: true,
-// });
-
-
+  
 
 const { data: sdp, isLoading, error, isFetching} = useQuery({ 
     queryKey: [`shopDisplay`], 
@@ -66,6 +36,7 @@ const { data: sdp, isLoading, error, isFetching} = useQuery({
     gcTime: 12 * 60 * 60 * 1000,
     staleTime: 24 * 60 * 60 * 1000,
     refetchInterval: 12 * 60 * 60 * 1000,
+    keepPreviousData: true, 
     refetchOnWindowFocus: true,
     retry: (failureCount, error) => {
       // Define your retry logic here
@@ -85,9 +56,9 @@ if (isLoading) {
 }
 if (error) setErr(error);
 
-const handleRefresh = () => {
-  refetch(); // Manually refetch data on button click or other event
-};
+// const handleRefresh = () => {
+//   refetch(); // Manually refetch data on button click or other event
+// };
 
 
   return (
@@ -95,31 +66,7 @@ const handleRefresh = () => {
       <StatusBar barStyle="dark-Content" />
 
       <Header/>
-      {
-        userQueue && 
-        <View className=' w-fullflex justify-center items-center z-20'>
-              {
-                userQueue.map((item, index) => (
-                  <TouchableOpacity 
-                  key={item.data}
-                  onPress={()=>{
-                  // navigation.navigate('queueDetails', {item})
-                }}
-                className=' w-3/4 h-16 rounded-md flex flex-row justify-center items-center'>
-                <View className="bg-EacColor-DeepFir w-10 h-10 rounded-full flex justify-center items-center">
-                  <Text className='text-white text-2xl'>{item.index}</Text>
-                </View>
-                <View className='flex flex-row justify-center items-center'>
-                  <Text className='text-EacColor-BlackPearl text-lg'>checkoutid: </Text>
-                  <View >
-                    <Text className='text-2xl'>{item.data}</Text>
-                  </View>
-                </View>
-              </TouchableOpacity>
-                ))
-              }
-        </View>
-      }
+      
 
       <ScrollView
         className='pb-36'

@@ -15,18 +15,18 @@ import { emptyCart } from "../../slices/CartSlice";
 // sample user data | remove this after testing
 // import { user } from '../constants/sampleuser';
 export default function HomeScreen() {
-  const [loading, setLoading] = useState(false)
-  const [event, setEvent] = useState("Welcome Home");
+  // const [loading, setLoading] = useState(false)
+  // const [event, setEvent] = useState("Welcome Home");
   const [err, setErr] = useState(null);
   const { user } = useContext(AuthContext);
   const navigation = useNavigation();
 
   const queryClient = useQueryClient();
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
-  const shopItem = useSelector(selectShop)
+  // const shopItem = useSelector(selectShop)
 
-  const [userQueue, setUserQueue] = useState(null)
+  // const [userQueue, setUserQueue] = useState(null)
   
   
 
@@ -59,14 +59,32 @@ if (error) setErr(error);
 // const handleRefresh = () => {
 //   refetch(); // Manually refetch data on button click or other event
 // };
-
+const checkingout = {
+  checkoutid: 12,
+  paymentref: 89,
+  userref: "user.sub",
+  shopref: "42662a99-47b5-490d-915b-597b2f8cdbf9",
+  groupnum: 653,
+  servicetax: 111,
+  deliveryfee: 0,
+  totalamount: 1000,
+  location: "",
+  isspecial: false,
+  iscanceled: false,
+  isfinished: false,
+  created_at: "dfsdfsdfsdf"
+}
 
   return (
     <SafeAreaView className="bg-white">
       <StatusBar barStyle="dark-Content" />
 
       <Header/>
-      
+
+      {/* for debugging only */}
+      <TouchableOpacity onPress={()=>navigation.navigate('Order', {checkingout})}>
+        <Text>order debugging</Text>
+      </TouchableOpacity>
 
       <ScrollView
         className='pb-36'

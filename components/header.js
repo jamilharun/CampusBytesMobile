@@ -17,7 +17,7 @@ export default function Header() {
     const [userQueue, setUserQueue] = useState(null)
     const [openFilter, setOpenFilter] = useState(false)
     const [filterAmount, setFilterAmount] = useState(setedFilterAmount)
-    
+    // const [waitTime, setwaitTime] = useState(1000)
     const userData = user ? user : {
       email: 'TestUser@email.com',
       family_name: "ForDubbing",
@@ -29,19 +29,35 @@ export default function Header() {
       "https://myroles.com/roles": ["shopOwner", "Special", "Admin", "Client"]
     }
 
+    
+    
     useEffect(() => {
+      const waitTime = 2 * 60 * 1000;
       const fetchData = async () => {
         const response = await getMyQueue(userData.sub)
-        // const newData = await response.json();
+        console.log('sdfsdfsdf: ', response);
         setUserQueue(response);
+        // if (!response) {
+        //   waitTime = 60 * 60 * 1000;
+        //   console.log('response none ', waitTime);
+        //   // setwaitTime(time)
+        //   setUserQueue(response)
+        // } else {
+        //   waitTime = response[0].index >= 20 ? 3 * 600 * 1000 : 600 * 1000;
+        //   console.log('response ', waitTime);
+        //   // setwaitTime(time)
+        //   setUserQueue(response);
+        // }        
       };
-      const intervalId = setInterval(fetchData, 5000); // Refetch every 5 seconds
+      console.log(waitTime);
+      const intervalId = setInterval(fetchData, waitTime); // Refetch every 5 seconds
       return () => clearInterval(intervalId); // Cleanup function to stop interval on unmount
     }, []); // Empty dependency array ensures effect runs only once after mount
     
     const handleFilterAmount = (newAmount) => {
       dispatch(setAmount(newAmount))
     };
+
 
     return (
         <View className="flex-row items-center space-x-2 px-4 ">

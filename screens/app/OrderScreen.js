@@ -8,39 +8,46 @@ import { emptyCart } from '../../slices/CartSlice';
 import { MaterialIcons } from '@expo/vector-icons';
 import { AuthContext } from '../../context/AuthContext';
 import { useQuery } from '@tanstack/react-query';
+import { getnewOrder, getnewQueue } from '../../apis/server';
 
 export default function OrderScreen({route, navigation}) {
-  // const {} = route.params;
+  const {checkingout} = route.params;
   const { user } = useContext(AuthContext);
-  const shop = useSelector(selectShop)
+  // const shop = useSelector(selectShop)
   const dispatch = useDispatch();
   
   const [loading, setLoading] = useState(null);
-  
-//   const { data: } = useQuery({ 
-//     queryKey: [`checkout data`], 
-//     queryFn: fetchCheckout(user.sub),
-//     gcTime: 10000000,
-//     staleTime: 1000,
-//     refetchInterval: 100000,
-//     refetchOnWindowFocus: true,
-//     retry: (failureCount, error) => {
-//       // Define your retry logic here
-//       if (failureCount < 3) { // Retry only twice (including the initial attempt)
-//         return true; // Retry on the next error
-//       }
-//       return false; // Don't retry after the second attempt
-//     }
-// });
+  const [userQueue, setUserQueue] = useState(null)
+  const [co, setco] = useState()
 
-  console.log('shop: ',shop);
+  //get checkout once
+  // console.log(checkingout);
+  // useEffect(()=>{
+  //   const fetchcheckout = async () => {
+  //     const response = await getnewOrder(checkingout)
+  //     setco(response)
+  //   };
+  //   fetchcheckout()
+  // })
+
+  console.log('co: ',co);
+  //get queue
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await getnewQueue(checkingout)
+      // const newData = await response.json();
+      setUserQueue(response);
+    };
+    const intervalId = setInterval(fetchData, 1 * 60 * 1000); // Refetch every 5 seconds
+    return () => clearInterval(intervalId); // Cleanup function to stop interval on unmount
+  }, []); // Empty dependency array ensures effect runs only once after mount
+  
+  console.log(userQueue);
+  // console.log('shop: ',shop);
   return (
-    
       <View className='flex-1'>
           <TouchableOpacity 
-              onPress={()=>{
-                
-                navigation.navigate('home')}}
+              onPress={()=>{navigation.navigate('home')}}
               className="bg-EacColor-TahitiGold ml-3 mt-3  rounded-full absolute z-30">
                   <ChevronLeft
                   className="text-EacColor-BlackPearl"
@@ -57,29 +64,40 @@ export default function OrderScreen({route, navigation}) {
                             <Text className=' mt-2text-gray-700 font-semibold'>Your Order is Upcoming!!</Text>
                         </View>
                         <View className='pt-5'>
-                          <Text className=' text-5xl text-center'>0</Text>
+                          {
+                            userQueue ? (
+                              <Text className=' text-5xl text-center'>
+                                {userQueue[0].index}
+                              </Text>
+                            ) : 
+                              <Text className=' text-2xl text-center'>*Processing*</Text>}
+                          {/* <Text className=' text-5xl text-center'></Text> */}
                         </View>
                       </View>
-                      
                 </View>
-                <View className='px-5 pt-5'>
-                  <Text>your orders:</Text>
-                  <View>
-                    {
-                      //orders
-                    }
+                {
+                 co ? (
+                  <View className='px-5 pt-5'>
+                    <Text className='mt-3 font-bold'>your orders:</Text>
+                    <View>
+                      <Text >id: {checkingout?.checkoutid}</Text>
+                    </View>
+                    <Text className='mt-3 font-bold'>Shop information:</Text>
+                    <View>
+                      {
+                        //shop info
+                      }
+                    </View>
+                    <Text className='mt-3 font-bold'>payment Info:</Text>
+                    <View className='pb-5'>
+                      <Text>Total Amount: {checkingout?.totalamount - checkingout?.servicetax - checkingout?.deliveryfee}</Text>
+                      <Text>Service fee: {checkingout?.servicetax}</Text>
+                      <Text>Delivery fee: {checkingout?.deliveryfee}</Text>
+                      <Text>Total Amount: {checkingout?.totalamount}</Text>
+                    </View>
                   </View>
-                  <Text>Shop information:</Text>
-                  <View>
-                    {
-                      //shop info
-                    }
-                  </View>
-                  <Text>payment Info:</Text>
-                  <View>
-                    
-                  </View>
-                </View>
+                 ) : null 
+                }
                 {/* <Image className=' w-24 h-24' source={()=>{}}/> */}
             </View>    
         </ScrollView>

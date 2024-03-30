@@ -126,19 +126,15 @@ export default function PaymentScreen({ route, navigation }) {
   
   const paymongoInstance = async (created_at) => {
     try {
-      // useEffect(async() => {
-        // if (!paymentUrl && !fetching) {
-          console.log('getting payInt payMet atPaIn data ');
-          // setFetching(true);
-          const result = await initializePay(shop.id, totalAmount, name, email, phoneNumber, selectedPaymentMethod, created_at);
-          // setFetching(false);
-          getPaymentInfo(result.result)
-          getPaymentInt(result.createPayIntent.data.id)
-          getNext_Action(result.attachPayIntent.data.attributes.next_action.redirect)
-          // console.log(result);
-        // }
-      // });
-    
+      console.log('getting payInt payMet atPaIn data ');
+      // setFetching(true);
+      const result = await initializePay(shop.id, totalAmount, name, email, phoneNumber, selectedPaymentMethod, created_at);
+      // setFetching(false);
+      getPaymentInfo(result.result)
+      getPaymentInt(result.createPayIntent.data.id)
+      getNext_Action(result.attachPayIntent.data.attributes.next_action.redirect)
+      return true
+      
     } catch (error) {
       console.log('error in paymongo instance', error);
     }
@@ -147,37 +143,29 @@ export default function PaymentScreen({ route, navigation }) {
   
   
   const handlePlaceOrder = async () => {
+    console.log('handle place order');
     setLoading(true)
     const created_at = new Date().toISOString().replace('T', ' ').replace('Z', '');
     console.log(created_at);
 
-    
     try {
-      
-      await paymongoInstance(created_at)
-
-      // useEffect(async()=>{
-        console.log(paymentInfo);
-        const isSuccess = await checkPaySuccess(paymentInfo.paymentid)
-
-        if (isSuccess) {
-          // console.log(paymentInfo);
-          // console.log('\n',paymentInt, 'user.sub', shop.id, randomNum, groupedItems, serviceFee, deliveryFee, totalAmount, special, created_at);
-          const checkingout = await newOrder( paymentInfo?.paymentid, userData.sub, shop.id, randomNum, groupedItems, 
-                                              serviceFee, deliveryFee, totalAmount, special, created_at,
-                                              location)
+      const payinstancecreated =  await paymongoInstance(created_at)
+      if (payinstancecreated) {
+        // const isSuccess = await checkPaySuccess(paymentInfo.paymentid)
+  
+        const checkingout = await newOrder( paymentInfo?.paymentid, userData.sub, shop.id, randomNum, groupedItems, 
+                                            serviceFee, deliveryFee, totalAmount, special, created_at, location)
           if (checkingout) {
+            console.log('checkout: ', checkingout) //this should reutrn inserted data
             //all processes successful
             dispatch(emptyCart())
             setAllProcessSuccess(true)
             setLoading(false)
+            navigation.navigate('Order', {checkingout})
           } else {
             setLoading(false)
           }
-          console.log('checkout: ', checkingout)
-          navigation.navigate('Order')
-        }
-      // },[paymentInfo])
+      }
       
   } catch (error) {
       console.error('Error processing payment:', error);

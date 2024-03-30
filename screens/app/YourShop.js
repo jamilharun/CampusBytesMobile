@@ -17,27 +17,41 @@ export default function YourShop() {
 
     const [err, setErr] = useState(null);
 
-    const requestData = 'google-oauth2|103360425900701922708'
+    const userData = user ? user : {
+      email: 'TestUser@email.com',
+      family_name: "ForDubbing",
+      given_name: "User123",
+      nickname: "sample user",
+      name: 'user123',
+      picture: "https://i.ytimg.com/vi/BEZmXjh8l0M/hq720_2.jpg?sqp=-oaymwEYCIACEOADSFryq4qpAwoIARUAAIhC0AEB&rs=AOn4CLDg2TpFauEmoM4VAD2gaMR_nJwSTQ",
+      sub: "google-oauth2|103360425900701922708",
+      "https://myroles.com/roles": ["shopOwner", "Special", "Admin", "Client"]
+    }
 
-    const shopid = '42662a99-47b5-490d-915b-597b2f8cdbf9'
-    // const [ysd, setYsd] = useState(null);
-    // useEffect(()=>{
-    //   const ysd = fetchShopById(requestData);
-
-
-    //   setYsd(ysd);
-    // })
-    
     const { data: ysd, isLoading, error, isFetching} = useQuery({ 
-        queryKey: [`yourShop`], 
-        queryFn: () => fetchShopById(requestData),
-        gcTime: 10000,
-        keepPreviousData: true,
-        // refetchInterval: 10000,
-        refetchOnWindowFocus: true
+      queryKey: [`yourShop`], 
+      queryFn: () => fetchShopById(userData.sub),
+      gcTime: 10000,
+      keepPreviousData: true,
+      // refetchInterval: 10000,
+      refetchOnWindowFocus: true
     });
+    
+    useEffect(() => {
+      const fetchData = async () => {
+        // const response = await getMyShopQueue(ysd[0]._id)
+        // const newData = await response.json();
+        // setUserQueue(response);
+
+      };
+      const intervalId = setInterval(fetchData, 2 * 60 * 1000); // Refetch every 5 seconds
+      return () => clearInterval(intervalId); // Cleanup function to stop interval on unmount
+    }, []); // Empty dependency array ensures effect runs only once after mount
+    
+
+    
       
-    console.log({isLoading, isFetching, error, ysd});
+    // console.log({isLoading, isFetching, error, ysd});
     
     if (isLoading) {
       return (
@@ -46,7 +60,8 @@ export default function YourShop() {
         </View>
       )
     }
-
+    
+    // console.log('shop id', ysd[0]._id);
     if (error) {
       setErr(`YourShop page: ${error}`)
     }
@@ -77,22 +92,28 @@ export default function YourShop() {
                   source={{ uri: urlFor(ysd[0].cover).url()}}/>
             )
           }
+          <View className='pt-5 px-5'>
+            <Text className='text-xl  font-bold '>Your Shop</Text>
+            <View>
+              <Text className='text-2xl  font-bold '>{ysd[0].shopName}</Text>
+            </View>
+          </View>
         <View className='flex mt-3 flex-col justify-center items-center'>
-          <View className='flex flex-row justify-between w-full'>
-            <View className='flex flex-col justify-center items-center w-1/3'>
-              <Feather name="info" size={44} color="green" />
-              <Text className='text-2xl font-normal'>Pending</Text>
+          <View className='flex flex-col justify-between w-full px-5'>
+            <View className='flex flex-row items-center'>
+              <Feather name="info" size={25} color="green" />
+              <Text className='text-2xl font-normal pl-2'>Queues: </Text>
               <Text className='text-2xl font-medium'>5</Text>
             </View>
-            <View className='flex flex-col justify-center items-center w-1/3'>
-              <AntDesign name="checkcircleo" size={44} color="green" />
-              <Text className='text-2xl font-normal'>Completed</Text>
+            <View className='flex flex-row items-center '>
+              <AntDesign name="checkcircleo" size={25} color="green"/>
+              <Text className='text-2xl font-normal pl-2'>Finished:</Text>
               <Text className='text-2xl font-medium'>10</Text>
             </View>
-            <View className='flex flex-col justify-center items-center w-1/3'>
-              <FontAwesome name="money" size={44} color="green" />
-              <Text className='text-2xl font-normal'>Earning</Text>
-              <Text className='text-2xl font-medium'>100.00₱</Text>
+            <View className='flex flex-row '>
+              <FontAwesome name="money" size={25} color="green" />
+              <Text className='text-2xl font-normal pl-2'>Earnings:</Text>
+              <Text className='text-2xl font-medium'>₱100.00</Text>
             </View>
           </View>
         </View>

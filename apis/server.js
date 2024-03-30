@@ -113,6 +113,7 @@ export const initializePay = async (
 
 export const newOrder = async ( paymentInt, userid, shopid, randomNum, groupedItems, serviceFee, 
                                 deliveryFee, totalAmount, special, created_at, location) => {
+  console.log('adding new order');
   const paymentRef = paymentInt;
   const userRef = userid;
   const shopRef = shopid;
@@ -128,7 +129,7 @@ export const newOrder = async ( paymentInt, userid, shopid, randomNum, groupedIt
     })
     if (response.data) {
       console.log('initializePay successful');
-      return true
+      return response.data
     } 
     console.log('initializePay failed');
     return false
@@ -219,6 +220,7 @@ export const getMyQueue = async (id) => {
   }
 };
 
+
 export const getMyShopQueue = async (id) => {
   console.log('fetching my shop queue')
   try {
@@ -250,6 +252,49 @@ export const getAllShopQueue = async (id) => {
     console.log('no connection to the database', error);
   }
 };
+
+
+export const getnewOrder = async (checkingout) => {
+  console.log('getting new order');
+  const checkoutid = checkingout.checkoutid
+  const userref = checkingout.userref;
+  const shopref = checkingout.shopref;
+  const groupnum = checkingout.groupnum;
+  try {
+    const response = await axios.post(`${ip}/api/postgres/order/getNewOrder`, {checkoutid, userref, shopref, groupnum})
+    console.log(response.data);
+    if (response.data) {
+      console.log('fetching new order successful' );
+      return response.data
+    } else {
+      console.log('fetching new order failed');  
+    }
+  } catch (error) {
+    console.log('server connection failed', error);    
+  }
+};
+
+export const getnewQueue = async (checkingout) => {
+  console.log('fetching my queue');
+  const checkoutid = checkingout.checkoutid
+  const shopref = checkingout.shopref
+  const isspecial = checkingout.isspecial
+  try {
+    // id = checkout id
+    const response = await axios.post(`${ip}/api/postgres/order/user/new/queue`, {checkoutid, shopref, isspecial})
+    if (response.data === 0) {
+      console.log('no queue fetched');
+      return null
+    } else {
+      console.log(response.data);
+      return response.data
+    }
+  } catch (error) {
+    console.log('no connection to the database');
+  }
+};
+
+
 // export const getMyQueueCheckout = async () => {
 //   console.log('user queueu checkout');
 //   try {

@@ -37,8 +37,10 @@ export default function QueueDetails({route, navigation}) {
 
   return (
     <View>
-      <View className=' relative py-4 shadow-sm'>
-            <View className=''>
+      
+      
+      <View className=' relative py-4 pt-7 shadow-sm'>
+        <View className=''>
                 <TouchableOpacity 
                     onPress={()=>{navigation.goBack()}}
                     className="TahitiGold pl-3 rounded-full absolute z-50">
@@ -50,13 +52,16 @@ export default function QueueDetails({route, navigation}) {
                 {/* <Text className=' text-center text-gray-500'>{shop.name   }</Text> */}
             </View>
         </View>
+        
         <ScrollView>
 
         {
         userCheckout &&
-          userQueue.map(queue=>
+          userQueue.map((queue, index)=>
             queue ? (
-            <View key={queue.data}>
+            <View 
+              className='py-4 px-4 mb-20'
+              key={index}>
               <View className='flex flex-row justify-between items-center'>
                 <Text className='text-3xl w-1/2 text-center'>{queue.index}</Text>
                 <Text className='text-3xl w-1/2 text-center'>{queue.data}</Text>
@@ -67,7 +72,6 @@ export default function QueueDetails({route, navigation}) {
               </View>
               <Text className='mt-3 font-bold'>Order information</Text>
               <View>
-                  <Text>Shop name: []</Text>
                   <Text>Payment: {userCheckout[`${queue.data}`]?.checkout.totalamount}</Text>
                   <Text>Delivery fee: {userCheckout[`${queue.data}`]?.checkout.deliveryfee}</Text>
                   <Text>Service fee: {userCheckout[`${queue.data}`]?.checkout.servicetax}</Text>
@@ -75,21 +79,59 @@ export default function QueueDetails({route, navigation}) {
               
               <Text className='mt-3 font-bold'>Order Items</Text>
               {
-                userCheckout[`${queue.data}`]?.items.map(item => {
+                userCheckout[`${queue.data}`]?.items.map((item, index) => {
                   let itemjson = JSON.parse(item)
+                  // let shopjson = JSON.parse(userCheckout[`${queue.data}`]?.shopDetails)
+                  // console.log(userCheckout[`${queue.data}`]?.cartstring);
+                  let cartjson = JSON.parse(userCheckout[`${queue.data}`]?.cartstring)
+                  console.log(cartjson[index].cartid);
                   return <View>
-                    <Text>item name: {itemjson.dishName ? itemjson.dishName : itemjson.productName}</Text> 
-                    <Text>Price: {itemjson.price ? itemjson.price : itemjson.Price}</Text>                    
-                    <Text>Type: {itemjson._type}</Text>
+              
+                    <View>
+                      <Text>item name: {itemjson.dishName ? itemjson.dishName : itemjson.productName}</Text> 
+                      <Text>Type: {itemjson._type}</Text>
+                      <Text>Price: {itemjson.price ? itemjson.price : itemjson.Price}</Text>                    
+                      {
+                        cartjson ? (
+                          cartjson[index].itemref == itemjson._id ? (
+                            <View>
+                              <Text>Quantity: {cartjson[index].quantity}</Text>
+                              <Text>Sub-total: {cartjson[index].subtotalprice}</Text>
+  
+                            </View>
+                          ) : null
+                        ) : null
+                      }
+                    </View>
+                    {/* <Text className='mt-3 font-bold'>Shop Details</Text>
+                    <View>
+                      <Text>shop name: {shopjson.shopName}</Text>
+                      <Text>description: {shopjson.description}</Text>
+                      <Text>address: {shopjson.address}</Text>
+                    </View> */}
                   </View>
                 })
               }
+              
               <Text className='mt-3 font-bold'>Shop Details</Text>
-              {
-                userCheckout[`${queue.data}`] ? 
-                console.log(userCheckout[`${queue.data}`].shopDetails) : null
-              }
+              {queue.data ? (
+                userCheckout[`${queue.data}`].shopDetails && (
+                  <View>
+                    {(() => {
+                      const shopjson = JSON.parse(userCheckout[`${queue.data}`].shopDetails);
+                      return (
+                        <React.Fragment>
+                          <Text>shop name: {shopjson.shopName}</Text>
+                          <Text>description: {shopjson.description}</Text>
+                          <Text>address: {shopjson.address}</Text>
+                        </React.Fragment>
+                      );
+                    })()}
+                  </View>
+                )
+              ) : null}
 
+              
               <Text className='mt-3 font-bold'>Order Meta data</Text>
               <View>
                   <Text>Shop id: {userCheckout[`${queue.data}`]?.checkout.shopref}</Text>
@@ -103,71 +145,7 @@ export default function QueueDetails({route, navigation}) {
               </View>
             </View>
             ) : null
-          ) 
-          // userQueue.map((queue)=>{
-          //   <View>
-          //     <Text>sfdsfsdf</Text>
-          //   </View>
-          // })
-          // userQueue.map((item, index)=>{
-          //   // console.log(item);
-          //   <View className=' w-full h-full'>
-          //     <Text>{item.data}</Text>
-
-          //   </View>
-          //   // console.log(item.data);
-          //   // {
-          //   //   userCheckout && userCheckout[item.data] && (
-          //   //     <View>
-          //   //       <Text>checkout info</Text>
-          //   //     </View>
-          //   //     // userCheckout[item.data].items.map((item, index)=>{
-          //   //     //   const checkoutItems = JSON.parse(item);
-          //   //     //   console.log(checkoutItems);
-          //   //     //     return (
-          //   //     //     <View>
-          //   //     //       <View>
-          //   //     //         <Text>checkout information:</Text>
-          //   //     //       </View>
-          //   //     //       <View>
-          //   //     //         <Text>checkout information:</Text>
-          //   //     //         <Text>id: {checkoutItems._id}</Text>
-          //   //     //         {/* <Text>created at: {userCheckout[item.data].checkout.created_at}</Text>
-          //   //     //         <Text>deliveryfee: {userCheckout[item.data].checkout.deliveryfee}</Text>
-          //   //     //         <Text>PickedUp: {userCheckout[item.data].checkout.isfinished}</Text>
-          //   //     //         <Text>prioritize: {userCheckout[item.data].checkout.isspecial}</Text>
-          //   //     //         <Text>location: {userCheckout[item.data].checkout.location}</Text>
-          //   //     //         <Text>paymentid: {userCheckout[item.data].checkout.paymentid}</Text>
-          //   //     //         <Text>serviceFee: {userCheckout[item.data].checkout.servicetax}</Text>
-          //   //     //         <Text>totalAmount: {userCheckout[item.data].checkout.totalamount}</Text> */}
-                
-          //   //     //       </View>
-          //   //     //     </View> 
-
-          //   //     //     )
-          //   //     // // <View>
-          //   //     // //   <View>
-                    
-          //   //     // //   </View>
-          //   //     // //   <View>
-          //   //     // //     <Text>order information:</Text>
-          //   //     // //     {
-          //   //     // //       items?.map(item=>{
-          //   //     // //         <View key={item?._id}>
-          //   //     // //           <Text>{item.dishName ? item.dishName : item.productName}</Text>
-          //   //     // //         </View>
-          //   //     // //       })
-          //   //     // //     }
-          //   //     // //     <Text></Text>
-          //   //     // //   </View>
-                  
-          //   //     // // </View>    
-
-                  
-          //   //     // })
-          //   //   )
-          //   // }
-          // })
+          )
         }
         </ScrollView>
 

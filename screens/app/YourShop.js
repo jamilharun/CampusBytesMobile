@@ -36,6 +36,19 @@ export default function YourShop() {
       // refetchInterval: 10000,
       refetchOnWindowFocus: true
     }); 
+
+    // gcTime: 12 * 60 * 60 * 1000,
+    // staleTime: 24 * 60 * 60 * 1000,
+    // refetchInterval: 12 * 60 * 60 * 1000,
+    // keepPreviousData: true, 
+    // refetchOnWindowFocus: true,
+    // retry: (failureCount, error) => {
+    //   // Define your retry logic here
+    //   if (failureCount < 3) { // Retry only twice (including the initial attempt)
+    //     return true; // Retry on the next error
+    //   }
+    //   return false; // Don't retry after the second attempt
+    // },
     
     console.log('you shop: ', ysd);
     // const yourShopData = {
@@ -57,7 +70,7 @@ export default function YourShop() {
     const { data: ysq} = useQuery ({ 
       queryKey: [`yourShopQueue`], 
       queryFn: () => fetchShopQueue(ysd[0]._id),
-      gcTime: 60 * 1000,
+      gcTime: 2 * 60 * 1000,
       keepPreviousData: true,
       refetchInterval:  60 * 1000,
       refetchOnWindowFocus: true

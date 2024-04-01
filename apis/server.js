@@ -327,6 +327,47 @@ export const fetchAllCheckout = async (shopid) => {
    }
 }
 
+export const finishOrder = async (checkoutid) => {
+  console.log('this will finish order.. set to pickup');
+  try {
+   const response = await axios.get(`${ip}/api/postgres/order/readypickup/${checkoutid}`)
+   if (response.data === 0 || response.data === undefined) {
+     console.log('no checkout fetched');
+     // return null
+   } else {
+     console.log(response.data);
+     return response.data
+   }
+  } catch (error) {
+   console.log('no connection to the database');
+   console.log('cant connect to ', `${ip}/api/postgres/order/readypickup/${checkoutid}`);
+  }
+}
+
+export const viewPickup = (userid) => {
+  console.log('this check if there item ready to pickup');
+  try {
+    
+  } catch (error) {
+    console.log('no connection to the database');
+  }
+}
+
+export const removePickup = async (checkoutid) => {
+  console.log('this will remove the checkoutid on readt to pickup queue');
+  try {
+    const response = await axios.get(`${ip}/api/postgres/order/removePickup/${checkoutid}`)
+    if (response.data === 0 || response.data === undefined) {
+      console.log('no checkout fetched');
+      // return null
+    } else {
+      console.log(response.data);
+      return response.data
+    }
+  } catch (error) {
+    console.log('no connection to the database');
+  }
+}
 // export const getMyQueueCheckout = async () => {
 //   console.log('user queueu checkout');
 //   try {

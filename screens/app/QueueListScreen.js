@@ -1,33 +1,27 @@
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native'
+import { View, Text, ScrollView, TouchableOpacity, Modal } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { ChevronLeft, MapPin } from 'react-native-feather';
-import { fetchAllCheckout, fetchShopQueue, getAllShopQueue, getMyShopQueue } from '../../apis/server';
+import { fetchAllCheckout, fetchShopQueue, finishOrder, getAllShopQueue, getMyShopQueue } from '../../apis/server';
 import { Feather, AntDesign, FontAwesome, Entypo   } from '@expo/vector-icons';
 import { useQuery } from '@tanstack/react-query';
 
 export default function QueueListScreen({route, navigation}) {
   const {ysd} = route.params;
+  const [openModal, setOpenModal] = useState(false)
+  const [readyId, getReadyId] = useState(null)
 
-  const [allorder, getAllOrder] = useState(null)
+  // const [allorder, getAllOrder] = useState(null)
   //your shop queue
   const { data: ysq, isLoading, error, isFetching} = useQuery ({ 
     queryKey: [`yourShopQueue`], 
     queryFn: () => fetchShopQueue(ysd[0]._id),
-    gcTime: 10000,
+    gcTime: 2 * 60 * 1000,
     keepPreviousData: true,
-    // refetchInterval: 10000,
+    refetchInterval:  60 * 1000,
     refetchOnWindowFocus: true
   });
-  console.log(ysq);
+  console.log('QUEUUE LIST SCREEN: QUEUE'.ysq);
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const response = await fetchAllCheckout(ysd[0]._id)
-  //     getAllOrder(response)
-  //   };
-  //   fetchData()
-  // },[]); // Empty dependency array ensures effect runs only once after mount
-  
   const { data: yscheckout} = useQuery ({ 
     queryKey: [`yourShopCheckout`], 
     queryFn: () => fetchAllCheckout(ysd[0]._id),
@@ -36,11 +30,24 @@ export default function QueueListScreen({route, navigation}) {
     // refetchInterval: 10000,
     refetchOnWindowFocus: true
   });
-  // console.log('checkout: ', yscheckout);
+  console.log('checkout: ', yscheckout);
 
-  const handleFinishOrder = () => {
-    
+  const handleFinishOrder = async () => {
+    console.log(' this is finished');
+    try {
+      if (readyId) {
+        console.log(readyId);
+        const result = await finishOrder(readyId)
+        console.log(result);
+      }
+    } catch (error) {
+      console.log('somethings wrong');
+    }
   }
+
+  // const handleVerification = (data) => {
+
+  // }
   
   return (
     <View>
@@ -66,20 +73,26 @@ export default function QueueListScreen({route, navigation}) {
           {/* if priority order exist */}
 
           {
-            ysq ? 
+            ysq && yscheckout ?
               ysq.map((data, index)=>
-                yscheckout[`${data}`] ? (
+                
+              yscheckout[`${data}`] ? (
                   <View key={data} className='py-4 px-4'>
                     {
                       yscheckout[`${data}`] && yscheckout[`${data}`].checkout ? (
                         yscheckout[`${data}`]?.checkout?.isspecial == true ? (
-                          <TouchableOpacity className='flex flex-row justify-between items-center'>
+                          <TouchableOpacity onPress={()=>{
+                            setOpenModal(true)
+                            getReadyId(data)}}
+                            className='flex flex-row justify-between items-center'>
                              <Text className='text-2xl pb-3'>Priority:</Text>
                              <AntDesign name="checkcircleo" size={25} color="green"/>
                           </TouchableOpacity>
                         ) : (
                           <TouchableOpacity 
-                            // onPress={()=>{handleFinishOrder()}}
+                            onPress={()=>{
+                              setOpenModal(true)
+                              getReadyId(data)}}
                             className='flex flex-row justify-end '>
                             <AntDesign name="checkcircleo" size={25} color="green"/>
                           </TouchableOpacity>
@@ -130,12 +143,24 @@ export default function QueueListScreen({route, navigation}) {
                     <View>
                       <Text className='mt-3 text-xl '>Order Items:</Text>
                       {
-                        yscheckout[`${data}`].items.map(item => {
+                        yscheckout[`${data}`].items.map((item, index) => {
                           let itemjson = JSON.parse(item)  
-                          return <View>
+                          let cartjson = JSON.parse(yscheckout[`${data}`]?.cartstring)
+                  
+                          return <View key={itemjson._id}>
                             <Text>item name: {itemjson.dishName ? itemjson.dishName : itemjson.productName}</Text> 
                             <Text>Price: {itemjson.price ? itemjson.price : itemjson.Price}</Text>                    
                             <Text>Type: {itemjson._type}</Text>
+                            {
+                              cartjson ? (
+                                cartjson[index].itemref == itemjson._id ? (
+                                  <View>
+                                    <Text>Quantity: {cartjson[index].quantity}</Text>
+                                    <Text>Sub-total: {cartjson[index].subtotalprice}</Text>
+                                  </View>
+                                ) : null
+                              ) : null
+                            }
                           </View>      
                         })
                       }
@@ -163,6 +188,51 @@ export default function QueueListScreen({route, navigation}) {
 
           <View className='h-52'></View>
         </ScrollView>
+        
+        <Modal
+              visible={openModal}
+              transparent={true}
+              animationType="slide"
+              onRequestClose={() => setOpenModal(false)}>
+              <View
+                style={{ flex: 1, justifyContent: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
+                activeOpacity={1}>
+                <View style={{ backgroundColor: 'white', padding: 20 }}>
+                  {/* Your filter content goes here */}
+                  {/* <View className='flex flex-row justify-between items-center'>
+                    <Text>Filter Option</Text>
+                    <AntDesign name="close" size={24} color="black" onPress={() => setOpenFilter(false)} />
+                  </View> */}
+                  <Text>Are you sure? </Text>
+                  {/* <TextInput
+                    style={{ borderWidth: 1, borderColor: 'gray', borderRadius: 5, paddingLeft: 10, paddingVertical: 8, marginBottom: 10 }}
+                    value={filterAmount ? filterAmount.toString() : ''} // Check if filterAmount is defined
+                    onChangeText={setFilterAmount}
+                    keyboardType="numeric"
+                    placeholder="Enter amount"
+                  /> */}
+                  <Text>are you sure the orderid "{readyId}" is finished?</Text>
+                  <View>
+                    <TouchableOpacity 
+                      style={{ backgroundColor: '#FFD700', marginTop: 10, padding: 10, borderRadius: 5 }}
+                      onPress={() => {
+                        setOpenModal(false);
+                        handleFinishOrder()
+                      }}>
+                      <Text style={{ textAlign: 'center' }}>Yes</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity 
+                      className='mt-5 p-3 rounded-lg bg-gray-500'
+                      onPress={() => {
+                        setOpenModal(false);
+                        getReadyId(null)
+                      }}>
+                    <Text style={{ textAlign: 'center' }}>No</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+            </Modal>
     </View>
   )
 }

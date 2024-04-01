@@ -32,10 +32,10 @@ export default function Header() {
     
     
     useEffect(() => {
-      const waitTime = 2 * 60 * 1000;
+      const waitTime = 60 * 1000;
       const fetchData = async () => {
         const response = await getMyQueue(userData.sub)
-        console.log('sdfsdfsdf: ', response);
+        console.log('header queue: ', response);
         setUserQueue(response);
         // if (!response) {
         //   waitTime = 60 * 60 * 1000;

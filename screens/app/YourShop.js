@@ -9,7 +9,7 @@ import { DrawerActions, useNavigation } from "@react-navigation/native";
 import { Menu} from "react-native-feather";
 import { Feather, AntDesign, FontAwesome, Entypo   } from '@expo/vector-icons';
 import { predefineshopData } from '../../constants/predefineData';
-import { fetchShopById } from '../../apis/server';
+import { fetchShopById, fetchShopQueue } from '../../apis/server';
 
 export default function YourShop() {
     const navigation = useNavigation();
@@ -35,42 +35,35 @@ export default function YourShop() {
       keepPreviousData: true,
       // refetchInterval: 10000,
       refetchOnWindowFocus: true
-    });
+    }); 
     
-    useEffect(() => {
-      const fetchData = async () => {
-        // const response = await getMyShopQueue(ysd[0]._id)
-        // const newData = await response.json();
-        // setUserQueue(response);
-
-      };
-      const intervalId = setInterval(fetchData, 2 * 60 * 1000); // Refetch every 5 seconds
-      return () => clearInterval(intervalId); // Cleanup function to stop interval on unmount
-    }, []); // Empty dependency array ensures effect runs only once after mount
-    
-
-    
-      
-    // console.log({isLoading, isFetching, error, ysd});
-    
-    if (isLoading) {
-      return (
-        <View className='w-full h-64 flex justify-center items-center'>
-          <Text className='text-2xl'>Loading...</Text>
-        </View>
-      )
-    }
-    
-    // console.log('shop id', ysd[0]._id);
-    if (error) {
-      setErr(`YourShop page: ${error}`)
-    }
-    
-    // const zeroindex = null;
-    // if (ysd) {
-    //   setFIndex(ysd[0]) 
+    console.log('you shop: ', ysd);
+    // const yourShopData = {
+    //   _id: ysd[0]._id,
+    //   _type: ysd[0].type,
+    //   cover: ysd[0].cover,
+    //   description: ysd[0].description,
+    //   dishes: ysd[0].dishes,
+    //   isActive: ysd[0].isActive,
+    //   isFeatured: ysd[0].isFeatured,
+    //   isPromoted: ysd[0].isPromoted,
+    //   latitude: ysd[0].latitude,
+    //   products: ysd[0].products,
+    //   shopName: ysd[0].shopName,
+    //   slug: ysd[0].slug,
+    //   tags: ysd[0].tags
     // }
-
+  
+    const { data: ysq} = useQuery ({ 
+      queryKey: [`yourShopQueue`], 
+      queryFn: () => fetchShopQueue(ysd[0]._id),
+      gcTime: 60 * 1000,
+      keepPreviousData: true,
+      refetchInterval:  60 * 1000,
+      refetchOnWindowFocus: true
+    });
+    console.log('your shop queues', ysq);
+    // console.log('yourShopData', yourShopData);
   return (
     <SafeAreaView>
       <TouchableOpacity 
@@ -86,16 +79,20 @@ export default function YourShop() {
         </TouchableOpacity>
         <ScrollView>
           {
-            ysd[0]?.cover && (
+            ysd && ysd[0]?.cover ? (
               <Image 
                   className='h-32 w-full object-cover rounded-xl mt-1' 
-                  source={{ uri: urlFor(ysd[0].cover).url()}}/>
-            )
+                  source={{ uri: urlFor(ysd[0]?.cover).url()}}/>
+            ) : null
           }
           <View className='pt-5 px-5'>
             <Text className='text-xl  font-bold '>Your Shop</Text>
             <View>
-              <Text className='text-2xl  font-bold '>{ysd[0].shopName}</Text>
+              {
+                ysd && ysd[0]?.shopName ? (
+                  <Text className='text-2xl  font-bold '>{ysd[0]?.shopName}</Text>
+                ) : (<Text className='text-2xl  font-bold '>Loading name</Text>)
+              }
             </View>
           </View>
         <View className='flex mt-3 flex-col justify-center items-center'>
@@ -103,19 +100,23 @@ export default function YourShop() {
             <View className='flex flex-row items-center'>
               <Feather name="info" size={25} color="green" />
               <Text className='text-2xl font-normal pl-2'>Queues: </Text>
-              <Text className='text-2xl font-medium'>5</Text>
+              {
+                ysq ? (
+                  <Text className='text-2xl font-medium'>{ysq?.length}</Text>
+                ) : (<Text className='text-xl font-medium'>loading</Text>)
+              }
             </View>
             <View className='flex flex-row items-center '>
               <AntDesign name="checkcircleo" size={25} color="green"/>
               <Text className='text-2xl font-normal pl-2'>Finished:</Text>
               <Text className='text-2xl font-medium'>10</Text>
             </View>
-            <View className='flex flex-row '>
+            <View className='flex flex-row '> 
               <FontAwesome name="money" size={25} color="green" />
               <Text className='text-2xl font-normal pl-2'>Earnings:</Text>
               <Text className='text-2xl font-medium'>₱100.00</Text>
             </View>
-          </View>
+          </View> 
         </View>
           <View className=' '>
             <View className='flex flex-row justify-between w-full h-60'>

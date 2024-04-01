@@ -294,6 +294,38 @@ export const getnewQueue = async (checkingout) => {
   }
 };
 
+//seller
+export const fetchShopQueue = async (shopid) => {
+  console.log('fetch shop queue');
+  try {
+    const response = await axios.get(`${ip}/api/postgres/order/shop/${shopid}/queue`)
+    if (response.data === 0) {
+      console.log('no queue fetched');
+      return null
+    } else {
+      console.log(response.data);
+      return response.data
+    }
+  } catch (error) {
+    console.log('no connection to the database');
+  }
+};
+
+export const fetchAllCheckout = async (shopid) => {
+   console.log('getting all checkout');
+   try {
+    const response = await axios.get(`${ip}/api/postgres/order/shop/${shopid}/checkout`)
+    if (response.data === 0 || response.data === undefined) {
+      console.log('no checkout fetched');
+      // return null
+    } else {
+      console.log(response.data);
+      return response.data
+    }
+   } catch (error) {
+    console.log('no xonnection to the database');
+   }
+}
 
 // export const getMyQueueCheckout = async () => {
 //   console.log('user queueu checkout');

@@ -1,16 +1,17 @@
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native'
+import { View, Text, TouchableOpacity, ScrollView, Modal } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { ChevronLeft } from 'react-native-feather';
 import { useQuery } from '@tanstack/react-query';
-import { fetchCheckout } from '../../apis/server';
+import { fetchCheckout, removePickup } from '../../apis/server';
 import { AuthContext } from '../../context/AuthContext';
 import { useIsFocused } from '@react-navigation/native';
 export default function QueueDetails({route, navigation}) {
   const {userQueue} = route.params;
   const { user } = useContext(AuthContext);
-  const [userCheckOut, setUserCheckOut] = useState()
+  // const [userCheckOut, setUserCheckOut] = useState()
+  const [handleId, getHandleId] = useState(null)  
+  const [openModal, setOpenModal] = useState(false)
   
-
   const userData = user ? user : {
     email: 'TestUser@email.com',
     family_name: "ForDubbing",
@@ -35,10 +36,20 @@ export default function QueueDetails({route, navigation}) {
   
   });
 
+  const alreadyPickupOrder = async () => {
+    console.log('item already picked up');
+    try {
+      if (handleId) {
+        const result  = await removePickup(handleId)
+        console.log('alreadyPickupOrder result: ', result);
+      }
+    } catch (error) {
+      console.log('somethings wrong');
+    }
+  }
+
   return (
     <View>
-      
-      
       <View className=' relative py-4 pt-7 shadow-sm'>
         <View className=''>
                 <TouchableOpacity 
@@ -62,10 +73,23 @@ export default function QueueDetails({route, navigation}) {
             <View 
               className='py-4 px-4 mb-20'
               key={index}>
-              <View className='flex flex-row justify-between items-center'>
-                <Text className='text-3xl w-1/2 text-center'>{queue.index}</Text>
-                <Text className='text-3xl w-1/2 text-center'>{queue.data}</Text>
-              </View>
+              {
+                userCheckout[`${queue.data}`]?.checkout.isfinished ? (
+                  <TouchableOpacity 
+                    onPress={()=>{
+                      setOpenModal(true)
+                      getHandleId(queue.data)}}
+                    className='flex flex-row justify-between items-center'>
+                    <Text className='text-3xl w-1/2 text-center'>{queue.index}</Text>
+                    <Text className='text-3xl w-1/2 text-center'>{queue.data}</Text>
+                  </TouchableOpacity>
+                ) : (
+                  <View className='flex flex-row justify-between items-center'>
+                    <Text className='text-3xl w-1/2 text-center'>{queue.index}</Text>
+                    <Text className='text-3xl w-1/2 text-center'>{queue.data}</Text>
+                  </View>
+                )
+              }
               <View className='flex flex-row justify-between items-center'>
                 <Text className='text-xl w-1/2 text-center'>queue</Text>
                 <Text className='text-xl w-1/2 text-center'>orderid</Text>
@@ -149,6 +173,40 @@ export default function QueueDetails({route, navigation}) {
         }
         </ScrollView>
 
+        <Modal
+              visible={openModal}
+              transparent={true}
+              animationType="slide"
+              onRequestClose={() => setOpenModal(false)}>
+              <View
+                style={{ flex: 1, justifyContent: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
+                activeOpacity={1}>
+                <View style={{ backgroundColor: 'white', padding: 20 }}>
+                  
+                  <Text>have you get your order? </Text>
+                  
+                  <Text>press Yes if you already got your order</Text>
+                  <View>
+                    <TouchableOpacity 
+                      style={{ backgroundColor: '#FFD700', marginTop: 10, padding: 10, borderRadius: 5 }}
+                      onPress={() => {
+                        setOpenModal(false);
+                        alreadyPickupOrder()
+                      }}>
+                      <Text style={{ textAlign: 'center' }}>Yes</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity 
+                      className='mt-5 p-3 rounded-lg bg-gray-500'
+                      onPress={() => {
+                        setOpenModal(false);
+                        handleId(null)
+                      }}>
+                    <Text style={{ textAlign: 'center' }}>No</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+            </Modal>
     </View>
   )
 }

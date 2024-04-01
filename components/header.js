@@ -58,7 +58,6 @@ export default function Header() {
       dispatch(setAmount(newAmount))
     };
 
-
     return (
         <View className="flex-row items-center space-x-2 px-4 ">
             <TouchableOpacity 

@@ -59,21 +59,21 @@ if (error) setErr(error);
 // const handleRefresh = () => {
 //   refetch(); // Manually refetch data on button click or other event
 // };
-const checkingout = {
-  checkoutid: 12,
-  paymentref: 89,
-  userref: "user.sub",
-  shopref: "42662a99-47b5-490d-915b-597b2f8cdbf9",
-  groupnum: 653,
-  servicetax: 111,
-  deliveryfee: 0,
-  totalamount: 1000,
-  location: "",
-  isspecial: false,
-  iscanceled: false,
-  isfinished: false,
-  created_at: "dfsdfsdfsdf"
-}
+// const checkingout = {
+//   checkoutid: 24,
+//   paymentref: 89,
+//   userref: "user.sub",
+//   shopref: "42662a99-47b5-490d-915b-597b2f8cdbf9",
+//   groupnum: 653,
+//   servicetax: 111,
+//   deliveryfee: 0,
+//   totalamount: 1000,
+//   location: "",
+//   isspecial: false,
+//   iscanceled: false,
+//   isfinished: false,
+//   created_at: "dfsdfsdfsdf"
+// }
 
   return (
     <SafeAreaView className="bg-white">
@@ -82,9 +82,9 @@ const checkingout = {
       <Header/>
 
       {/* for debugging only */}
-      <TouchableOpacity onPress={()=>navigation.navigate('Order', {checkingout})}>
+      {/* <TouchableOpacity onPress={()=>navigation.navigate('Order', {checkingout})}>
         <Text>order debugging</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       <ScrollView
         className='pb-36'

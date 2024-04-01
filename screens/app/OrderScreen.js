@@ -22,15 +22,15 @@ export default function OrderScreen({route, navigation}) {
 
   //get checkout once
   // console.log(checkingout);
-  // useEffect(()=>{
-  //   const fetchcheckout = async () => {
-  //     const response = await getnewOrder(checkingout)
-  //     setco(response)
-  //   };
-  //   fetchcheckout()
-  // })
+  useEffect(()=>{
+    const fetchcheckout = async () => {
+      const response = await getnewOrder(checkingout)
+      setco(response)
+    };
+    fetchcheckout()
+  },[userQueue])
 
-  console.log('co: ',co);
+  // console.log('co: ',co);
   //get queue
   useEffect(() => {
     const fetchData = async () => {
@@ -38,8 +38,9 @@ export default function OrderScreen({route, navigation}) {
       // const newData = await response.json();
       setUserQueue(response);
     };
-    const intervalId = setInterval(fetchData, 1 * 60 * 1000); // Refetch every 5 seconds
-    return () => clearInterval(intervalId); // Cleanup function to stop interval on unmount
+    fetchData()
+    // const intervalId = setInterval(fetchData, 1 * 60 * 1000); // Refetch every 5 seconds
+    // return () => clearInterval(intervalId); // Cleanup function to stop interval on unmount
   }, []); // Empty dependency array ensures effect runs only once after mount
   
   console.log(userQueue);
@@ -79,15 +80,51 @@ export default function OrderScreen({route, navigation}) {
                  co ? (
                   <View className='px-5 pt-5'>
                     <Text className='mt-3 font-bold'>your orders:</Text>
-                    <View>
+                    {
+                      co[`${checkingout?.checkoutid}`].items.map((item, index) => {
+                        let itemjson = JSON.parse(item)  
+                        let cartjson = JSON.parse(co[`${checkingout?.checkoutid}`]?.cartstring)
+                        
+                        return <View key={itemjson._id}>
+                            <Text>item name: {itemjson.dishName ? itemjson.dishName : itemjson.productName}</Text> 
+                            <Text>Price: {itemjson.price ? itemjson.price : itemjson.Price}</Text>                    
+                            <Text>Type: {itemjson._type}</Text>
+                            {
+                              cartjson ? (
+                                cartjson[index].itemref == itemjson._id ? (
+                                  <View>
+                                    <Text>Quantity: {cartjson[index].quantity}</Text>
+                                    <Text>Sub-total: {cartjson[index].subtotalprice}</Text>
+                                  </View>
+                                ) : null
+                              ) : null
+                            }
+                          </View>
+                      })
+                      // console.log('ssdsdsdds', co[`${checkingout?.checkoutid}`].items)
+                    }
+                    
+                    {/* <View>
                       <Text >id: {checkingout?.checkoutid}</Text>
-                    </View>
+                    </View> */}
                     <Text className='mt-3 font-bold'>Shop information:</Text>
-                    <View>
-                      {
-                        //shop info
-                      }
-                    </View>
+                    {checkingout?.checkoutid ? (
+                      co[`${checkingout?.checkoutid}`].shopDetails && (
+                        <View>
+                          {(() => {
+                            const shopjson = JSON.parse(co[`${checkingout?.checkoutid}`].shopDetails);
+                            return (
+                              <React.Fragment>
+                                <Text>shop name: {shopjson.shopName}</Text>
+                                <Text>description: {shopjson.description}</Text>
+                                <Text>address: {shopjson.address}</Text>
+                              </React.Fragment>
+                            );
+                          })()}
+                        </View>
+                      )
+                    ) : null}
+
                     <Text className='mt-3 font-bold'>payment Info:</Text>
                     <View className='pb-5'>
                       <Text>Total Amount: {checkingout?.totalamount - checkingout?.servicetax - checkingout?.deliveryfee}</Text>

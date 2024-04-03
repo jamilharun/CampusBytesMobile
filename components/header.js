@@ -2,7 +2,7 @@ import { View, TextInput, TouchableOpacity, Text, Modal } from "react-native";
 import { DrawerActions, useNavigation } from "@react-navigation/native";
 import { Map, Menu, Search, Sliders } from "react-native-feather";
 import React, { useContext, useEffect, useState } from 'react'
-import { getMyQueue } from "../apis/server";
+import { getMyQueue, viewPickup } from "../apis/server";
 import { AuthContext } from "../context/AuthContext";
 import { AntDesign } from '@expo/vector-icons';
 import { useDispatch, useSelector } from "react-redux";
@@ -15,6 +15,7 @@ export default function Header() {
     const dispatch = useDispatch()
 
     const [userQueue, setUserQueue] = useState(null)
+    const [userPickup, setUserPickup] = useState(null)
     const [openFilter, setOpenFilter] = useState(false)
     const [filterAmount, setFilterAmount] = useState(setedFilterAmount)
     // const [waitTime, setwaitTime] = useState(1000)
@@ -32,22 +33,15 @@ export default function Header() {
     
     
     useEffect(() => {
-      const waitTime = 60 * 1000;
+      const waitTime = 60 * 1000; 
       const fetchData = async () => {
         const response = await getMyQueue(userData.sub)
         console.log('header queue: ', response);
         setUserQueue(response);
-        // if (!response) {
-        //   waitTime = 60 * 60 * 1000;
-        //   console.log('response none ', waitTime);
-        //   // setwaitTime(time)
-        //   setUserQueue(response)
-        // } else {
-        //   waitTime = response[0].index >= 20 ? 3 * 600 * 1000 : 600 * 1000;
-        //   console.log('response ', waitTime);
-        //   // setwaitTime(time)
-        //   setUserQueue(response);
-        // }        
+        
+        const fetchPickup = await viewPickup(userData.sub)  ///order/user/pickup/:id
+        console.log('header pickup: ', fetchPickup);
+        setUserPickup(fetchPickup);
       };
       console.log(waitTime);
       const intervalId = setInterval(fetchData, waitTime); // Refetch every 5 seconds
@@ -68,35 +62,43 @@ export default function Header() {
                 <Menu height="20" width="20" strokeWidth={2.5} stroke="white" />
             </TouchableOpacity>
             <View className="flex-row flex-1 items-center p-3 rounded-full border border-gray-300">
-            {
-            userQueue ? 
-            <View className=' bg-EacColor-SelectiveYellow rounded-full w-full flex flex-row justify-center items-center z-20'>
-                  <View className='w-full flex flex-col justify-center items-center'>
-                  {
-                    userQueue ? (
-                      <TouchableOpacity 
-                      className=' w-3/4 rounded-md flex flex-row justify-between items-center'
-                      onPress={()=>{navigation.navigate('queueDetails', {userQueue})}}>
-                        <View className=" w-10 h-10  flex justify-center items-center">
-                          <Text className='text-EacColor-BlackPearl text-2xl'>{userQueue[0]?.index}</Text>
-                        </View>
-                        <View className='flex flex-row justify-center items-center'>
-                          <Text className='text-EacColor-BlackPearl text-lg'>id:</Text>
-                          <View >
-                            <Text className='text-2xl'>{userQueue[0]?.data}</Text>
+            { 
+              userQueue  ? 
+              <View className={`rounded-full w-full flex flex-row justify-center items-center z-20 ${userPickup ? 'bg-limeGreen' : 'bg-EacColor-SelectiveYellow'}`}>
+                <View className='w-full flex flex-col justify-center items-center'>
+                    {
+                      userQueue ? (
+                        userPickup ? 
+                        <TouchableOpacity 
+                        className=' w-3/4 rounded-md flex flex-row justify-between items-center'
+                        onPress={()=>{navigation.navigate('queueDetails', {userQueue})}}>
+                          <View className='flex flex-row justify-center items-center'>
+                            <Text className='text-EacColor-BlackPearl text-lg'>Ready to Pickup</Text>
                           </View>
-                        </View>
+                        </TouchableOpacity>:
+                        <TouchableOpacity 
+                        className=' w-3/4 rounded-md flex flex-row justify-between items-center'
+                        onPress={()=>{navigation.navigate('queueDetails', {userQueue})}}>
+                          <View className=" w-10 h-10  flex justify-center items-center">
+                            <Text className='text-EacColor-BlackPearl text-2xl'>{userQueue[0]?.index}</Text>
+                          </View>
+                          <View className='flex flex-row justify-center items-center'>
+                            <Text className='text-EacColor-BlackPearl text-lg'>id:</Text>
+                            <View >
+                              <Text className='text-2xl'>{userQueue[0]?.data}</Text>
+                            </View>
+                          </View>
+                          <View>
+                            <Text className='text-EacColor-BlackPearl text-2xl'>{userQueue?.length}</Text>
+                          </View>
+                        </TouchableOpacity>
+                      ) : (
                         <View>
-                          <Text className='text-EacColor-BlackPearl text-2xl'>{userQueue?.length}</Text>
                         </View>
-                      </TouchableOpacity>
-                    ) : (
-                      <View>
-                      </View>
-                    )
-                  }
-                  </View>
-            </View> : 
+                      )
+                    }
+                    </View>
+              </View> : 
             <View className=' w-full flex flex-row justify-center items-center'>
               <Text className='text-center text-xl'>CampusBytes</Text>  
             </View>

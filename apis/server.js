@@ -371,10 +371,18 @@ export const finishOrder = async (checkoutid) => {
   }
 }
 
-export const viewPickup = (userid) => {
+export const viewPickup = (id) => {
   console.log('this check if there item ready to pickup');
   try {
-    
+    const response = axios.get(`${ip}/api/postgres/order/user/pickup/${id}`)
+    console.log('1111111',response);
+    if (response.data === 0 || response.data === undefined) {
+      console.log('no pickup fetched');
+      // return null
+    } else {
+      console.log(response.data);
+      return response.data
+    }
   } catch (error) {
     console.log('no connection to the database');
   }

@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity, ScrollView, Modal } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { ChevronLeft } from 'react-native-feather';
 import { useQuery } from '@tanstack/react-query';
-import { fetchCheckout, removePickup } from '../../apis/server';
+import { fetchCheckout, removePickup, viewPickup } from '../../apis/server';
 import { AuthContext } from '../../context/AuthContext';
 import { useIsFocused } from '@react-navigation/native';
 export default function QueueDetails({route, navigation}) {
@@ -11,7 +11,8 @@ export default function QueueDetails({route, navigation}) {
   // const [userCheckOut, setUserCheckOut] = useState()
   const [handleId, getHandleId] = useState(null)  
   const [openModal, setOpenModal] = useState(false)
-  
+  const [userPickup, setUserPickup] = useState(null)
+    
   const userData = user ? user : {
     email: 'TestUser@email.com',
     family_name: "ForDubbing",
@@ -35,6 +36,17 @@ export default function QueueDetails({route, navigation}) {
     refetchOnWindowFocus: true
   
   });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const fetchPickup = await viewPickup(userData.sub)  ///order/user/pickup/:id
+      console.log('header pickup: ', fetchPickup);
+      setUserPickup(fetchPickup);
+    };
+    fetchData()
+  }, []); 
+
+  console.log('pick me up', userPickup);
 
   const alreadyPickupOrder = async () => {
     console.log('item already picked up');
@@ -65,6 +77,45 @@ export default function QueueDetails({route, navigation}) {
         </View>
         
         <ScrollView>
+        {
+          userPickup &&
+            <View className='py-4 px-4 bg-limeGreen'>
+              <Text className='text-2xl'>Ready to pickup</Text>
+              {
+              userPickup ? <View >
+                  <View className='flex flex-row justify-center items-center'>
+                    <View className='w-1/2'>
+                      <Text>Pickup id</Text>
+                    </View>
+                    <View className=''>
+                      <Text>Your Items</Text>
+                    </View>
+                  </View>
+                  <View className='flex flex-row justify-center items-center'>
+                    <View className='w-1/2 '>
+                        <Text className='text-3xl'>24</Text>
+                    </View>
+                    <View>
+                      <Text>item 1 | 2</Text>
+                      <Text>item 2 | 2</Text>
+                      <Text>item 3 | 2</Text>
+                      <Text>item 4 | 2</Text>
+                    </View>
+                  </View>
+                  <View>
+                    <Text>Shop Details:</Text>
+                    <View>
+                      <Text>Shop name:</Text>
+                    
+                    </View>
+                  </View>
+                </View> : <View>
+
+                </View>
+
+              }
+            </View>
+        }
 
         {
         userCheckout &&
@@ -139,7 +190,7 @@ export default function QueueDetails({route, navigation}) {
               
               <Text className='mt-3 font-bold'>Shop Details</Text>
               {queue.data ? (
-                userCheckout[`${queue.data}`].shopDetails && (
+                userCheckout[`${queue.data}`]?.shopDetails && (
                   <View>
                     {(() => {
                       const shopjson = JSON.parse(userCheckout[`${queue.data}`].shopDetails);

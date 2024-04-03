@@ -21,8 +21,9 @@ module.exports = {
             'DeepFir': '#dc2F02',
             'TahitiGold': '#F48C06',
             'SelectiveYellow': '#FFBA08'
-          }
-          
+          },
+          'limeGreen': '#76BA1B',
+          'babyBlue': '00B4D8'
     
         },
         fontFamily: {

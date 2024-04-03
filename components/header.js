@@ -78,16 +78,16 @@ export default function Header() {
                       className=' w-3/4 rounded-md flex flex-row justify-between items-center'
                       onPress={()=>{navigation.navigate('queueDetails', {userQueue})}}>
                         <View className=" w-10 h-10  flex justify-center items-center">
-                          <Text className='text-EacColor-BlackPearl text-2xl'>{userQueue[0].index}</Text>
+                          <Text className='text-EacColor-BlackPearl text-2xl'>{userQueue[0]?.index}</Text>
                         </View>
                         <View className='flex flex-row justify-center items-center'>
                           <Text className='text-EacColor-BlackPearl text-lg'>id:</Text>
                           <View >
-                            <Text className='text-2xl'>{userQueue[0].data}</Text>
+                            <Text className='text-2xl'>{userQueue[0]?.data}</Text>
                           </View>
                         </View>
                         <View>
-                          <Text className='text-EacColor-BlackPearl text-2xl'>{userQueue.length}</Text>
+                          <Text className='text-EacColor-BlackPearl text-2xl'>{userQueue?.length}</Text>
                         </View>
                       </TouchableOpacity>
                     ) : (
@@ -98,7 +98,7 @@ export default function Header() {
                   </View>
             </View> : 
             <View className=' w-full flex flex-row justify-center items-center'>
-              <Text className='text-center text-xl'>CampusBytes</Text>
+              <Text className='text-center text-xl'>CampusBytes</Text>  
             </View>
           }
             </View>

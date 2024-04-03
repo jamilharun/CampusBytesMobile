@@ -12,7 +12,9 @@ export default function AppNavigation() {
   // test for debugging
   // const loggedIn = true;
   // const isLoading = false;
-  const auth0isOn = loggedIn ? loggedIn : 'true'
+
+  // just turn true into false befor eas build
+  const auth0isOn = loggedIn ? loggedIn : true
   if (isLoading) {
     return (
       <View className=" flex justify-center items-center">

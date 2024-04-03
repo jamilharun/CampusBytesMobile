@@ -5,7 +5,7 @@ import { AuthContext } from '../../context/AuthContext';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectShop } from '../../slices/ShopSlice';
 import { emptyCart, selectCartItems, selectCarttotal } from '../../slices/CartSlice';
-import { checkPaySuccess, initializePay, newOrder } from '../../apis/server';
+import { checkPaySuccess, createCustomOrder, initializePay, newOrder } from '../../apis/server';
 import { openURL, Linking } from 'expo-linking';
 
 export default function PaymentScreen({ route, navigation }) {
@@ -31,8 +31,8 @@ export default function PaymentScreen({ route, navigation }) {
   const [location, setLocation] = useState("")
   const [special, isSpecial] = useState(false)
 
-  const [paymentInfo, getPaymentInfo] = useState([])
-  const [paymentInt, getPaymentInt] = useState(null)
+  // const [paymentInfo, getPaymentInfo] = useState([])
+  // const [paymentInt, getPaymentInt] = useState(null)
   const [next_action, getNext_Action] = useState(null)
 
   const [loading, setLoading] = useState(null)
@@ -69,26 +69,21 @@ export default function PaymentScreen({ route, navigation }) {
     } else {
         isSpecial(false)
     }
-},[cartItems])
-
-  useEffect(() => {
     const randomNumber = Math.floor(Math.random() * 1000) + 1;
     setRandomNum(randomNumber);
-  
+    
     const feeAmount = vatRate * carttotal;
     console.log(feeAmount);
     setServiceFee(feeAmount)
-  }, [vatRate]); // Empty dependency array for one-time generation
-
-  useEffect(()=>{
+    
     if (delivery) {
       setDeliveryFee(20)
     } else {
       setDeliveryFee(0)
     }
-  },[delivery])
+},[cartItems])
 
-  const handlePaymentMethodChange = (method) => {
+const handlePaymentMethodChange = (method) => {
     setSelectedPaymentMethod(method);
     if (method == 'paymaya') {
       getVatRate(0.020)
@@ -119,52 +114,45 @@ export default function PaymentScreen({ route, navigation }) {
       console.log('link', url);
       openURL(url);
     } catch (error) {
-      console.log('link undefined');
-      
+      console.log('link undefined');      
     }
   },[next_action])
-  
-  const paymongoInstance = async (created_at) => {
-    try {
-      console.log('getting payInt payMet atPaIn data ');
-      // setFetching(true);
-      const result = await initializePay(shop.id, totalAmount, name, email, phoneNumber, selectedPaymentMethod, created_at);
-      // setFetching(false);
-      getPaymentInfo(result.result)
-      getPaymentInt(result.createPayIntent.data.id)
-      getNext_Action(result.attachPayIntent.data.attributes.next_action.redirect)
-      return true
-      
-    } catch (error) {
-      console.log('error in paymongo instance', error);
-    }
-  }
-  
-  
   
   const handlePlaceOrder = async () => {
     console.log('handle place order');
     setLoading(true)
+    // init payment
+    const shopRef = shop.id;
+    const amount = totalAmount;
+    // name, email, 
+    const phone = phoneNumber;
+    const method = selectedPaymentMethod;
+    // new checkout cart
+    const userRef = userData.sub;
+    // shopRef
+    const groupNum = randomNum;
+    const serviceTax = serviceFee;
+    const deliveryFee = delivery? deliveryFee : 0;
+    // totalAmount location;
+    const isSpecial = special;
+    const isFinished = false;
+    const cartItems = groupedItems;
     const created_at = new Date().toISOString().replace('T', ' ').replace('Z', '');
-    console.log(created_at);
-
     try {
-      const payinstancecreated =  await paymongoInstance(created_at)
-      if (payinstancecreated) {
-        // const isSuccess = await checkPaySuccess(paymentInfo.paymentid)
-  
-        const checkingout = await newOrder( paymentInfo?.paymentid, userData.sub, shop.id, randomNum, groupedItems, 
-                                            serviceFee, deliveryFee, totalAmount, special, created_at, location)
-          if (checkingout) {
-            console.log('checkout: ', checkingout) //this should reutrn inserted data
-            //all processes successful
-            dispatch(emptyCart())
-            setAllProcessSuccess(true)
-            setLoading(false)
-            navigation.navigate('Order', {checkingout})
-          } else {
-            setLoading(false)
-          }
+      const crePayNewCheCar = await createCustomOrder(shopRef, amount, name, email, phone, method, userRef,
+        groupNum, serviceTax, deliveryFee, totalAmount, location, isSpecial, isFinished, cartItems, created_at)
+
+      if (crePayNewCheCar) {
+        getNext_Action(crePayNewCheCar.next_action)
+        console.log('create payment new checkout cart \n', crePayNewCheCar);
+        dispatch(emptyCart())
+        setAllProcessSuccess(true)
+        setLoading(false)
+
+        let newOrder = crePayNewCheCar.result
+        navigation.navigate('Order', {newOrder})
+      } else {
+        setLoading(false)
       }
       
   } catch (error) {

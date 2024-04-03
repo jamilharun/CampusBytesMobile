@@ -33,8 +33,8 @@ export default function App() {
             <AppNavigation />
           </Provider>
         </QueryClientProvider>
-    //  </AuthProvider>
-    // </Auth0Provider>
+    //   </AuthProvider>
+    //  </Auth0Provider>
   );
 }
 

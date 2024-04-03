@@ -89,6 +89,33 @@ export const addToMenu = async (newData, formData) => {
   }
 };
 
+
+export const createCustomOrder = async (shopRef, amount, name, email, phone, method, userRef,
+  groupNum, serviceTax, deliveryFee, totalAmount, location, isSpecial, isFinished, cartItems, created_at) => {
+  console.log('create Custom Order');
+  
+  // const userRef =
+  //for initialize payment 
+  
+  try {
+    const response = await axios.post(`${ip}/api/postgres/order/new/custom`, {shopRef, amount, name, email, 
+      phone, method, userRef, groupNum, serviceTax, deliveryFee, totalAmount, location, isSpecial, 
+      isFinished, cartItems, created_at})
+    if (response.data) {
+      console.log('createCustomOrder successful');
+      return response.data;
+    } else {
+      console.log('createCustomOrder failed');
+    }
+  } catch (error) {
+    console.log('Server connection failed', error);
+  }
+};
+
+
+
+
+
 export const initializePay = async (
   _id, totalAmount, name, email, phoneNum, method, created_at
 ) => {

@@ -26,15 +26,15 @@ export default function App() {
   })
 
   return (
-    // <Auth0Provider domain={config.domain} clientId={config.clientId}>
-    //  <AuthProvider>
+    <Auth0Provider domain={config.domain} clientId={config.clientId}>
+     <AuthProvider>
         <QueryClientProvider client={queryClient}>
           <Provider store={store}>
             <AppNavigation />
           </Provider>
         </QueryClientProvider>
-    //   </AuthProvider>
-    //  </Auth0Provider>
+      </AuthProvider>
+     </Auth0Provider>
   );
 }
 

@@ -7,6 +7,7 @@ import ProfileScreen from '../screens/app/ProfileScreen';
 import ShopStack from './shopStack';
 import ClientStack from './ClientStack';
 import { toDatabase } from '../apis/server';
+import Survey from '../screens/app/Survey';
 
 export default function AppStack() {
   const Drawer = createDrawerNavigator();
@@ -79,6 +80,18 @@ export default function AppStack() {
           
           )
       }
+
+      <Drawer.Screen 
+      //this drawer will serve as shop screen
+        name='Survey' 
+        options={{
+          headerShown: false,
+          drawerIcon: () => (
+            <Entypo name="text-document" size={24} color="black" />
+          )
+        }} 
+        component={Survey} /> 
+
 
     </Drawer.Navigator>
   )

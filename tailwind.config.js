@@ -23,7 +23,7 @@ module.exports = {
             'SelectiveYellow': '#FFBA08'
           },
           'limeGreen': '#76BA1B',
-          'babyBlue': '00B4D8'
+          'babyBlue': '#00B4D8'
     
         },
         fontFamily: {

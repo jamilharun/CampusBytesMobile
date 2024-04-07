@@ -11,7 +11,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getnewOrder, getnewQueue } from '../../apis/server';
 
 export default function OrderScreen({route, navigation}) {
-  const {checkingout} = route.params;
+  const {newOrder} = route.params;
   const { user } = useContext(AuthContext);
   // const shop = useSelector(selectShop)
   const dispatch = useDispatch();
@@ -20,11 +20,22 @@ export default function OrderScreen({route, navigation}) {
   const [userQueue, setUserQueue] = useState(null)
   const [co, setco] = useState()
 
+  const userData = user ? user : {
+    email: 'TestUser@email.com',
+    family_name: "ForDubbing",
+    given_name: "User123",
+    nickname: "sample user",
+    name: 'user123',
+    picture: "https://i.ytimg.com/vi/BEZmXjh8l0M/hq720_2.jpg?sqp=-oaymwEYCIACEOADSFryq4qpAwoIARUAAIhC0AEB&rs=AOn4CLDg2TpFauEmoM4VAD2gaMR_nJwSTQ",
+    sub: "user.sub",
+    "https://myroles.com/roles": ["shopOwner", "Special", "Admin", "Client"]
+  }
+
   //get checkout once
-  // console.log(checkingout);
+  console.log(newOrder);
   useEffect(()=>{
     const fetchcheckout = async () => {
-      const response = await getnewOrder(checkingout)
+      const response = await getnewOrder(newOrder)
       setco(response)
     };
     fetchcheckout()
@@ -34,7 +45,7 @@ export default function OrderScreen({route, navigation}) {
   //get queue
   useEffect(() => {
     const fetchData = async () => {
-      const response = await getnewQueue(checkingout)
+      const response = await getnewQueue(newOrder)
       // const newData = await response.json();
       setUserQueue(response);
     };
@@ -81,9 +92,9 @@ export default function OrderScreen({route, navigation}) {
                   <View className='px-5 pt-5'>
                     <Text className='mt-3 font-bold'>your orders:</Text>
                     {
-                      co[`${checkingout?.checkoutid}`].items.map((item, index) => {
+                      co[`${newOrder?.checkoutid}`].items.map((item, index) => {
                         let itemjson = JSON.parse(item)  
-                        let cartjson = JSON.parse(co[`${checkingout?.checkoutid}`]?.cartstring)
+                        let cartjson = JSON.parse(co[`${newOrder?.checkoutid}`]?.cartstring)
                         
                         return <View key={itemjson._id}>
                             <Text>item name: {itemjson.dishName ? itemjson.dishName : itemjson.productName}</Text> 
@@ -101,18 +112,14 @@ export default function OrderScreen({route, navigation}) {
                             }
                           </View>
                       })
-                      // console.log('ssdsdsdds', co[`${checkingout?.checkoutid}`].items)
                     }
                     
-                    {/* <View>
-                      <Text >id: {checkingout?.checkoutid}</Text>
-                    </View> */}
                     <Text className='mt-3 font-bold'>Shop information:</Text>
-                    {checkingout?.checkoutid ? (
-                      co[`${checkingout?.checkoutid}`].shopDetails && (
+                    {newOrder?.checkoutid ? (
+                      co[`${newOrder?.checkoutid}`].shopDetails && (
                         <View>
                           {(() => {
-                            const shopjson = JSON.parse(co[`${checkingout?.checkoutid}`].shopDetails);
+                            const shopjson = JSON.parse(co[`${newOrder?.checkoutid}`].shopDetails);
                             return (
                               <React.Fragment>
                                 <Text>shop name: {shopjson.shopName}</Text>
@@ -127,10 +134,10 @@ export default function OrderScreen({route, navigation}) {
 
                     <Text className='mt-3 font-bold'>payment Info:</Text>
                     <View className='pb-5'>
-                      <Text>Total Amount: {checkingout?.totalamount - checkingout?.servicetax - checkingout?.deliveryfee}</Text>
-                      <Text>Service fee: {checkingout?.servicetax}</Text>
-                      <Text>Delivery fee: {checkingout?.deliveryfee}</Text>
-                      <Text>Total Amount: {checkingout?.totalamount}</Text>
+                      <Text>Total Amount: {newOrder?.totalamount - newOrder?.servicetax - newOrder?.deliveryfee}</Text>
+                      <Text>Service fee: {newOrder?.servicetax}</Text>
+                      <Text>Delivery fee: {newOrder?.deliveryfee}</Text>
+                      <Text>Total Amount: {newOrder?.totalamount}</Text>
                     </View>
                   </View>
                  ) : null 

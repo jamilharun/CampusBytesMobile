@@ -2,7 +2,7 @@ import { View, TextInput, TouchableOpacity, Text, Modal } from "react-native";
 import { DrawerActions, useNavigation } from "@react-navigation/native";
 import { Map, Menu, Search, Sliders } from "react-native-feather";
 import React, { useContext, useEffect, useState } from 'react'
-import { getMyQueue, viewPickup } from "../apis/server";
+import { getMyQueue, viewPickup, viewPickupv2fetch } from "../apis/server";
 import { AuthContext } from "../context/AuthContext";
 import { AntDesign } from '@expo/vector-icons';
 import { useDispatch, useSelector } from "react-redux";
@@ -18,6 +18,7 @@ export default function Header() {
     const [userPickup, setUserPickup] = useState(null)
     const [openFilter, setOpenFilter] = useState(false)
     const [filterAmount, setFilterAmount] = useState(setedFilterAmount)
+    const [pickupListener, setPickupListener] = useState(false)
     // const [waitTime, setwaitTime] = useState(1000)
     const userData = user ? user : {
       email: 'TestUser@email.com',
@@ -30,6 +31,14 @@ export default function Header() {
       "https://myroles.com/roles": ["shopOwner", "Special", "Admin", "Client"]
     }
 
+    const fetchpickupqwesad = async () => {
+      const fetchPickup = await viewPickupv2fetch(userData.sub)
+      console.log('sdfsd', fetchPickup);
+      setUserPickup(fetchPickup);
+      // setPickupListener(true)
+      // if (fetchPickup) {
+      // }
+    };
     
     
     useEffect(() => {
@@ -39,19 +48,27 @@ export default function Header() {
         console.log('header queue: ', response);
         setUserQueue(response);
         
-        const fetchPickup = await viewPickup(userData.sub)  ///order/user/pickup/:id
-        console.log('header pickup: ', fetchPickup);
-        setUserPickup(fetchPickup);
+        fetchpickupqwesad()
       };
-      console.log(waitTime);
       const intervalId = setInterval(fetchData, waitTime); // Refetch every 5 seconds
       return () => clearInterval(intervalId); // Cleanup function to stop interval on unmount
     }, []); // Empty dependency array ensures effect runs only once after mount
     
+    useEffect(()=>{
+      if (pickupListener) {
+        //notify user
+      }
+    },[pickupListener])
+
+    // useEffect(()=>{
+    //   const fetchPickup = viewPickupv2fetch(userData.sub)
+    //   console.log(fetchPickup);
+    // })
     const handleFilterAmount = (newAmount) => {
       dispatch(setAmount(newAmount))
     };
 
+    // console.log(userPickup);
     return (
         <View className="flex-row items-center space-x-2 px-4 ">
             <TouchableOpacity 
@@ -62,7 +79,40 @@ export default function Header() {
                 <Menu height="20" width="20" strokeWidth={2.5} stroke="white" />
             </TouchableOpacity>
             <View className="flex-row flex-1 items-center p-3 rounded-full border border-gray-300">
-            { 
+            {
+              userPickup &&
+              userPickup.length > 0 ? <TouchableOpacity 
+              className=' w-full px-4 z-20 rounded-full flex flex-row bg-limeGreen justify-between items-center'
+              onPress={()=>{navigation.navigate('queueDetails', {userQueue, userPickup})}}>
+                <View className='flex flex-row justify-center items-center'>
+                  <Text className='text-EacColor-BlackPearl text-xl'>Ready to Pickup</Text>
+                </View>
+              </TouchableOpacity>:
+              userQueue && 
+              userQueue.length > 0 ?
+              <TouchableOpacity 
+              className={`rounded-full w-full flex flex-row justify-between items-center px-4 z-20 ${userPickup ? 'bg-limeGreen' : 'bg-EacColor-SelectiveYellow'}`}
+              onPress={()=>{navigation.navigate('queueDetails', {userQueue, userPickup})}}>
+                <View className=" w-10 h-10  flex justify-center items-center">
+                  <Text className='text-EacColor-BlackPearl text-2xl'>{userQueue[0]?.index}</Text>
+                </View>
+                <View className='flex flex-row justify-center items-center'>
+                  <Text className='text-EacColor-BlackPearl text-lg'>id:</Text>
+                  <View >
+                    <Text className='text-2xl'>{userQueue[0]?.data}</Text>
+                  </View>
+                </View>
+                <View>
+                  <Text className='text-EacColor-BlackPearl text-2xl'>{userQueue?.length}</Text>
+                </View>
+              </TouchableOpacity> :
+              <View className=' w-full flex flex-row justify-center items-center'>
+                <Text className='text-center text-xl'>CampusBytes</Text>  
+              </View>
+            }
+            
+            
+            {/* { 
               userQueue  ? 
               <View className={`rounded-full w-full flex flex-row justify-center items-center z-20 ${userPickup ? 'bg-limeGreen' : 'bg-EacColor-SelectiveYellow'}`}>
                 <View className='w-full flex flex-col justify-center items-center'>
@@ -102,7 +152,7 @@ export default function Header() {
             <View className=' w-full flex flex-row justify-center items-center'>
               <Text className='text-center text-xl'>CampusBytes</Text>  
             </View>
-          }
+            } */}
             </View>
             <TouchableOpacity 
             onPress={()=>{setOpenFilter(true)}}

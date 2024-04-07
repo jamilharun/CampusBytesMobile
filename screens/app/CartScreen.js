@@ -20,7 +20,6 @@ export default function CartScreen({route, navigation}) {
     const [randomNum, setRandomNum] = useState(null);
     //service tax = dafault 0
     const [deliveryFee, setDeliveryFee] = useState(null)
-    const totalAmount = carttotal + deliveryFee // idunno
     const [location, setLocation] = useState("")
     // const [special, isSpecial] = useState(false)
     // isCancelled = default 0
@@ -49,11 +48,11 @@ export default function CartScreen({route, navigation}) {
         "https://myroles.com/roles": ["shopOwner", "Special", "Admin", "Client"]
     }
 
-    const checkout = () => {
+    const checkout = async () => {
         console.log('sending data to server to be processed');
         const randomNumber = Math.floor(Math.random() * 1000) + 1;
         const created_at = new Date().toISOString().replace('T', ' ').replace('Z', '');
-        
+        const totalAmount = carttotal + deliveryFee // idunno
         let isSpecial = false
         if (userData["https://myroles.com/roles"] && 
             userData["https://myroles.com/roles"]?.includes('Special')) {
@@ -61,8 +60,14 @@ export default function CartScreen({route, navigation}) {
         }
         console.log(isSpecial);
         try {
-            const result = createCustomOrder(refNo, userData.sub, shop.id, randomNumber, deliveryFee, totalAmount, location, isSpecial, created_at, cartItems)
-            if (result) {console.log('createCustomOrder works');}
+            const newOrder = await createCustomOrder(refNo, userData.sub, shop.id, randomNumber, deliveryFee, totalAmount, location, isSpecial, created_at, groupedItems)
+            if (newOrder) {
+                console.log('createCustomOrder works');
+                // console.log(result);
+                if (newOrder) {
+                    navigation.navigate('Order', {newOrder})
+                }
+            }
             else {console.log('createCustomOrder did not work');}
 
         } catch (error) {
@@ -197,6 +202,8 @@ export default function CartScreen({route, navigation}) {
                   <Text>next step</Text>
                   <AntDesign name="close" size={24} color="black" onPress={() => setOpenFilter(false)} />
                 </View>
+                <Text>Account no.</Text>
+                <Text>09123456789</Text>
                 {
                 userData["https://myroles.com/roles"] && 
                 userData["https://myroles.com/roles"]?.includes('Special') &&        
@@ -217,7 +224,7 @@ export default function CartScreen({route, navigation}) {
                     onChangeText={setLocation}
                     keyboardType='default' 
                     />
-                    <Text>Note: switching on delivery may charge you 20 pesos</Text>
+                    <Text>Note: switching on delivery may charge you 20 pesos<Text>Scan QR using gcash scanner</Text></Text>
                 </View>
                 }
                 <View className='flex flex-row justify-between items-center'>
@@ -271,8 +278,6 @@ export default function CartScreen({route, navigation}) {
                         <Image source={require('../../assets/images/No-Image.png')}  style={{width: 300, height: 300}} />
                     </View>
                 }
-                <Text>Account no.</Text>
-                <Text>09123456789</Text>
                 <Text>
                     use your Gcash QR scan to the QRcode. other QR scanner may not work properly.
                     it is best to use the official QR scanner for this one.

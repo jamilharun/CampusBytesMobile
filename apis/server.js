@@ -96,6 +96,7 @@ export const createCustomOrder = async (paymentRef, userRef, shopRef, groupNum, 
     const response = await axios.post(`${ip}/api/postgres/order/new/custom`, {paymentRef, userRef, shopRef, groupNum, deliveryFee, totalAmount, location, 
       isSpecial, created_at, cartItems})
     if (response.data) {
+      // console.log(response.data);
       console.log('createCustomOrder successful');
       return response.data;
     } else {
@@ -196,8 +197,6 @@ export const fetchCheckout = async (id) => {
     // Parse and process the response data
     const parsedData = response.data; // Assuming JSON response
 
-    // Return the parsed data for further use
-    // console.log(parsedData.length);
     return parsedData;
 
   } catch (error) {
@@ -365,11 +364,12 @@ export const finishOrder = async (checkoutid) => {
   }
 }
 
-export const viewPickup = (id) => {
+export const viewPickup = async (id) => {
   console.log('this check if there item ready to pickup');
   try {
-    const response = axios.get(`${ip}/api/postgres/order/user/pickup/${id}`)
-    console.log('1111111',response);
+    // const response = axios.get(`${ip}/api/postgres/order/user/pickup/${id}`)
+    const response = await fetch(`${ip}/api/postgres/order/user/pickup/${id}`)
+    // console.log('view checkup res: ',response);
     if (response.data === 0 || response.data === undefined) {
       console.log('no pickup fetched');
       // return null
@@ -381,6 +381,29 @@ export const viewPickup = (id) => {
     console.log('no connection to the database');
   }
 }
+
+export const viewPickupv2fetch = async (id) => {
+  console.log('Checking if there are items ready for pickup...');
+  try {
+    const response = await axios.get(`${ip}/api/postgres/order/user/pickup/${id}`);
+    if (!response.data) {
+      throw new Error('Failed to fetch pickup data');
+    }
+    const data = response.data;
+    if (data === 0 || data === undefined) {
+      console.log('No pickups fetched.');
+      return null;
+    } else {
+      console.log(data);
+      return data;
+    }
+  } catch (error) {
+    console.error('Error while connecting to the database:', error.message);
+    return null;
+  }
+}
+
+
 
 export const removePickup = async (checkoutid) => {
   console.log('this will remove the checkoutid on readt to pickup queue');
@@ -397,6 +420,9 @@ export const removePickup = async (checkoutid) => {
     console.log('no connection to the database');
   }
 }
+
+
+
 // export const getMyQueueCheckout = async () => {
 //   console.log('user queueu checkout');
 //   try {

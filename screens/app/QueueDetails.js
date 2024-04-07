@@ -6,12 +6,15 @@ import { fetchCheckout, removePickup, viewPickup } from '../../apis/server';
 import { AuthContext } from '../../context/AuthContext';
 import { useIsFocused } from '@react-navigation/native';
 export default function QueueDetails({route, navigation}) {
-  const {userQueue} = route.params;
+  const {userQueue, userPickup} = route.params;
+  console.log('queue detail userPickup ',userPickup);
+  console.log('queue detail userQueue ',userQueue);
+  // console.log(route.params);  
   const { user } = useContext(AuthContext);
   // const [userCheckOut, setUserCheckOut] = useState()
   const [handleId, getHandleId] = useState(null)  
   const [openModal, setOpenModal] = useState(false)
-  const [userPickup, setUserPickup] = useState(null)
+  // const [userPickup, setUserPickup] = useState(null)
     
   const userData = user ? user : {
     email: 'TestUser@email.com',
@@ -37,16 +40,15 @@ export default function QueueDetails({route, navigation}) {
   
   });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const fetchPickup = await viewPickup(userData.sub)  ///order/user/pickup/:id
-      console.log('header pickup: ', fetchPickup);
-      setUserPickup(fetchPickup);
-    };
-    fetchData()
-  }, []); 
-
-  console.log('pick me up', userPickup);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const fetchPickup = await viewPickup(userData.sub)  ///order/user/pickup/:id
+  //     console.log('header pickup: ', fetchPickup);
+  //     setUserPickup(fetchPickup);
+  //   };
+  //   fetchData()
+  // }, []); 
+  // console.log('pick me up', userPickup);
 
   const alreadyPickupOrder = async () => {
     console.log('item already picked up');
@@ -78,72 +80,139 @@ export default function QueueDetails({route, navigation}) {
         
         <ScrollView>
         {
-          userPickup &&
-            <View className='py-4 px-4 bg-limeGreen'>
-              <Text className='text-2xl'>Ready to pickup</Text>
-              {
-              userPickup ? <View >
-                  <View className='flex flex-row justify-center items-center'>
-                    <View className='w-1/2'>
-                      <Text>Pickup id</Text>
-                    </View>
-                    <View className=''>
-                      <Text>Your Items</Text>
-                    </View>
-                  </View>
-                  <View className='flex flex-row justify-center items-center'>
-                    <View className='w-1/2 '>
-                        <Text className='text-3xl'>24</Text>
-                    </View>
-                    <View>
-                      <Text>item 1 | 2</Text>
-                      <Text>item 2 | 2</Text>
-                      <Text>item 3 | 2</Text>
-                      <Text>item 4 | 2</Text>
-                    </View>
-                  </View>
-                  <View>
-                    <Text>Shop Details:</Text>
-                    <View>
-                      <Text>Shop name:</Text>
-                    
-                    </View>
-                  </View>
-                </View> : <View>
-
-                </View>
-
-              }
-            </View>
+          userPickup && <View className='px-4 py-4 '>
+            <Text className='text-xl '>Your Order is Ready to pickup!</Text>
+          </View>
         }
+
+        {
+          userCheckout &&
+            userPickup?.map((pickup, index)=>
+            pickup ? (
+              <View className='py-4 px-4' key={index}>
+                <Text>click the green to confirm checkout</Text>
+                <View className='bg-limeGreen rounded-full'>
+                  {
+                    userCheckout[`${pickup.data}`]?.checkout.isfinished ? (
+                      <TouchableOpacity
+                        onPress={()=>{
+                        setOpenModal(true)
+                        getHandleId(pickup.data)}}
+                        className='flex flex-row justify-between items-center'>
+                        <Text className='text-3xl w-1/2 text-center'>{pickup.index}</Text>
+                        <Text className='text-3xl w-1/2 text-center'>{pickup.data}</Text>    
+                      </TouchableOpacity>
+                    ) : (
+                      <View className='flex flex-row justify-between items-center'>
+                        <Text className='text-3xl w-1/2 text-center'>{pickup.index}</Text>
+                        <Text className='text-3xl w-1/2 text-center'>{pickup.data}</Text>
+                      </View>
+                    )
+                  }
+                  <View className='flex flex-row justify-between items-center'>
+                    <Text className='text-xl w-1/2 text-center'>pickup</Text>
+                    <Text className='text-xl w-1/2 text-center'>orderid</Text>
+                  </View>
+                </View>
+              <Text className='mt-3 font-bold'>Order information</Text>
+              <View>
+                  <Text>Payment: {userCheckout[`${pickup.data}`]?.checkout.totalamount}</Text>
+                  <Text>Delivery fee: {userCheckout[`${pickup.data}`]?.checkout.deliveryfee}</Text>
+                  <Text>Service fee: {userCheckout[`${pickup.data}`]?.checkout.servicetax}</Text>
+              </View>
+              
+              <Text className='mt-3 font-bold'>Order Items</Text>
+              {
+                userCheckout[`${pickup.data}`]?.items.map((item, index) => {
+                  let itemjson = JSON.parse(item)
+                  let cartjson = JSON.parse(userCheckout[`${pickup.data}`]?.cartstring)
+                  console.log(cartjson[index].cartid);
+                  return <View key={index}>
+              
+                    <View>
+                      <Text>item name: {itemjson.dishName ? itemjson.dishName : itemjson.productName}</Text> 
+                      <Text>Type: {itemjson._type}</Text>
+                      <Text>Price: {itemjson.price ? itemjson.price : itemjson.Price}</Text>                    
+                      {
+                        cartjson ? (
+                          cartjson[index].itemref == itemjson._id ? (
+                            <View>
+                              <Text>Quantity: {cartjson[index].quantity}</Text>
+                              <Text>Sub-total: {cartjson[index].subtotalprice}</Text>
+  
+                            </View>
+                          ) : null
+                        ) : null
+                      }
+                    </View>
+                  </View>
+                })
+              }
+              
+              <Text className='mt-3 font-bold'>Shop Details</Text>
+              {pickup.data ? (
+                userCheckout[`${pickup.data}`]?.shopDetails && (
+                  <View>
+                    {(() => {
+                      const shopjson = JSON.parse(userCheckout[`${pickup.data}`].shopDetails);
+                      return (
+                        <React.Fragment>
+                          <Text>shop name: {shopjson.shopName}</Text>
+                          {/* <Text>description: {shopjson.description}</Text> */}
+                          <Text>address: {shopjson.address}</Text>
+                        </React.Fragment>
+                      );
+                    })()}
+                  </View>
+                )
+              ) : null}
+              <Text className='mt-3 font-bold'>Order Meta data</Text>
+              <View>
+                  <Text>Shop id: {userCheckout[`${pickup.data}`]?.checkout.shopref}</Text>
+                  <Text>user id: {userCheckout[`${pickup.data}`]?.checkout.userref}</Text>
+                  <Text>payment id: {userCheckout[`${pickup.data}`]?.checkout.paymentid}</Text>
+                  <Text>Location: {userCheckout[`${pickup.data}`]?.checkout.location}</Text>
+                  {/* <Text>payment success: {userCheckout[`${queue.data}`]?.checkout.paysuccess ? 'true' : 'false'}</Text> */}
+                  <Text>picked up: {userCheckout[`${pickup.data}`]?.checkout.isfinished ? 'true' : 'false'}</Text>
+                  <Text>Priority: {userCheckout[`${pickup.data}`]?.checkout.isspecial ? 'true' : 'false'}</Text>
+                  <Text>ordered_at: {userCheckout[`${pickup.data}`]?.checkout.created_at}</Text>
+              </View>
+
+              </View>
+            ) : null)
+        }
+
+{/* 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999 */}
 
         {
         userCheckout &&
           userQueue.map((queue, index)=>
             queue ? (
-            <View 
-              className='py-4 px-4 mb-20'
-              key={index}>
-              {
-                userCheckout[`${queue.data}`]?.checkout.isfinished ? (
-                  <TouchableOpacity 
-                    onPress={()=>{
-                      setOpenModal(true)
-                      getHandleId(queue.data)}}
-                    className='flex flex-row justify-between items-center'>
-                    <Text className='text-3xl w-1/2 text-center'>{queue.index}</Text>
-                    <Text className='text-3xl w-1/2 text-center'>{queue.data}</Text>
-                  </TouchableOpacity>
-                ) : (
-                  <View className='flex flex-row justify-between items-center'>
-                    <Text className='text-3xl w-1/2 text-center'>{queue.index}</Text>
-                    <Text className='text-3xl w-1/2 text-center'>{queue.data}</Text>
-                  </View>
-                )
-              }
-              <View className='flex flex-row justify-between items-center'>
-                <Text className='text-xl w-1/2 text-center'>queue</Text>
-                <Text className='text-xl w-1/2 text-center'>orderid</Text>
+            <View className='py-4 px-4 mb-20' key={index}>
+              <View className='bg-babyBlue rounded-full'>
+                {
+                  userCheckout[`${queue.data}`]?.checkout.isfinished ? (
+                    <TouchableOpacity 
+                      onPress={()=>{
+                        setOpenModal(true)
+                        getHandleId(queue.data)}}
+                      className='flex flex-row justify-between items-center'>
+                      <Text className='text-3xl w-1/2 text-center'>{queue.index}</Text>
+                      <Text className='text-3xl w-1/2 text-center'>{queue.data}</Text>
+                    </TouchableOpacity>
+                  ) : (
+                    <View className='flex flex-row justify-between items-center'>
+                      <Text className='text-3xl w-1/2 text-center'>{queue.index}</Text>
+                      <Text className='text-3xl w-1/2 text-center'>{queue.data}</Text>
+                    </View>
+                  )
+                }
+                <View className='flex flex-row justify-between items-center'>
+                  <Text className='text-xl w-1/2 text-center'>queue</Text>
+                  <Text className='text-xl w-1/2 text-center'>orderid</Text>
+                </View>
+
               </View>
               <Text className='mt-3 font-bold'>Order information</Text>
               <View>
@@ -197,7 +266,7 @@ export default function QueueDetails({route, navigation}) {
                       return (
                         <React.Fragment>
                           <Text>shop name: {shopjson.shopName}</Text>
-                          <Text>description: {shopjson.description}</Text>
+                          {/* <Text>description: {shopjson.description}</Text> */}
                           <Text>address: {shopjson.address}</Text>
                         </React.Fragment>
                       );
@@ -205,15 +274,13 @@ export default function QueueDetails({route, navigation}) {
                   </View>
                 )
               ) : null}
-
-              
               <Text className='mt-3 font-bold'>Order Meta data</Text>
               <View>
                   <Text>Shop id: {userCheckout[`${queue.data}`]?.checkout.shopref}</Text>
                   <Text>user id: {userCheckout[`${queue.data}`]?.checkout.userref}</Text>
                   <Text>payment id: {userCheckout[`${queue.data}`]?.checkout.paymentid}</Text>
                   <Text>Location: {userCheckout[`${queue.data}`]?.checkout.location}</Text>
-                  <Text>payment success: {userCheckout[`${queue.data}`]?.checkout.paysuccess ? 'true' : 'false'}</Text>
+                  {/* <Text>payment success: {userCheckout[`${queue.data}`]?.checkout.paysuccess ? 'true' : 'false'}</Text> */}
                   <Text>picked up: {userCheckout[`${queue.data}`]?.checkout.isfinished ? 'true' : 'false'}</Text>
                   <Text>Priority: {userCheckout[`${queue.data}`]?.checkout.isspecial ? 'true' : 'false'}</Text>
                   <Text>ordered_at: {userCheckout[`${queue.data}`]?.checkout.created_at}</Text>
@@ -241,8 +308,8 @@ export default function QueueDetails({route, navigation}) {
                     <TouchableOpacity 
                       style={{ backgroundColor: '#FFD700', marginTop: 10, padding: 10, borderRadius: 5 }}
                       onPress={() => {
-                        setOpenModal(false);
                         alreadyPickupOrder()
+                        setOpenModal(false);
                       }}>
                       <Text style={{ textAlign: 'center' }}>Yes</Text>
                     </TouchableOpacity>
@@ -250,7 +317,6 @@ export default function QueueDetails({route, navigation}) {
                       className='mt-5 p-3 rounded-lg bg-gray-500'
                       onPress={() => {
                         setOpenModal(false);
-                        handleId(null)
                       }}>
                     <Text style={{ textAlign: 'center' }}>No</Text>
                     </TouchableOpacity>

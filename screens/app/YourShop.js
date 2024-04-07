@@ -37,6 +37,7 @@ export default function YourShop() {
       refetchOnWindowFocus: true
     }); 
 
+    console.log('you shop: ', ysd);
     // gcTime: 12 * 60 * 60 * 1000,
     // staleTime: 24 * 60 * 60 * 1000,
     // refetchInterval: 12 * 60 * 60 * 1000,
@@ -51,22 +52,7 @@ export default function YourShop() {
     // },
     
     console.log('you shop: ', ysd);
-    // const yourShopData = {
-    //   _id: ysd[0]._id,
-    //   _type: ysd[0].type,
-    //   cover: ysd[0].cover,
-    //   description: ysd[0].description,
-    //   dishes: ysd[0].dishes,
-    //   isActive: ysd[0].isActive,
-    //   isFeatured: ysd[0].isFeatured,
-    //   isPromoted: ysd[0].isPromoted,
-    //   latitude: ysd[0].latitude,
-    //   products: ysd[0].products,
-    //   shopName: ysd[0].shopName,
-    //   slug: ysd[0].slug,
-    //   tags: ysd[0].tags
-    // }
-  
+    
     const { data: ysq} = useQuery ({ 
       queryKey: [`yourShopQueue`], 
       queryFn: () => fetchShopQueue(ysd[0]._id),

@@ -105,7 +105,7 @@ export default function YourShop() {
                 ) : (<Text className='text-xl font-medium'>loading</Text>)
               }
             </View>
-            <View className='flex flex-row items-center '>
+            {/* <View className='flex flex-row items-center '>
               <AntDesign name="checkcircleo" size={25} color="green"/>
               <Text className='text-2xl font-normal pl-2'>Finished:</Text>
               <Text className='text-2xl font-medium'>10</Text>
@@ -114,7 +114,7 @@ export default function YourShop() {
               <FontAwesome name="money" size={25} color="green" />
               <Text className='text-2xl font-normal pl-2'>Earnings:</Text>
               <Text className='text-2xl font-medium'>₱100.00</Text>
-            </View>
+            </View> */}
           </View> 
         </View>
           <View className=' '>

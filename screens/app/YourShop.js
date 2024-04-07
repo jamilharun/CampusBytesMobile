@@ -56,7 +56,7 @@ export default function YourShop() {
     const { data: ysq} = useQuery ({ 
       queryKey: [`yourShopQueue`], 
       queryFn: () => fetchShopQueue(ysd[0]._id),
-      gcTime: 2 * 60 * 1000,
+      gcTime: 30 * 1000,
       keepPreviousData: true,
       refetchInterval:  60 * 1000,
       refetchOnWindowFocus: true

@@ -14,7 +14,7 @@ export const AuthProvider = ({children}) => {
         try {
             await authorize();
             let credentials = await getCredentials();
-            Alert.alert('AccessToken: ' + credentials.accessToken);
+            // Alert.alert('AccessToken: ' + credentials.accessToken);
         } catch (e) {
             console.log(e);
         }

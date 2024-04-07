@@ -94,11 +94,7 @@ export default function QueueDetails({route, navigation}) {
                 <View className='bg-limeGreen rounded-full'>
                   {
                     userCheckout[`${pickup.data}`]?.checkout.isfinished ? (
-                      <TouchableOpacity
-                        onPress={()=>{
-                        setOpenModal(true)
-                        getHandleId(pickup.data)}}
-                        className='flex flex-row justify-between items-center'>
+                      <TouchableOpacity className='flex flex-row justify-between items-center'>
                         <Text className='text-3xl w-1/2 text-center'>{pickup.index}</Text>
                         <Text className='text-3xl w-1/2 text-center'>{pickup.data}</Text>    
                       </TouchableOpacity>

@@ -42,7 +42,7 @@ export default function Header() {
     
     
     useEffect(() => {
-      const waitTime = 60 * 1000; 
+      const waitTime = 20 * 1000; 
       const fetchData = async () => {
         const response = await getMyQueue(userData.sub)
         console.log('header queue: ', response);
@@ -91,7 +91,7 @@ export default function Header() {
               userQueue && 
               userQueue.length > 0 ?
               <TouchableOpacity 
-              className={`rounded-full w-full flex flex-row justify-between items-center px-4 z-20 ${userPickup ? 'bg-limeGreen' : 'bg-EacColor-SelectiveYellow'}`}
+              className={`rounded-full w-full flex flex-row justify-between items-center px-4 z-20 bg-babyBlue`}
               onPress={()=>{navigation.navigate('queueDetails', {userQueue, userPickup})}}>
                 <View className=" w-10 h-10  flex justify-center items-center">
                   <Text className='text-EacColor-BlackPearl text-2xl'>{userQueue[0]?.index}</Text>

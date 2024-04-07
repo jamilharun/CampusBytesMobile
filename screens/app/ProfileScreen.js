@@ -8,7 +8,7 @@ import { AuthContext } from '../../context/AuthContext';
 export default function ProfileScreen() {
   const navigation = useNavigation();
 
-  const { user } = useContext(AuthContext);
+  const { user, onLogout } = useContext(AuthContext);
 
   const userData = user ? user : {
     email: 'TestUser@email.com',
@@ -19,6 +19,15 @@ export default function ProfileScreen() {
     picture: "https://lh3.googleusercontent.com/a/ACg8ocKdr4jAE4jOVsBGUZukEUqK4Yd5E8A3svreYKbwT48f0W8=s96-c",
     sub: "google-oauth2|103360425900701922708",
     "https://myroles.com/roles": ["shopOwner", "Special", "Admin", "Client"]
+  }
+
+  const toLogout = () => {
+    try {
+      onLogout()
+      // navigation.navigate('Login')
+    } catch (error) {
+      console.log('logging out');
+    }
   }
   return (
     <SafeAreaView>
@@ -46,6 +55,13 @@ export default function ProfileScreen() {
             <Text className='text-xl'>{userData.name}</Text>
             <Text className='text-xl'>id: {userData.sub}</Text>
           
+        </View>
+        <View className='flex justify-center items-center flex-col h-40 '>
+          <TouchableOpacity 
+            onPress={()=>{toLogout()}}
+            className='bg-EacColor-RedOxide p-3 rounded-full'>
+            <Text className='text-2xl text-white'>Logout</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </SafeAreaView>

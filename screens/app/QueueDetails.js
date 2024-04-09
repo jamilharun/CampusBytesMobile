@@ -80,9 +80,10 @@ export default function QueueDetails({route, navigation}) {
         
         <ScrollView>
         {
-          userPickup && <View className='px-4 py-4 '>
+          userPickup &&
+          userPickup.length > 0 ? <View className='px-4 py-4 '>
             <Text className='text-xl '>Your Order is Ready to pickup!</Text>
-          </View>
+          </View> : null
         }
 
         {
@@ -94,7 +95,10 @@ export default function QueueDetails({route, navigation}) {
                 <View className='bg-limeGreen rounded-full'>
                   {
                     userCheckout[`${pickup.data}`]?.checkout.isfinished ? (
-                      <TouchableOpacity className='flex flex-row justify-between items-center'>
+                      <TouchableOpacity onPress={()=>{
+                        setOpenModal(true)
+                        getHandleId(pickup.data)}}
+                        className='flex flex-row justify-between items-center'>
                         <Text className='text-3xl w-1/2 text-center'>{pickup.index}</Text>
                         <Text className='text-3xl w-1/2 text-center'>{pickup.data}</Text>    
                       </TouchableOpacity>
@@ -115,6 +119,11 @@ export default function QueueDetails({route, navigation}) {
                   <Text>Payment: {userCheckout[`${pickup.data}`]?.checkout.totalamount}</Text>
                   <Text>Delivery fee: {userCheckout[`${pickup.data}`]?.checkout.deliveryfee}</Text>
                   <Text>Service fee: {userCheckout[`${pickup.data}`]?.checkout.servicetax}</Text>
+                  <Text>payment ref: {userCheckout[`${pickup.data}`]?.checkout.paymentref}</Text>
+                  <Text>Location: {userCheckout[`${pickup.data}`]?.checkout.location}</Text>
+                  <Text>picked up: {userCheckout[`${pickup.data}`]?.checkout.isfinished ? 'true' : 'false'}</Text>
+                  <Text>Priority: {userCheckout[`${pickup.data}`]?.checkout.isspecial ? 'true' : 'false'}</Text>
+                  <Text>ordered_at: {userCheckout[`${pickup.data}`]?.checkout.created_at}</Text>
               </View>
               
               <Text className='mt-3 font-bold'>Order Items</Text>
@@ -162,18 +171,6 @@ export default function QueueDetails({route, navigation}) {
                   </View>
                 )
               ) : null}
-              <Text className='mt-3 font-bold'>Order Meta data</Text>
-              <View>
-                  <Text>Shop id: {userCheckout[`${pickup.data}`]?.checkout.shopref}</Text>
-                  <Text>user id: {userCheckout[`${pickup.data}`]?.checkout.userref}</Text>
-                  <Text>payment id: {userCheckout[`${pickup.data}`]?.checkout.paymentid}</Text>
-                  <Text>Location: {userCheckout[`${pickup.data}`]?.checkout.location}</Text>
-                  {/* <Text>payment success: {userCheckout[`${queue.data}`]?.checkout.paysuccess ? 'true' : 'false'}</Text> */}
-                  <Text>picked up: {userCheckout[`${pickup.data}`]?.checkout.isfinished ? 'true' : 'false'}</Text>
-                  <Text>Priority: {userCheckout[`${pickup.data}`]?.checkout.isspecial ? 'true' : 'false'}</Text>
-                  <Text>ordered_at: {userCheckout[`${pickup.data}`]?.checkout.created_at}</Text>
-              </View>
-
               </View>
             ) : null)
         }
@@ -189,11 +186,7 @@ export default function QueueDetails({route, navigation}) {
               <View className='bg-babyBlue rounded-full'>
                 {
                   userCheckout[`${queue.data}`]?.checkout.isfinished ? (
-                    <TouchableOpacity 
-                      onPress={()=>{
-                        setOpenModal(true)
-                        getHandleId(queue.data)}}
-                      className='flex flex-row justify-between items-center'>
+                    <TouchableOpacity className='flex flex-row justify-between items-center'>
                       <Text className='text-3xl w-1/2 text-center'>{queue.index}</Text>
                       <Text className='text-3xl w-1/2 text-center'>{queue.data}</Text>
                     </TouchableOpacity>
@@ -215,6 +208,11 @@ export default function QueueDetails({route, navigation}) {
                   <Text>Payment: {userCheckout[`${queue.data}`]?.checkout.totalamount}</Text>
                   <Text>Delivery fee: {userCheckout[`${queue.data}`]?.checkout.deliveryfee}</Text>
                   <Text>Service fee: {userCheckout[`${queue.data}`]?.checkout.servicetax}</Text>
+                  <Text>payment ref: {userCheckout[`${queue.data}`]?.checkout.paymentref}</Text>
+                  <Text>Location: {userCheckout[`${queue.data}`]?.checkout.location}</Text>
+                  <Text>picked up: {userCheckout[`${queue.data}`]?.checkout.isfinished ? 'true' : 'false'}</Text>
+                  <Text>Priority: {userCheckout[`${queue.data}`]?.checkout.isspecial ? 'true' : 'false'}</Text>
+                  <Text>ordered_at: {userCheckout[`${queue.data}`]?.checkout.created_at}</Text>
               </View>
               
               <Text className='mt-3 font-bold'>Order Items</Text>
@@ -225,7 +223,7 @@ export default function QueueDetails({route, navigation}) {
                   // console.log(userCheckout[`${queue.data}`]?.cartstring);
                   let cartjson = JSON.parse(userCheckout[`${queue.data}`]?.cartstring)
                   console.log(cartjson[index].cartid);
-                  return <View>
+                  return <View key={index}>
               
                     <View>
                       <Text>item name: {itemjson.dishName ? itemjson.dishName : itemjson.productName}</Text> 
@@ -243,12 +241,6 @@ export default function QueueDetails({route, navigation}) {
                         ) : null
                       }
                     </View>
-                    {/* <Text className='mt-3 font-bold'>Shop Details</Text>
-                    <View>
-                      <Text>shop name: {shopjson.shopName}</Text>
-                      <Text>description: {shopjson.description}</Text>
-                      <Text>address: {shopjson.address}</Text>
-                    </View> */}
                   </View>
                 })
               }
@@ -270,17 +262,6 @@ export default function QueueDetails({route, navigation}) {
                   </View>
                 )
               ) : null}
-              <Text className='mt-3 font-bold'>Order Meta data</Text>
-              <View>
-                  <Text>Shop id: {userCheckout[`${queue.data}`]?.checkout.shopref}</Text>
-                  <Text>user id: {userCheckout[`${queue.data}`]?.checkout.userref}</Text>
-                  <Text>payment id: {userCheckout[`${queue.data}`]?.checkout.paymentid}</Text>
-                  <Text>Location: {userCheckout[`${queue.data}`]?.checkout.location}</Text>
-                  {/* <Text>payment success: {userCheckout[`${queue.data}`]?.checkout.paysuccess ? 'true' : 'false'}</Text> */}
-                  <Text>picked up: {userCheckout[`${queue.data}`]?.checkout.isfinished ? 'true' : 'false'}</Text>
-                  <Text>Priority: {userCheckout[`${queue.data}`]?.checkout.isspecial ? 'true' : 'false'}</Text>
-                  <Text>ordered_at: {userCheckout[`${queue.data}`]?.checkout.created_at}</Text>
-              </View>
             </View>
             ) : null
           )

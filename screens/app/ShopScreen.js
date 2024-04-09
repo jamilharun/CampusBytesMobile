@@ -34,6 +34,7 @@ export default function ShopScreen({route, navigation}) {
                 cover: data.cover,
                 logo: data.logo,
                 qrcode: data.qrcode,
+                accNum: data.accNum,
                 type: data._type,
                 address: data.address,
                 latitude: data.latitude,

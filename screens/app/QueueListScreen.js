@@ -9,7 +9,7 @@ export default function QueueListScreen({route, navigation}) {
   const {ysd} = route.params;
   const [openModal, setOpenModal] = useState(false)
   const [readyId, getReadyId] = useState(null)
-
+  const [readyIndex, getReadyIndex] = useState(null)
   // const [allorder, getAllOrder] = useState(null)
   //your shop queue
   const { data: ysq, isLoading, error, isFetching} = useQuery ({ 
@@ -35,9 +35,9 @@ export default function QueueListScreen({route, navigation}) {
   const handleFinishOrder = async () => {
     console.log(' this is finished');
     try {
-      if (readyId) {
-        console.log(readyId);
-        const result = await finishOrder(readyId)
+      if (readyId, readyIndex) {
+        console.log(readyId, readyIndex);
+        const result = await finishOrder(readyId, readyIndex)
         console.log(result);
       }
     } catch (error) {
@@ -64,7 +64,7 @@ export default function QueueListScreen({route, navigation}) {
                 queue list
             </Text>
         </View>
-        
+        <Text>note: please double check the reference Id. on your Gcash account. to see if the user DID pay the right totalamount on the checkout </Text>
         <View className='flex flex-row mb-4'>
           <Text className='w-1/2 text-center text-xl font-bold'>Queue no.</Text>
           <Text className='w-1/2 text-center text-xl font-bold'>order info</Text>
@@ -83,7 +83,8 @@ export default function QueueListScreen({route, navigation}) {
                         yscheckout[`${data}`]?.checkout?.isspecial == true ? (
                           <TouchableOpacity onPress={()=>{
                             setOpenModal(true)
-                            getReadyId(data)}}
+                            getReadyId(data)
+                            getReadyIndex(index)}}
                             className='flex flex-row justify-between items-center'>
                              <Text className='text-2xl pb-3'>Priority:</Text>
                              <AntDesign name="checkcircleo" size={25} color="green"/>
@@ -92,7 +93,8 @@ export default function QueueListScreen({route, navigation}) {
                           <TouchableOpacity 
                             onPress={()=>{
                               setOpenModal(true)
-                              getReadyId(data)}}
+                              getReadyId(data)
+                              getReadyIndex(index)}}
                             className='flex flex-row justify-end '>
                             <AntDesign name="checkcircleo" size={25} color="green"/>
                           </TouchableOpacity>
@@ -104,11 +106,11 @@ export default function QueueListScreen({route, navigation}) {
                         yscheckout[`${data}`] && yscheckout[`${data}`].checkout ? (
                           yscheckout[`${data}`]?.checkout?.isspecial == true ? (
                             <View className='w-1/2 h-40 bg-EacColor-SelectiveYellow flex justify-center rounded-xl '>
-                              <Text className=' text-2xl text-center rounded-full'>{index}</Text>
+                              <Text className=' text-2xl text-center rounded-full'>{index + 1}</Text>
                             </View>
                           ) : (
                             <View className='w-1/2'>
-                              <Text className=' text-2xl text-center rounded-full'>{index}</Text>
+                              <Text className=' text-2xl text-center rounded-full'>{index + 1}</Text>
                             </View>      
                           )
                        ) : null
@@ -138,6 +140,7 @@ export default function QueueListScreen({route, navigation}) {
                          )
                        ) : <Text className='text-xl overflow-hidden'>no data</Text>
                      }
+                     <Text className='text-xl overflow-hidden'>Ref no: {yscheckout[`${data}`]?.checkout.paymentref}</Text>
                       </View>
                     </View>
                     <View>
@@ -168,14 +171,8 @@ export default function QueueListScreen({route, navigation}) {
                     </View>
                     <View>
                       <Text className='mt-3 text-xl'>Order Meta data</Text>
-                      
-
                       <View>
-                          <Text>Shop id: {yscheckout[`${data}`].checkout.shopref}</Text>
-                          <Text>user id: {yscheckout[`${data}`].checkout.userref}</Text>
-                          <Text>payment id: {yscheckout[`${data}`]?.checkout.paymentid}</Text>
                           <Text>Location: {yscheckout[`${data}`]?.checkout.location}</Text>
-                          <Text>payment success: {yscheckout[`${data}`]?.checkout.paysuccess ? 'true' : 'false'}</Text>
                           <Text>picked up: {yscheckout[`${data}`]?.checkout.isfinished ? 'true' : 'false'}</Text>
                           <Text>Priority: {yscheckout[`${data}`]?.checkout.isspecial ? 'true' : 'false'}</Text>
                           <Text>ordered_at: {yscheckout[`${data}`]?.checkout.created_at}</Text>
@@ -211,7 +208,7 @@ export default function QueueListScreen({route, navigation}) {
                     keyboardType="numeric"
                     placeholder="Enter amount"
                   /> */}
-                  <Text>are you sure the orderid "{readyId}" is finished?</Text>
+                  <Text>are you sure the orderid "{readyId}", index "{readyIndex}" is finished?</Text>
                   <View>
                     <TouchableOpacity 
                       style={{ backgroundColor: '#FFD700', marginTop: 10, padding: 10, borderRadius: 5 }}
@@ -226,6 +223,7 @@ export default function QueueListScreen({route, navigation}) {
                       onPress={() => {
                         setOpenModal(false);
                         getReadyId(null)
+                        getReadyIndex(null)
                       }}>
                     <Text style={{ textAlign: 'center' }}>No</Text>
                     </TouchableOpacity>

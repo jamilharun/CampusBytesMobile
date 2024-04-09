@@ -93,7 +93,21 @@ export default function OrderScreen({route, navigation}) {
                     <Text className='mt-3 font-bold'>your orders:</Text>
                     {
                       co[`${newOrder?.checkoutid}`].items.map((item, index) => {
-                        let itemjson = JSON.parse(item)  
+                        let itemjson = '';
+
+                        if (typeof item === 'string') {
+                            try {
+                                itemjson = JSON.parse(item);
+                            } catch (error) {
+                                // If JSON parsing fails, you can handle the error here
+                                console.error('Error parsing JSON:', error);
+                                // Assigning the original string to itemjson in case of parsing failure
+                                itemjson = item;
+                            }
+                        } else {
+                            // If item is not a string, simply assign it to itemjson
+                            itemjson = item;
+                        }
                         let cartjson = JSON.parse(co[`${newOrder?.checkoutid}`]?.cartstring)
                         
                         return <View key={itemjson._id}>

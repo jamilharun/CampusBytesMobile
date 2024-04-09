@@ -27,34 +27,44 @@ export default function HomeScreen() {
   // const shopItem = useSelector(selectShop)
 
   // const [userQueue, setUserQueue] = useState(null)
-  
-  
+  const [sdp, setsdp] = useState(null)
+  const fetchData = async () => {
+    const response = await fetchShop()
+    console.log('header queue: ', response);
+    // setUserQueue(response);
+    setsdp(response)
+  };
+  useEffect(()=>{
+    if (!sdp) {
+      fetchData() 
+    }
+  })
 
-const { data: sdp, isLoading, error, isFetching} = useQuery({ 
-    queryKey: [`shopDisplay`], 
-    queryFn: fetchShop,
-    gcTime: 12 * 60 * 60 * 1000,
-    staleTime: 24 * 60 * 60 * 1000,
-    refetchInterval: 12 * 60 * 60 * 1000,
-    keepPreviousData: true, 
-    refetchOnWindowFocus: true,
-    retry: (failureCount, error) => {
-      // Define your retry logic here
-      if (failureCount < 3) { // Retry only twice (including the initial attempt)
-        return true; // Retry on the next error
-      }
-      return false; // Don't retry after the second attempt
-    },
-});
+// const { data: sdp, isLoading, error, isFetching} = useQuery({ 
+//     queryKey: [`shopDisplay`], 
+//     queryFn: fetchShop,
+//     gcTime: 12 * 60 * 60 * 1000,
+//     staleTime: 24 * 60 * 60 * 1000,
+//     refetchInterval: 12 * 60 * 60 * 1000,
+//     keepPreviousData: true, 
+//     refetchOnWindowFocus: true,
+//     retry: (failureCount, error) => {
+//       // Define your retry logic here
+//       if (failureCount < 3) { // Retry only twice (including the initial attempt)
+//         return true; // Retry on the next error
+//       }
+//       return false; // Don't retry after the second attempt
+//     },
+// });
 // console.log({isLoading, isFetching, error, sdp});
-if (isLoading) {
-    return (
-        <View className='w-full h-64 flex justify-center items-center'>
-          <Text className='text-2xl'>Loading...</Text>
-        </View>
-      )
-}
-if (error) setErr(error);
+// if (isLoading) {
+//     return (
+//         <View className='w-full h-64 flex justify-center items-center'>
+//           <Text className='text-2xl'>Loading...</Text>
+//         </View>
+//       )
+// }
+// if (error) setErr(error);
 
 // const handleRefresh = () => {
 //   refetch(); // Manually refetch data on button click or other event
@@ -76,7 +86,7 @@ if (error) setErr(error);
 // }
 
   return (
-    <SafeAreaView className="bg-white">
+    <SafeAreaView className="">
       <StatusBar barStyle="dark-Content" />
 
       <Header/>
@@ -103,7 +113,7 @@ if (error) setErr(error);
                     key={data._id}>
                       <View 
                         style={{borderTopLeftRadius:40, borderTopRightRadius: 40}}
-                        className=' bg-white '>
+                        className=''>
                         <View>
                           <Image className='h-32 w-full object-cover rounded-xl mt-1' source={{ uri: urlFor(data?.cover).url()}}/>
                         </View>

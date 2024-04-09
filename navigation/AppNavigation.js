@@ -14,14 +14,14 @@ export default function AppNavigation() {
   // const isLoading = false;
 
   // just turn true into false befor eas build
-  const auth0isOn = loggedIn ? loggedIn : false
-  if (isLoading) {
-    return (
-      <View className=" flex justify-center items-center">
-        <ActivityIndicator size={"large"} />
-      </View>
-    );
-  }
+  const auth0isOn = loggedIn ? loggedIn : true
+  // if (isLoading) {
+  //   return (
+  //     <View className=" flex justify-center items-center">
+  //       <ActivityIndicator size={"large"} />
+  //     </View>
+  //   );
+  // }
 
   if (!auth0isOn)
     return (

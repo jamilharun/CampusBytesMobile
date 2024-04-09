@@ -92,6 +92,7 @@ export const addToMenu = async (newData, formData) => {
 
 export const createCustomOrder = async (paymentRef, userRef, shopRef, groupNum, deliveryFee, totalAmount, location, isSpecial, created_at, cartItems) => {
   console.log('create Custom Order');
+  console.log(paymentRef, userRef, shopRef, groupNum, deliveryFee, totalAmount, location, isSpecial, created_at);   
   try {
     const response = await axios.post(`${ip}/api/postgres/order/new/custom`, {paymentRef, userRef, shopRef, groupNum, deliveryFee, totalAmount, location, 
       isSpecial, created_at, cartItems})
@@ -347,10 +348,10 @@ export const fetchAllCheckout = async (shopid) => {
    }
 }
 
-export const finishOrder = async (checkoutid) => {
+export const finishOrder = async (data, index) => {
   console.log('this will finish order.. set to pickup');
   try {
-   const response = await axios.get(`${ip}/api/postgres/order/readypickup/${checkoutid}`)
+   const response = await axios.post(`${ip}/api/postgres/order/readypickup`, {data, index})
    if (response.data === 0 || response.data === undefined) {
      console.log('no checkout fetched');
      // return null

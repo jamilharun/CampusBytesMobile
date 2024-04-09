@@ -19,7 +19,7 @@ export default function CartScreen({route, navigation}) {
     const shop = useSelector(selectShop)
     const [randomNum, setRandomNum] = useState(null);
     //service tax = dafault 0
-    const [deliveryFee, setDeliveryFee] = useState(null)
+    // const [deliveryFee, setDeliveryFee] = useState(0)
     const [location, setLocation] = useState("")
     // const [special, isSpecial] = useState(false)
     // isCancelled = default 0
@@ -52,7 +52,21 @@ export default function CartScreen({route, navigation}) {
         console.log('sending data to server to be processed');
         const randomNumber = Math.floor(Math.random() * 1000) + 1;
         const created_at = new Date().toISOString().replace('T', ' ').replace('Z', '');
+        
+        let deliveryFee = 0
+        if (delivery) {
+            // setDeliveryFee(20)
+            deliveryFee = 20
+        } else {
+            // setDeliveryFee(0)
+            deliveryFee = 0
+        }
+        
         const totalAmount = carttotal + deliveryFee // idunno
+        console.log('cart total: ', carttotal);
+        console.log('deliveryFee: ', deliveryFee);
+        console.log('totalAmount: ', totalAmount);
+
         let isSpecial = false
         if (userData["https://myroles.com/roles"] && 
             userData["https://myroles.com/roles"]?.includes('Special')) {
@@ -83,14 +97,9 @@ export default function CartScreen({route, navigation}) {
             return group;
         },{})
         setGroupedItems(items)
-    
-        if (delivery) {
-            setDeliveryFee(20)
-        } else {
-            setDeliveryFee(0)
-        }
-    },[cartItems])
+        },[cartItems])
 
+    
     return (
     <View className=' bg-white flex-1'>
         {/* back button */}
@@ -203,7 +212,13 @@ export default function CartScreen({route, navigation}) {
                   <AntDesign name="close" size={24} color="black" onPress={() => setOpenFilter(false)} />
                 </View>
                 <Text>Account no.</Text>
-                <Text>09123456789</Text>
+                {
+                    shop.accNum ? (
+                        <Text>{shop.accNum}</Text>
+                    ) : (
+                        <Text>account Number not provided</Text>
+                    )
+                }
                 {
                 userData["https://myroles.com/roles"] && 
                 userData["https://myroles.com/roles"]?.includes('Special') &&        

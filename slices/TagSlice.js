@@ -13,7 +13,7 @@ export const TagSlice = createSlice({
     },
     removefromTag: (state, action) => {
         let newTag = [...state.items];
-        let itemIndex = state.items.findIndex(item => item.id == action.payload.id);
+        let itemIndex = state.items.findIndex(item => item._id == action.payload._id);
         if(itemIndex >= 0){
             newTag.splice(itemIndex,1)
         }else{
@@ -31,5 +31,7 @@ export const TagSlice = createSlice({
 export const { addtoTag, removefromTag , emptyTag} = TagSlice.actions
 
 export const selectTagItems = state=> state.tag.items;
+
+export const selectTagItemsById = (state, _id)=> state.tag.items.filter(item=> item._id == _id )
 
 export default TagSlice.reducer

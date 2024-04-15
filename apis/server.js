@@ -422,7 +422,22 @@ export const removePickup = async (checkoutid) => {
   }
 }
 
-
+export const fetchTags = async () => {
+  console.log('fetch all tags on the server');
+  try {
+    const response = await axios.get(`${ip}/api/shop/getTags`)
+    if (response.data === 0 || response.data === undefined) {
+      console.log('no tags fetched');
+      // return null
+    } else {
+      // console.log(response.data);
+      return response.data
+      
+    }
+  } catch (error) {
+    
+  }
+}
 
 // export const getMyQueueCheckout = async () => {
 //   console.log('user queueu checkout');

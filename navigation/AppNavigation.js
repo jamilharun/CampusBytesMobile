@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { View, ActivityIndicator } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 
@@ -9,12 +9,8 @@ import AppStack from "./AppStack";
 export default function AppNavigation() {
   const { loggedIn, isLoading } = useContext(AuthContext);
 
-  // test for debugging
-  // const loggedIn = true;
-  // const isLoading = false;
-
   // just turn true into false befor eas build
-  const auth0isOn = loggedIn ? loggedIn : false
+  const auth0isOn = loggedIn ? loggedIn : true
   // if (isLoading) {
   //   return (
   //     <View className=" flex justify-center items-center">
@@ -22,7 +18,7 @@ export default function AppNavigation() {
   //     </View>
   //   );
   // }
-
+ 
   if (!auth0isOn)
     return (
       <NavigationContainer>

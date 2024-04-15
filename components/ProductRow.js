@@ -1,4 +1,4 @@
-import { View, Text, Image, TouchableOpacity } from 'react-native'
+import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native'
 import React, { useEffect } from 'react'
 import { urlFor } from '../apis/sanity'
 import { Minus, Plus } from 'react-native-feather'
@@ -28,10 +28,30 @@ export default function ProductRow({item}) {
     // }, [totalItems])
     
   return (
-    <View className='px-4 pt-3 bg-white flex flex-col justify-center items-center'>
-        <Image className='w-20 h-20 object-cover' source={{uri: urlFor(item?.image).url(),}}/>
-        <Text>{item.productName}</Text>
-        <Text>₱{item.Price}</Text>
+    <View className='mx-4 pt-3 bg-white flex w-40 flex-col justify-center items-center'>
+        <Image className='w-36 h-36 object-cover rounded-xl' source={{uri: urlFor(item?.image).url(),}}/>
+        <Text className='text-xl'>{item.productName}</Text>
+        <View className=''>
+            <Text numberOfLines={2} className=' text-gray-700'>{item.description}</Text>
+        </View>
+        <ScrollView 
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        className=" overflow-hidden mt-3 flex flex-row w-full"
+        contentContainerStyle={{paddingHorizontal:15}}>
+            {
+                item?.tags?.map((tag) => {
+                    // console.log(tag.tagName)
+                    return (
+                        <View key={tag?._id} className=' mx-1 flex-row items-center space-x-1 bg-EacColor-SelectiveYellow px-3 justify-center rounded-full '>
+                            <Text className=' text-EacColor-BlackPearl'>{tag?.tagName}</Text>
+                        </View>
+                    )
+                })
+            }
+        </ScrollView>            
+        
+        <Text className=' text-gray-700 text-lg font-bold'>₱{item.Price}</Text>
         <View className='flex-row items-center pt-3'>
             <TouchableOpacity 
                 onPress={handleDecrease}

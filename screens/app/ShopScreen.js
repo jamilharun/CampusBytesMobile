@@ -11,6 +11,7 @@ import { selectShop, setShop } from '../../slices/ShopSlice';
 import { emptyCart } from '../../slices/CartSlice';
 import { selectFilterAmount } from '../../slices/FilterSlice';
 import { dish } from '../../constants/predefineData';
+import { selectTagItems } from '../../slices/TagSlice';
 
 export default function ShopScreen({route, navigation}) {
     const {data} = route.params;
@@ -20,7 +21,8 @@ export default function ShopScreen({route, navigation}) {
     const [err, setErr] = useState(null);
     const dispatch = useDispatch();
     const setedFilterAmount = useSelector(selectFilterAmount)
-    
+    const selectedTags = useSelector(selectTagItems)
+
     const [dishData, getDishData] = useState(data.dishes)
     const [prodData, getProdData] = useState(data.products)
 
@@ -48,8 +50,8 @@ export default function ShopScreen({route, navigation}) {
         }
     },[]);
     
-    console.log(setedFilterAmount); // Log the value to verify it's defined and holds an expected value
-
+    // console.log(setedFilterAmount); // Log the value to verify it's defined and holds an expected value
+    console.log('selected tags', selectedTags);
     let automaticPading = cartHasItems && 'p-10';
     return (
         <View >
@@ -107,6 +109,29 @@ export default function ShopScreen({route, navigation}) {
                             </View>
                         </View>
                         <View className='pb-36 bg-white'>
+                            {
+                                selectedTags.length > 0 ? (
+                                    <Text className=' px-4 py-4 text-xl font-bold'>Selected tag filter</Text>
+                                ) : null
+                            }
+                            <ScrollView
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                            className=" overflow-visible"
+                            contentContainerStyle={{
+                                paddingHorizontal:15
+                            }}>
+                                {
+                                    selectedTags.length > 0 ? (
+                                        selectedTags.map((tag) => {
+                                            // console.log('filter: ', tag.name);
+                                            return <View key={tag._id} className=' mx-1 flex-row items-center space-x-1 bg-EacColor-SelectiveYellow px-3 justify-center rounded-full '>
+                                                <Text className=' text-EacColor-BlackPearl'>{tag.name}</Text>
+                                            </View>
+                                        })
+                                    ) : null
+                                }
+                            </ScrollView>
                             <View className='flex flex-row items-center justify-between'>
                                 <Text className=' px-4 py-4 text-2xl font-bold'>Menu</Text>
                                 {
@@ -117,20 +142,77 @@ export default function ShopScreen({route, navigation}) {
                                     </View>
                                 }
                             </View>
-                            {setedFilterAmount === '0' || setedFilterAmount === '' || !setedFilterAmount ? (
-                              dishData?.map((dish) => (
-                                <DishRow item={dish} key={dish._id} />
-                              ))
-                            ) : null}
+                            
+                            {
+                                selectedTags.length === 0 ? ( // if selectedTags is empty array
+                                    setedFilterAmount === '0' || 
+                                    setedFilterAmount === '' || 
+                                    !setedFilterAmount ? (
+                                    dishData?.map((dish) => (
+                                        <DishRow item={dish} key={dish._id} />
+                                    ))
+                                    ) : null
+                                ) : null
+                            }
 
-                            {dishData?.map((dish) => (
-                              // Conditionally render DishRow based on setedFilterAmount
-                              dish.price <= setedFilterAmount ? (
-                                <DishRow key={dish._id} item={dish} />
-                              ) : null
-                            ))}
+                            {
+                                selectedTags.length === 0 &&
+                                setedFilterAmount ? (
+                                    dishData?.map((dish) => (
+                                    // Conditionally render DishRow based on setedFilterAmount
+                                    dish.price <= setedFilterAmount ? (
+                                        <DishRow key={dish._id} item={dish} />
+                                    ) : null
+                                    ))
+                                ) : null
+                            }
+
+                            {
+                                selectedTags.length > 0 ? ( // if selectedTags is empty array
+                                    setedFilterAmount === '0' || 
+                                    setedFilterAmount === '' || 
+                                    !setedFilterAmount ? (
+                                    dishData?.map((dish) => {
+                                        if (dish.tags.some(dishtag => selectedTags.some(tag => dishtag._id === tag._id ))) {
+                                            return <DishRow key={dish._id} item={dish} />;
+                                        } else {
+                                            return null;
+                                        }
+                                    })
+                                    ) : null
+                                ) : null
+                            }
+
+                            {
+                                selectedTags.length > 0 && setedFilterAmount ? (
+                                    dishData?.map((dish) => {
+                                        // Using array.some() to check if any tag matches
+                                        if (dish.tags.some(dishtag => selectedTags.some(tag => dishtag._id === tag._id && dish.price <= setedFilterAmount))) {
+                                            return <DishRow key={dish._id} item={dish} />;
+                                        } else {
+                                            return null;
+                                        }
+                                    })
+                                ) : null
+                            }
 
 
+                            {/* {
+                                selectedTags.length > 0 &&
+                                setedFilterAmount ? (
+                                    dishData?.map((dish) => {
+                                        dish.price <= setedFilterAmount ? (
+                                            selectedTags.map((tag)=>{
+                                                dish.tags.map((dishtag)=>{
+                                                    dishtag._id === tag._id ? (
+                                                        <DishRow key={dish._id} item={dish} />
+                                                    ) : null
+                                                })
+                                            })
+                                        ) : null
+                                    })
+                                ) : null
+                            } */}
 
                             <View>
                                 <Text className=' px-4 py-4 text-2xl font-bold'>Others</Text>
@@ -141,18 +223,59 @@ export default function ShopScreen({route, navigation}) {
                                 contentContainerStyle={{
                                     paddingHorizontal:15
                                 }}>
-                                {setedFilterAmount === '0' || setedFilterAmount === '' || !setedFilterAmount ? (
+                                    
+                                {
+                                    selectedTags.length === 0 ? ( // if selectedTags is empty array
+                                        setedFilterAmount === '0' || 
+                                        setedFilterAmount === '' || 
+                                        !setedFilterAmount ? (
+                                        prodData?.map((prod) => (
+                                            <ProductRow item={prod} key={prod._id} />
+                                        ))
+                                        ) : null
+                                    ) : null
+                                }
+
+                                
+                                {
+                                    selectedTags.length === 0 &&
+                                    setedFilterAmount ? (
+                                        prodData?.map((prod) => (
+                                            // Conditionally render DishRow based on setedFilterAmount
+                                            prod.Price <= setedFilterAmount ? (
+                                              <ProductRow key={prod._id} item={prod} />
+                                            ) : null
+                                        ))
+                                    ) : null
+                                }
+
+                                {
+                                    selectedTags.length > 0 && setedFilterAmount ? (
+                                        prodData?.map((prod) => {
+                                            // Using array.some() to check if any tag matches
+                                            if (prod?.tags?.some(prodtag => selectedTags?.some(tag => prodtag?._id === tag?._id && prod.Price <= setedFilterAmount))) {
+                                                return <ProductRow key={prod._id} item={prod} />
+                                            } else {
+                                                return null;
+                                            }
+                                        })
+                                    ) : null
+                                }
+
+                                {/* {setedFilterAmount === '0' || setedFilterAmount === '' || !setedFilterAmount ? (
                                   prodData?.map((prod) => (
                                     <ProductRow item={prod} key={prod._id} />
                                   ))
-                                ) : null}
+                                ) : null} */}
 
-                                {prodData?.map((prod) => (
+                                {/* {
+                                prodData?.map((prod) => (
                                   // Conditionally render DishRow based on setedFilterAmount
                                   prod.Price <= setedFilterAmount ? (
                                     <ProductRow key={prod._id} item={prod} />
                                   ) : null
-                                ))}
+                                ))
+                                } */}
 
                                 </ScrollView>
                             </View>

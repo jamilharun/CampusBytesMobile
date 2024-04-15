@@ -1,12 +1,14 @@
-import { View, TextInput, TouchableOpacity, Text, Modal } from "react-native";
+import { View, TextInput, TouchableOpacity, Text, Modal, ScrollView } from "react-native";
 import { DrawerActions, useNavigation } from "@react-navigation/native";
 import { Map, Menu, Search, Sliders } from "react-native-feather";
 import React, { useContext, useEffect, useState } from 'react'
-import { getMyQueue, viewPickup, viewPickupv2fetch } from "../apis/server";
+import { fetchTags, getMyQueue, viewPickup, viewPickupv2fetch } from "../apis/server";
 import { AuthContext } from "../context/AuthContext";
 import { AntDesign } from '@expo/vector-icons';
 import { useDispatch, useSelector } from "react-redux";
 import { changeFilterAmount, selectFilterAmount, setAmount, setFilterAmount } from "../slices/FilterSlice";
+import { emptyTag, selectTagItemsById } from "../slices/TagSlice";
+import TagRow from "./TagRow";
 
 export default function Header() {
     const navigation = useNavigation();
@@ -19,6 +21,7 @@ export default function Header() {
     const [openFilter, setOpenFilter] = useState(false)
     const [filterAmount, setFilterAmount] = useState(setedFilterAmount)
     const [pickupListener, setPickupListener] = useState(false)
+    const [allTags, getAllTags] = useState(null)
     // const [waitTime, setwaitTime] = useState(1000)
     const userData = user ? user : {
       email: 'TestUser@email.com',
@@ -33,7 +36,7 @@ export default function Header() {
 
     const fetchpickupqwesad = async () => {
       const fetchPickup = await viewPickupv2fetch(userData.sub)
-      console.log('sdfsd', fetchPickup);
+      console.log('pickup: ', fetchPickup);
       setUserPickup(fetchPickup);
       // setPickupListener(true)
       // if (fetchPickup) {
@@ -54,20 +57,24 @@ export default function Header() {
       return () => clearInterval(intervalId); // Cleanup function to stop interval on unmount
     }, []); // Empty dependency array ensures effect runs only once after mount
     
-    useEffect(()=>{
-      if (pickupListener) {
-        //notify user
-      }
-    },[pickupListener])
-
-    // useEffect(()=>{
-    //   const fetchPickup = viewPickupv2fetch(userData.sub)
-    //   console.log(fetchPickup);
-    // })
+    const fetchingAllTags = async () => {
+      const result = await fetchTags()
+      getAllTags(result)
+      // console.log('tag result: ',result);
+    }
+    if (!allTags) {
+      fetchingAllTags()
+    }
+    
+    // console.log(allTags);
     const handleFilterAmount = (newAmount) => {
       dispatch(setAmount(newAmount))
     };
 
+    const resetFilter = () => {
+      setFilterAmount(0)
+      dispatch(emptyTag())
+    }
     // console.log(userPickup);
     return (
         <View className="flex-row items-center space-x-2 px-4 ">
@@ -111,48 +118,6 @@ export default function Header() {
               </View>
             }
             
-            
-            {/* { 
-              userQueue  ? 
-              <View className={`rounded-full w-full flex flex-row justify-center items-center z-20 ${userPickup ? 'bg-limeGreen' : 'bg-EacColor-SelectiveYellow'}`}>
-                <View className='w-full flex flex-col justify-center items-center'>
-                    {
-                      userQueue ? (
-                        userPickup ? 
-                        <TouchableOpacity 
-                        className=' w-3/4 rounded-md flex flex-row justify-between items-center'
-                        onPress={()=>{navigation.navigate('queueDetails', {userQueue})}}>
-                          <View className='flex flex-row justify-center items-center'>
-                            <Text className='text-EacColor-BlackPearl text-lg'>Ready to Pickup</Text>
-                          </View>
-                        </TouchableOpacity>:
-                        <TouchableOpacity 
-                        className=' w-3/4 rounded-md flex flex-row justify-between items-center'
-                        onPress={()=>{navigation.navigate('queueDetails', {userQueue})}}>
-                          <View className=" w-10 h-10  flex justify-center items-center">
-                            <Text className='text-EacColor-BlackPearl text-2xl'>{userQueue[0]?.index}</Text>
-                          </View>
-                          <View className='flex flex-row justify-center items-center'>
-                            <Text className='text-EacColor-BlackPearl text-lg'>id:</Text>
-                            <View >
-                              <Text className='text-2xl'>{userQueue[0]?.data}</Text>
-                            </View>
-                          </View>
-                          <View>
-                            <Text className='text-EacColor-BlackPearl text-2xl'>{userQueue?.length}</Text>
-                          </View>
-                        </TouchableOpacity>
-                      ) : (
-                        <View>
-                        </View>
-                      )
-                    }
-                    </View>
-              </View> : 
-            <View className=' w-full flex flex-row justify-center items-center'>
-              <Text className='text-center text-xl'>CampusBytes</Text>  
-            </View>
-            } */}
             </View>
             <TouchableOpacity 
             onPress={()=>{setOpenFilter(true)}}
@@ -173,6 +138,20 @@ export default function Header() {
                     <Text>Filter Option</Text>
                     <AntDesign name="close" size={24} color="black" onPress={() => setOpenFilter(false)} />
                   </View>
+                  
+                  <Text>Tags</Text>
+                  <ScrollView className={`${allTags ? 'h-60' : ''}`}>
+                  {
+                    allTags && 
+                    allTags.length > 0 ? 
+                      allTags.map((tag, index) => {
+                        // let tagJson = JSON.parse(tag)
+                        // console.log(tag.tagName);
+                        return <TagRow key={index} tag={tag} />
+                      })
+                    : null
+                  }
+                  </ScrollView>
                   <Text>Amount: </Text>
                   <TextInput
                     style={{ borderWidth: 1, borderColor: 'gray', borderRadius: 5, paddingLeft: 10, paddingVertical: 8, marginBottom: 10 }}
@@ -181,7 +160,14 @@ export default function Header() {
                     keyboardType="numeric"
                     placeholder="Enter amount"
                   />
-                  <Text>this function will filter available items in the menu to a value not greater than "setAmount"</Text>
+                  <View className='flex flex-row justify-between items-center'>
+                    <Text className='w-3/4'>this function will filter available items in the menu to a value not greater than "setAmount"</Text>
+                    <TouchableOpacity 
+                      onPress={() => {resetFilter()}}
+                      className='bg-EacColor-SelectiveYellow w-1/4 h-1/2 rounded-full'>
+                      <Text className='text-center text-xl font-semibold'>Reset</Text>  
+                    </TouchableOpacity>
+                  </View>
                   <TouchableOpacity 
                     style={{ backgroundColor: '#FFD700', marginTop: 10, padding: 10, borderRadius: 5 }}
                     onPress={() => {

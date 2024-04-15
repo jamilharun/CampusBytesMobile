@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import {View, Image, TouchableOpacity, Text } from 'react-native'
+import {View, Image, TouchableOpacity, Text, ScrollView } from 'react-native'
 import { Minus, Plus } from 'react-native-feather'
 import { urlFor } from '../apis/sanity'
 import { useDispatch , useSelector } from 'react-redux';
@@ -26,6 +26,7 @@ export default function DishRow({item}) {
     // useEffect(()=>{
     //     console.log(totalItems);
     // }, [totalItems])
+    console.log(item);
     return (
         <View className=' flex-row items-center bg-white p-3 rounded-3xl shadow-2xl mb-3 mx-3 '>
          
@@ -36,18 +37,25 @@ export default function DishRow({item}) {
             className=' rounded-3xl' 
             style={{height: 100, width: 100}}/>
             <View className=' flex flex-1 space-y-3'>
-                <View className=' pl-3'>
+                <View className=' mx-3 '>
                     <Text className='text-xl'>{item.dishName}</Text>
-                    <Text numberOfLines={1} className=' text-gray-700'>{item.description}</Text>
-                    {
-                        item?.tags?.map((tag) => {
-                            return (
-                                <View key={tag?._id} className=' flex-row items-center space-x-1'>
-                                    <Text className=' text-gray-500 text-xs'>{tag?.tagName}</Text>
-                                </View>
-                            )
-                        })
-                    }
+                    <Text numberOfLines={2} className=' text-gray-700'>{item.description}</Text>
+                    <ScrollView 
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    className=" overflow-hidden mt-3 flex flex-row w-full"
+                    contentContainerStyle={{paddingHorizontal:15}}>
+                        {
+                            item?.tags?.map((tag) => {
+                                console.log(tag.tagName)
+                                return (
+                                    <View key={tag?._id} className=' mx-1 flex-row items-center space-x-1 bg-EacColor-SelectiveYellow px-3 justify-center rounded-full '>
+                                        <Text className=' text-EacColor-BlackPearl'>{tag?.tagName}</Text>
+                                    </View>
+                                )
+                            })
+                        }
+                    </ScrollView>
                 </View>
                 <View className=' flex-row justify-between pl-3 items-center'>
                     <Text className=' text-gray-700 text-lg font-bold'>

@@ -35,7 +35,8 @@ export default function QueueListScreen({route, navigation}) {
   const handleFinishOrder = async () => {
     console.log(' this is finished');
     try {
-      if (readyId, readyIndex) {
+      // console.log(readyId, readyIndex);
+      if (readyId || readyIndex) {
         console.log(readyId, readyIndex);
         const result = await finishOrder(readyId, readyIndex)
         console.log(result);
@@ -50,7 +51,7 @@ export default function QueueListScreen({route, navigation}) {
   // }
   
   return (
-    <View>
+    <View >
       <View className="w-full mt-4 flex flex-row justify-between items-center bg-white pr-4 shadow-sm">
             <TouchableOpacity
             onPress={()=>{navigation.goBack()}}
@@ -64,7 +65,7 @@ export default function QueueListScreen({route, navigation}) {
                 queue list
             </Text>
         </View>
-        <Text>note: please double check the reference Id. on your Gcash account. to see if the user DID pay the right totalamount on the checkout </Text>
+        <Text className='mx-3 my-2'>note: please double check the reference Id. on your Gcash account. to see if the user DID pay the right totalamount on the checkout </Text>
         <View className='flex flex-row mb-4'>
           <Text className='w-1/2 text-center text-xl font-bold'>Queue no.</Text>
           <Text className='w-1/2 text-center text-xl font-bold'>order info</Text>
@@ -74,10 +75,10 @@ export default function QueueListScreen({route, navigation}) {
 
           {
             ysq && yscheckout ?
-              ysq.map((data, index)=>
+              ysq.map((data,  index)=>
                 
               yscheckout[`${data}`] ? (
-                  <View key={data} className='py-4 px-4'>
+                  <View className='mb-20 rounded-3xl shadow-2xl bg-white mx-3 ' key={data}   >
                     {
                       yscheckout[`${data}`] && yscheckout[`${data}`].checkout ? (
                         yscheckout[`${data}`]?.checkout?.isspecial == true ? (
@@ -85,7 +86,7 @@ export default function QueueListScreen({route, navigation}) {
                             setOpenModal(true)
                             getReadyId(data)
                             getReadyIndex(index)}}
-                            className='flex flex-row justify-between items-center'>
+                            className='flex flex-row justify-between items-center mt-4 mx-3 mb-2'>
                              <Text className='text-2xl pb-3'>Priority:</Text>
                              <AntDesign name="checkcircleo" size={25} color="green"/>
                           </TouchableOpacity>
@@ -95,7 +96,7 @@ export default function QueueListScreen({route, navigation}) {
                               setOpenModal(true)
                               getReadyId(data)
                               getReadyIndex(index)}}
-                            className='flex flex-row justify-end '>
+                            className='flex flex-row justify-end mt-4 mx-3 mb-2'>
                             <AntDesign name="checkcircleo" size={25} color="green"/>
                           </TouchableOpacity>
                         )
@@ -105,11 +106,11 @@ export default function QueueListScreen({route, navigation}) {
                     {
                         yscheckout[`${data}`] && yscheckout[`${data}`].checkout ? (
                           yscheckout[`${data}`]?.checkout?.isspecial == true ? (
-                            <View className='w-1/2 h-40 bg-EacColor-SelectiveYellow flex justify-center rounded-xl '>
-                              <Text className=' text-2xl text-center rounded-full'>{index + 1}</Text>
+                            <View className='w-1/4 mx-10 h-40 bg-EacColor-SelectiveYellow flex justify-center rounded-xl '>
+                              <Text className=' text-4xl text-center rounded-full font-bold'>{index + 1}</Text>
                             </View>
                           ) : (
-                            <View className='w-1/2'>
+                            <View className='w-1/4 mx-10'>
                               <Text className=' text-2xl text-center rounded-full'>{index + 1}</Text>
                             </View>      
                           )
@@ -117,10 +118,8 @@ export default function QueueListScreen({route, navigation}) {
                     } 
                        <View className='w-1/2'>
                      {
-                       //debugging
-                       // console.log('checkout data', yscheckout[`${data}`])
                        yscheckout[`${data}`] && yscheckout[`${data}`].buyerDetails ?
-                       <Text className='text-xl'>{yscheckout[`${data}`].buyerDetails?.name}</Text>
+                       <Text className='text-2xl font-semibold'>{yscheckout[`${data}`].buyerDetails?.name}</Text>
                        :
                        <Text>no data</Text>
                      }
@@ -129,37 +128,45 @@ export default function QueueListScreen({route, navigation}) {
                        <Text className='text-xl overflow-hidden'>{allorder[`${data}`].buyerDetails.name}</Text>
                        : <Text className='text-xl overflow-hidden'>loading...</Text>
                      } */}
-                     <Text className='text-xl overflow-hidden'>orderID: {data}</Text>
+                     <View className='flex flex-row'>
+                      <Text className='text-xl overflow-hidden'>orderID: </Text>
+                      <Text className='text-xl font-black overflow-hidden'>{data}</Text>
+                     </View>
                      {
                        // if location exist then buyyer expect food to be delivered on that location
                        yscheckout[`${data}`] && yscheckout[`${data}`].checkout ? (
                          yscheckout[`${data}`]?.checkout?.location == "" ? (
                            <Text className='text-xl overflow-hidden'>Location: none</Text>
                          ) : (
-                           <Text className='text-xl overflow-hidden'>Location: {yscheckout[`${data}`]?.checkout?.location}</Text>
+                            <View >
+                              <Text className='text-xl overflow-hidden'>Location: </Text>
+                              <Text className='text-xl font-black'>{yscheckout[`${data}`]?.checkout?.location}</Text>
+                            </View>
                          )
                        ) : <Text className='text-xl overflow-hidden'>no data</Text>
                      }
-                     <Text className='text-xl overflow-hidden'>Ref no: {yscheckout[`${data}`]?.checkout.paymentref}</Text>
-                      </View>
+                     <Text className='text-xl overflow-hidden'>Ref no: </Text>
+                     <Text className='text-xl font-bold'>{yscheckout[`${data}`]?.checkout.paymentref}</Text>
                     </View>
-                    <View>
-                      <Text className='mt-3 text-xl '>Order Items:</Text>
+                  </View>
+                    <View className='mx-4'>
+                      <Text className='mt-3 text-xl font-bold '>Order Items:</Text>
                       {
                         yscheckout[`${data}`].items.map((item, index) => {
                           let itemjson = JSON.parse(item)  
                           let cartjson = JSON.parse(yscheckout[`${data}`]?.cartstring)
                   
                           return <View key={itemjson._id}>
-                            <Text>item name: {itemjson.dishName ? itemjson.dishName : itemjson.productName}</Text> 
-                            <Text>Price: {itemjson.price ? itemjson.price : itemjson.Price}</Text>                    
-                            <Text>Type: {itemjson._type}</Text>
+                            <Text className='font-bold text-lg'>{index + 1}.</Text>
+                            <Text>item name: <Text className='font-bold text-lg'>{itemjson.dishName ? itemjson.dishName : itemjson.productName}</Text> </Text> 
+                            <Text>Price: <Text className='font-bold text-lg'>{itemjson.price ? itemjson.price : itemjson.Price}</Text></Text>                    
+                            <Text>Type: <Text className='font-bold text-lg'>{itemjson._type}</Text> </Text>
                             {
                               cartjson ? (
                                 cartjson[index].itemref == itemjson._id ? (
                                   <View>
-                                    <Text>Quantity: {cartjson[index].quantity}</Text>
-                                    <Text>Sub-total: {cartjson[index].subtotalprice}</Text>
+                                    <Text>Quantity: <Text className='font-bold text-lg'>{cartjson[index].quantity}</Text> </Text>
+                                    <Text>Sub-total: <Text className='font-bold text-lg'>{cartjson[index].subtotalprice}</Text> </Text>
                                   </View>
                                 ) : null
                               ) : null
@@ -169,13 +176,13 @@ export default function QueueListScreen({route, navigation}) {
                       }
                       
                     </View>
-                    <View>
-                      <Text className='mt-3 text-xl'>Order Meta data</Text>
+                    <View className='mx-4 pb-5'>
+                      <Text className='mt-3 text-xl font-bold '>Order Meta data</Text>
                       <View>
-                          <Text>Location: {yscheckout[`${data}`]?.checkout.location}</Text>
-                          <Text>picked up: {yscheckout[`${data}`]?.checkout.isfinished ? 'true' : 'false'}</Text>
-                          <Text>Priority: {yscheckout[`${data}`]?.checkout.isspecial ? 'true' : 'false'}</Text>
-                          <Text>ordered_at: {yscheckout[`${data}`]?.checkout.created_at}</Text>
+                          <Text>Location: <Text className='font-bold text-lg'>{yscheckout[`${data}`]?.checkout.location}</Text> </Text>
+                          <Text>picked up: <Text className='font-bold text-lg'>{yscheckout[`${data}`]?.checkout.isfinished ? 'true' : 'false'}</Text> </Text>
+                          <Text>Priority: <Text className='font-bold text-lg'>{yscheckout[`${data}`]?.checkout.isspecial ? 'true' : 'false'}</Text> </Text>
+                          <Text>ordered_at: <Text className='font-bold text-lg'>{yscheckout[`${data}`]?.checkout.created_at}</Text> </Text>
                       </View>
                     </View>
                   </View>

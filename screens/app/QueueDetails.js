@@ -83,6 +83,7 @@ export default function QueueDetails({route, navigation}) {
           userPickup &&
           userPickup.length > 0 ? <View className='px-4 py-4 '>
             <Text className='text-xl '>Your Order is Ready to pickup!</Text>
+            <Text className=''>click the green to confirm checkout</Text>
           </View> : null
         }
 
@@ -90,60 +91,53 @@ export default function QueueDetails({route, navigation}) {
           userCheckout &&
             userPickup?.map((pickup, index)=>
             pickup ? (
-              <View className='py-4 px-4' key={index}>
-                <Text>click the green to confirm checkout</Text>
-                <View className='bg-limeGreen rounded-full'>
+              <View className='mb-20 rounded-3xl shadow-2xl bg-white mx-3 ' key={index}>
+                
+                <TouchableOpacity className='bg-limeGreen rounded-t-3xl pt-3' onPress={()=>{
+                  setOpenModal(true)
+                  getHandleId(pickup.data)}}>
                   {
                     userCheckout[`${pickup.data}`]?.checkout.isfinished ? (
-                      <TouchableOpacity onPress={()=>{
-                        setOpenModal(true)
-                        getHandleId(pickup.data)}}
+                      <View 
                         className='flex flex-row justify-between items-center'>
-                        <Text className='text-3xl w-1/2 text-center'>{pickup.index}</Text>
-                        <Text className='text-3xl w-1/2 text-center'>{pickup.data}</Text>    
-                      </TouchableOpacity>
-                    ) : (
-                      <View className='flex flex-row justify-between items-center'>
-                        <Text className='text-3xl w-1/2 text-center'>{pickup.index}</Text>
-                        <Text className='text-3xl w-1/2 text-center'>{pickup.data}</Text>
+                        <Text className='text-3xl w-full text-center'>{pickup.data}</Text>    
                       </View>
-                    )
+                    ) : null
                   }
                   <View className='flex flex-row justify-between items-center'>
-                    <Text className='text-xl w-1/2 text-center'>pickup</Text>
-                    <Text className='text-xl w-1/2 text-center'>orderid</Text>
+                    <Text className='text-xl w-full text-center'>orderid</Text>
                   </View>
-                </View>
-              <Text className='mt-3 font-bold'>Order information</Text>
-              <View>
-                  <Text>Payment: {userCheckout[`${pickup.data}`]?.checkout.totalamount}</Text>
-                  <Text>Delivery fee: {userCheckout[`${pickup.data}`]?.checkout.deliveryfee}</Text>
-                  <Text>Service fee: {userCheckout[`${pickup.data}`]?.checkout.servicetax}</Text>
-                  <Text>payment ref: {userCheckout[`${pickup.data}`]?.checkout.paymentref}</Text>
-                  <Text>Location: {userCheckout[`${pickup.data}`]?.checkout.location}</Text>
-                  <Text>picked up: {userCheckout[`${pickup.data}`]?.checkout.isfinished ? 'true' : 'false'}</Text>
-                  <Text>Priority: {userCheckout[`${pickup.data}`]?.checkout.isspecial ? 'true' : 'false'}</Text>
-                  <Text>ordered_at: {userCheckout[`${pickup.data}`]?.checkout.created_at}</Text>
+                </TouchableOpacity>
+                <Text className='mt-3 text-xl font-bold px-4'>Order information</Text>
+              <View className='px-4'>
+                  <Text className='text-lg'>total Amount: {userCheckout[`${pickup.data}`]?.checkout.totalamount}</Text>
+                  <Text className='text-lg'>Delivery fee: {userCheckout[`${pickup.data}`]?.checkout.deliveryfee}</Text>
+                  <Text className='text-lg'>Service fee: {userCheckout[`${pickup.data}`]?.checkout.servicetax}</Text>
+                  <Text className='text-lg'>payment ref: {userCheckout[`${pickup.data}`]?.checkout.paymentref}</Text>
+                  <Text className='text-lg'>Location: {userCheckout[`${pickup.data}`]?.checkout.location}</Text>
+                  <Text className='text-lg'>picked up: {userCheckout[`${pickup.data}`]?.checkout.isfinished ? 'true' : 'false'}</Text>
+                  <Text className='text-lg'>Priority: {userCheckout[`${pickup.data}`]?.checkout.isspecial ? 'true' : 'false'}</Text>
+                  <Text className='text-lg'>ordered_at: {userCheckout[`${pickup.data}`]?.checkout.created_at}</Text>
               </View>
               
-              <Text className='mt-3 font-bold'>Order Items</Text>
+              <Text className='mt-3 text-xl font-bold px-4'>Order Items</Text>
               {
                 userCheckout[`${pickup.data}`]?.items.map((item, index) => {
                   let itemjson = JSON.parse(item)
                   let cartjson = JSON.parse(userCheckout[`${pickup.data}`]?.cartstring)
                   console.log(cartjson[index].cartid);
-                  return <View key={index}>
+                  return <View className='px-4' key={index}>
               
                     <View>
-                      <Text>item name: {itemjson.dishName ? itemjson.dishName : itemjson.productName}</Text> 
-                      <Text>Type: {itemjson._type}</Text>
-                      <Text>Price: {itemjson.price ? itemjson.price : itemjson.Price}</Text>                    
+                      <Text className='text-lg'>item name: {itemjson.dishName ? itemjson.dishName : itemjson.productName}</Text> 
+                      <Text className='text-lg'>Type: {itemjson._type}</Text>
+                      <Text className='text-lg'>Price: {itemjson.price ? itemjson.price : itemjson.Price}</Text>                    
                       {
                         cartjson ? (
                           cartjson[index].itemref == itemjson._id ? (
                             <View>
-                              <Text>Quantity: {cartjson[index].quantity}</Text>
-                              <Text>Sub-total: {cartjson[index].subtotalprice}</Text>
+                              <Text className='text-lg'>Quantity: {cartjson[index].quantity}</Text>
+                              <Text className='text-lg'>Sub-total: {cartjson[index].subtotalprice}</Text>
   
                             </View>
                           ) : null
@@ -154,17 +148,17 @@ export default function QueueDetails({route, navigation}) {
                 })
               }
               
-              <Text className='mt-3 font-bold'>Shop Details</Text>
+              <Text className='mt-3 text-xl font-bold px-4'>Shop Details</Text>
               {pickup.data ? (
                 userCheckout[`${pickup.data}`]?.shopDetails && (
-                  <View>
+                  <View className='px-4'>
                     {(() => {
                       const shopjson = JSON.parse(userCheckout[`${pickup.data}`].shopDetails);
                       return (
                         <React.Fragment>
-                          <Text>shop name: {shopjson.shopName}</Text>
+                          <Text className='text-lg'>shop name: {shopjson.shopName}</Text>
                           {/* <Text>description: {shopjson.description}</Text> */}
-                          <Text>address: {shopjson.address}</Text>
+                          <Text className='text-lg'>address: {shopjson.address}</Text>
                         </React.Fragment>
                       );
                     })()}
@@ -182,8 +176,8 @@ export default function QueueDetails({route, navigation}) {
         userCheckout &&
           userQueue.map((queue, index)=>
             queue ? (
-            <View className='py-4 px-4 mb-20' key={index}>
-              <View className='bg-babyBlue rounded-full'>
+            <View className='mb-20 rounded-3xl shadow-2xl bg-white mx-3 ' key={index}>
+              <View className='bg-babyBlue rounded-t-3xl pt-3'>
                 {
                   userCheckout[`${queue.data}`]?.checkout.isfinished ? (
                     <TouchableOpacity className='flex flex-row justify-between items-center'>
@@ -203,19 +197,19 @@ export default function QueueDetails({route, navigation}) {
                 </View>
 
               </View>
-              <Text className='mt-3 font-bold'>Order information</Text>
-              <View>
-                  <Text>Payment: {userCheckout[`${queue.data}`]?.checkout.totalamount}</Text>
-                  <Text>Delivery fee: {userCheckout[`${queue.data}`]?.checkout.deliveryfee}</Text>
-                  <Text>Service fee: {userCheckout[`${queue.data}`]?.checkout.servicetax}</Text>
-                  <Text>payment ref: {userCheckout[`${queue.data}`]?.checkout.paymentref}</Text>
-                  <Text>Location: {userCheckout[`${queue.data}`]?.checkout.location}</Text>
-                  <Text>picked up: {userCheckout[`${queue.data}`]?.checkout.isfinished ? 'true' : 'false'}</Text>
-                  <Text>Priority: {userCheckout[`${queue.data}`]?.checkout.isspecial ? 'true' : 'false'}</Text>
-                  <Text>ordered_at: {userCheckout[`${queue.data}`]?.checkout.created_at}</Text>
+              <Text className='mt-3 text-xl font-bold px-4'>Order information</Text>
+              <View className='px-4'>
+                  <Text className='text-lg'>total Amount: {userCheckout[`${queue.data}`]?.checkout.totalamount}</Text>
+                  <Text className='text-lg'>Delivery fee: {userCheckout[`${queue.data}`]?.checkout.deliveryfee}</Text>
+                  <Text className='text-lg'>Service fee: {userCheckout[`${queue.data}`]?.checkout.servicetax}</Text>
+                  <Text className='text-lg'>payment ref: {userCheckout[`${queue.data}`]?.checkout.paymentref}</Text>
+                  <Text className='text-lg'>Location: {userCheckout[`${queue.data}`]?.checkout.location}</Text>
+                  <Text className='text-lg'>picked up: {userCheckout[`${queue.data}`]?.checkout.isfinished ? 'true' : 'false'}</Text>
+                  <Text className='text-lg'>Priority: {userCheckout[`${queue.data}`]?.checkout.isspecial ? 'true' : 'false'}</Text>
+                  <Text className='text-lg'>ordered_at: {userCheckout[`${queue.data}`]?.checkout.created_at}</Text>
               </View>
               
-              <Text className='mt-3 font-bold'>Order Items</Text>
+              <Text className='mt-3 text-xl font-bold px-4'>Order Items</Text>
               {
                 userCheckout[`${queue.data}`]?.items.map((item, index) => {
                   let itemjson = JSON.parse(item)
@@ -223,18 +217,18 @@ export default function QueueDetails({route, navigation}) {
                   // console.log(userCheckout[`${queue.data}`]?.cartstring);
                   let cartjson = JSON.parse(userCheckout[`${queue.data}`]?.cartstring)
                   console.log(cartjson[index].cartid);
-                  return <View key={index}>
+                  return <View className='px-4' key={index}>
               
                     <View>
-                      <Text>item name: {itemjson.dishName ? itemjson.dishName : itemjson.productName}</Text> 
-                      <Text>Type: {itemjson._type}</Text>
-                      <Text>Price: {itemjson.price ? itemjson.price : itemjson.Price}</Text>                    
+                      <Text className='text-lg'>item name: {itemjson.dishName ? itemjson.dishName : itemjson.productName}</Text> 
+                      <Text className='text-lg'>Type: {itemjson._type}</Text>
+                      <Text className='text-lg'>Price: {itemjson.price ? itemjson.price : itemjson.Price}</Text>                    
                       {
                         cartjson ? (
                           cartjson[index].itemref == itemjson._id ? (
-                            <View>
-                              <Text>Quantity: {cartjson[index].quantity}</Text>
-                              <Text>Sub-total: {cartjson[index].subtotalprice}</Text>
+                            <View >
+                              <Text className='text-lg'>Quantity: {cartjson[index].quantity}</Text>
+                              <Text className='text-lg'>Sub-total: {cartjson[index].subtotalprice}</Text>
   
                             </View>
                           ) : null
@@ -245,17 +239,17 @@ export default function QueueDetails({route, navigation}) {
                 })
               }
               
-              <Text className='mt-3 font-bold'>Shop Details</Text>
+              <Text className='mt-3 text-xl font-bold px-4'>Shop Details</Text>
               {queue.data ? (
                 userCheckout[`${queue.data}`]?.shopDetails && (
-                  <View>
+                  <View className='px-4'>
                     {(() => {
                       const shopjson = JSON.parse(userCheckout[`${queue.data}`].shopDetails);
                       return (
                         <React.Fragment>
-                          <Text>shop name: {shopjson.shopName}</Text>
+                          <Text className='text-lg'>shop name: {shopjson.shopName}</Text>
                           {/* <Text>description: {shopjson.description}</Text> */}
-                          <Text>address: {shopjson.address}</Text>
+                          <Text className='text-lg'>address: {shopjson.address}</Text>
                         </React.Fragment>
                       );
                     })()}

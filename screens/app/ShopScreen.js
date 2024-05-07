@@ -250,6 +250,23 @@ export default function ShopScreen({route, navigation}) {
                                 }
 
                                 {
+                                    selectedTags.length > 0 ? ( // if selectedTags is empty array
+                                        setedFilterAmount === '0' || 
+                                        setedFilterAmount === '' || 
+                                        !setedFilterAmount ? (
+                                            prodData?.map((prod) => {
+                                                // Using array.some() to check if any tag matches
+                                                if (prod?.tags?.some(prodtag => selectedTags?.some(tag => prodtag?._id === tag?._id ))) {
+                                                    return <ProductRow key={prod._id} item={prod} />
+                                                } else {
+                                                    return null;
+                                                }
+                                            })
+                                        ) : null
+                                    ) : null
+                                }
+
+                                {
                                     selectedTags.length > 0 && setedFilterAmount ? (
                                         prodData?.map((prod) => {
                                             // Using array.some() to check if any tag matches

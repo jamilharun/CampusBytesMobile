@@ -10,7 +10,7 @@ export default function AppNavigation() {
   const { loggedIn, isLoading } = useContext(AuthContext);
 
   // just turn true into false befor eas build
-  const auth0isOn = loggedIn ? loggedIn : true
+  const auth0isOn = loggedIn ? loggedIn : false
   // if (isLoading) {
   //   return (
   //     <View className=" flex justify-center items-center">
